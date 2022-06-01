@@ -6,10 +6,14 @@ using UnityEngine.SceneManagement;
 
 namespace Infrastructure {
 
-	internal sealed class SceneLoader {
-		private readonly ICoroutineRunner _coroutineRunner;
+	internal sealed class SceneLoader : ISceneLoader {
+		private ICoroutineRunner _coroutineRunner;
 
-		public SceneLoader(ICoroutineRunner coroutineRunner) {
+		// public SceneLoader(ICoroutineRunner coroutineRunner) {
+		// 	_coroutineRunner = coroutineRunner;
+		// }
+
+		public void Init(ICoroutineRunner coroutineRunner) {
 			_coroutineRunner = coroutineRunner;
 		}
 

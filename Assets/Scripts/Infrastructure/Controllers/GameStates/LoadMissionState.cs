@@ -2,24 +2,28 @@
 using Controllers;
 using UnityEngine;
 using Utils;
+using Zenject;
 using Object = UnityEngine.Object;
 
 
 namespace Infrastructure {
 
-	internal class LoadMissionState : IParamedGameState<string> {
+	internal class LoadMissionState : ILoadMissionState {
 		public event Action OnStateEntered;
 		
-		private readonly SceneLoader _sceneLoader;
-		private readonly ControllersBox _controllers;
-		private readonly PermanentUiController _permanentUiController;
+		private readonly ISceneLoader _sceneLoader;
+		private readonly IPermanentUiController _permanentUiController;
+		private readonly IMoveController _moveController;
+		private readonly ICameraController _cameraController;
 		private UnitsFactory _unitsFactory;
 
 
-		public LoadMissionState(SceneLoader sceneLoader, ControllersBox controllers, PermanentUiController permanentUiController) {
+		[Inject]
+		public LoadMissionState(ISceneLoader sceneLoader, IPermanentUiController permanentUiController, IMoveController moveController, ICameraController cameraController) {
 			_sceneLoader = sceneLoader;
-			_controllers = controllers;
 			_permanentUiController = permanentUiController;
+			_moveController = moveController;
+			_cameraController = cameraController;
 		}
 
 		public void Enter(string sceneName) {
@@ -27,17 +31,11 @@ namespace Infrastructure {
 
 			
 			void PrepareScene() {
-				var player = _unitsFactory.CreatePlayer();
+				var player = Object.Instantiate(Resources.Load<CharacterController>(TextConstants.PLAYER_PREF_RESOURCES_PATH));
+				// var player = _unitsFactory.CreatePlayer();
 
-				var moveController = new MoveController(player, Game.InputService);
-				moveController.Init();
-
-				var cameraController = new CameraController();
-				cameraController.Init();
-				cameraController.Follow(player.transform, new Vector3(0, 0, -1));
-
-				_controllers.AddController(moveController);
-				_controllers.AddController(cameraController);
+				_moveController.Init(player);
+				_cameraController.Follow(player.transform, new Vector3(0, 0, -1));
 				
 				OnStateEntered?.Invoke();
 			}

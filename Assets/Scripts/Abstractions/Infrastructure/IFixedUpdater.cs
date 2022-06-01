@@ -1,7 +1,7 @@
 ﻿namespace Infrastructure {
 
 	internal interface IFixedUpdater : IController {
-		void OnFixedUpdate();
+		public void OnFixedUpdate();
 	}
 
 }

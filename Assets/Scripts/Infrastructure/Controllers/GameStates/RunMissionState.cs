@@ -3,7 +3,7 @@
 
 namespace Infrastructure {
 
-	internal class RunMissionState : IUnparamedGameState {
+	internal class RunMissionState : IRunMissionState {
 		public event Action OnStateEntered;
 
 		

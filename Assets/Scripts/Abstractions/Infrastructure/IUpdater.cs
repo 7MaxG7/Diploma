@@ -1,7 +1,7 @@
 ﻿namespace Infrastructure {
 
 	internal interface IUpdater : IController {
-		void OnUpdate(float deltaTime);
+		public void OnUpdate(float deltaTime);
 	}
 
 }

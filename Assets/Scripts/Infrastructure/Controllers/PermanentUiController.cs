@@ -9,14 +9,21 @@ using Object = UnityEngine.Object;
 
 namespace Infrastructure {
 
-	internal class PermanentUiController {
-		private readonly PermanentUiView _permanentUiView;
-		private readonly ICoroutineRunner _coroutineRunner;
+	internal class PermanentUiController : IPermanentUiController {
+		private PermanentUiView _permanentUiView;
+		private ICoroutineRunner _coroutineRunner;
 		private bool _loadingCurtainIsActivating;
 		private bool _loadingCurtainIsDeactivating;
 		private bool _loadingCurtainIsActive;
 
-		public PermanentUiController(PermanentUiView permanentUiView, ICoroutineRunner coroutineRunner) {
+		// public PermanentUiController(PermanentUiView permanentUiView, ICoroutineRunner coroutineRunner) {
+		// 	_permanentUiView = permanentUiView;
+		// 	_coroutineRunner = coroutineRunner;
+		// 	
+		// 	Object.DontDestroyOnLoad(_permanentUiView.gameObject);
+		// }
+
+		public void Init(ICoroutineRunner coroutineRunner, PermanentUiView permanentUiView) {
 			_permanentUiView = permanentUiView;
 			_coroutineRunner = coroutineRunner;
 			

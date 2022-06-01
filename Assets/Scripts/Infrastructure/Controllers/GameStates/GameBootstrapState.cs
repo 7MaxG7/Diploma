@@ -1,37 +1,33 @@
 ﻿using System;
 using Services;
-using UnityEngine;
 using Utils;
+using Zenject;
 
 
 namespace Infrastructure {
 
-	internal class GameBootstrapState : IUnparamedGameState {
+	internal class GameBootstrapState : IGameBootstrapState {
 		public event Action OnStateEntered;
 		
-		private readonly SceneLoader _sceneLoader;
-		private readonly PermanentUiController _permanentUiController;
+		private readonly ISceneLoader _sceneLoader;
+		private readonly IPermanentUiController _permanentUiController;
+		private readonly IInputService _inputService;
 
 
-		public GameBootstrapState(SceneLoader sceneLoader, PermanentUiController permanentUiController) {
+		[Inject]
+		public GameBootstrapState(ISceneLoader sceneLoader, IPermanentUiController permanentUiController, IInputService inputService) {
 			_sceneLoader = sceneLoader;
 			_permanentUiController = permanentUiController;
+			_inputService = inputService;
 		}
 		
 		public void Enter() {
 			_permanentUiController.ShowLoadingCurtain(false);
-			if (Application.isEditor || Application.platform == RuntimePlatform.WindowsPlayer)
-				Game.InputService = new PcInputService();
-			else
-				Game.InputService = new MobileInputService();
-			
-			Game.InputService.Init();
-
+			_inputService.Init();
 			_sceneLoader.LoadScene(TextConstants.BOOTSTRAP_SCENE_NAME, () => OnStateEntered?.Invoke());
 		}
 
 		public void Exit() {
-			
 		}
 	}
 

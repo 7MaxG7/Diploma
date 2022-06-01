@@ -1,12 +1,11 @@
-﻿using Utils;
-using Zenject;
+﻿using Zenject;
 
 
 namespace Infrastructure.Zenject {
 
 	internal sealed class FactoriesInstaller : MonoInstaller {
 		public override void InstallBindings() {
-			Container.Bind<IUnitsFactory>().To<UnitsFactory>().AsSingle();
+			
 		}
 	}
 

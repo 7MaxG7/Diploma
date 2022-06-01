@@ -1,21 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
+using Zenject;
 
 
 namespace Infrastructure {
 
-	internal sealed class GameStateMachine {
+	internal sealed class GameStateMachine : IGameStateMachine {
 		private readonly Dictionary<Type, IGameState> _states;
 		private IGameState _currentState;
-		
 
-		public GameStateMachine(ControllersBox controllers, SceneLoader sceneLoader, PermanentUiController permanentUiController) {
+
+		[Inject]
+		public GameStateMachine(IGameBootstrapState gameBootstrapState, ILoadMissionState loadMissionState, IRunMissionState runMissionState) {
 			_states = new Dictionary<Type, IGameState> {
-					[typeof(GameBootstrapState)] = new GameBootstrapState(sceneLoader, permanentUiController),
-					[typeof(LoadMissionState)] = new LoadMissionState(sceneLoader, controllers, permanentUiController),
-					[typeof(RunMissionState)] = new RunMissionState()
+					[typeof(GameBootstrapState)] = gameBootstrapState,
+					[typeof(LoadMissionState)] = loadMissionState,
+					[typeof(RunMissionState)] = runMissionState
 			};
 		}
+
+		// public GameStateMachine(ControllersHolder controllers, SceneLoader sceneLoader, PermanentUiController permanentUiController) {
+		// 	_states = new Dictionary<Type, IGameState> {
+		// 			[typeof(GameBootstrapState)] = new GameBootstrapState(sceneLoader, permanentUiController),
+		// 			[typeof(LoadMissionState)] = new LoadMissionState(sceneLoader, controllers, permanentUiController),
+		// 			[typeof(RunMissionState)] = new RunMissionState()
+		// 	};
+		// }
 
 		public IGameState GetState(Type stateType) {
 			return _states[stateType];
