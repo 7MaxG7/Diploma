@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f278c2b5ff6f48a2945e8cac4f2ebda3, type: 3}
+  m_Name: LobbyConfig
+  m_EditorClassIdentifier: 
+  _lobbyCachedRoomItemPref: {fileID: 845097435725642758, guid: e4fc703c6ccdd304f8b911794085b2d5, type: 3}
+  _roomCachedPlayerItemPref: {fileID: 7671765002071387023, guid: 194c68fab07b3ea42aa62810dec01ae5, type: 3}

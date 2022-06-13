@@ -13,7 +13,6 @@ using UnityEngine;
 
 namespace Photon.Pun.UtilityScripts
 {
-    using System;
 
 
     /// <summary>

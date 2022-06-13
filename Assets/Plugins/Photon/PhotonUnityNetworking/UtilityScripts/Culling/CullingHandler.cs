@@ -12,11 +12,9 @@ using System.Collections.Generic;
 
 using UnityEngine;
 
-using Photon.Pun;
 
 namespace Photon.Pun.UtilityScripts
 {
-    using ExitGames.Client.Photon;
 
 
     /// <summary>

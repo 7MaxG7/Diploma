@@ -1,12 +1,10 @@
-﻿using UI;
-using UnityEngine;
+﻿using UnityEngine;
 using Zenject;
 
 
 namespace Infrastructure {
 
 	internal sealed class GameBootstrapper : MonoBehaviour, ICoroutineRunner {
-		[SerializeField] private PermanentUiView _permanentUiView;
 		
 		private IGame _game;
 		
@@ -17,7 +15,7 @@ namespace Infrastructure {
 		}
 
 		private void Awake() {
-			_game.Init(this, _permanentUiView);
+			_game.Init(this);
 			
 			DontDestroyOnLoad(this);
 		}

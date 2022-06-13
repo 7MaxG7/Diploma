@@ -13,6 +13,8 @@ GameObject:
   - component: {fileID: 7437906693617597924}
   - component: {fileID: -7320159824559671316}
   - component: {fileID: 6696523407808238967}
+  - component: {fileID: 6074117327941462542}
+  - component: {fileID: 5234469805738229960}
   m_Layer: 0
   m_Name: ProjectContext
   m_TagString: Untagged
@@ -52,6 +54,8 @@ MonoBehaviour:
   - {fileID: 7437906693617597924}
   - {fileID: -7320159824559671316}
   - {fileID: 6696523407808238967}
+  - {fileID: 6074117327941462542}
+  - {fileID: 5234469805738229960}
   _installerPrefabs: []
   _parentNewObjectsUnderContext: 0
   _editorReflectionBakingCoverageMode: 0
@@ -78,6 +82,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4aa32e3e05e64ef6b2e006dabc9c4621, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _permanentUiPref: {fileID: 6376709678412479226, guid: 317594802c92ede449883925df259fcb, type: 3}
 --- !u!114 &-7320159824559671316
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -102,3 +107,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be02e300c66a426994f4242a152e6cfe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &6074117327941462542
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1581070558750079339}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7760d7588d64ce290ee5023470a06fa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _mainMenuPref: {fileID: 574326454200508935, guid: fed727c716d14a94b9e771ce7833be89, type: 3}
+--- !u!114 &5234469805738229960
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1581070558750079339}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6883dc7202104a35957065f2acd2db08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _lobbyConfig: {fileID: 11400000, guid: 69df7e3a17d79a44e82e91b65e290ecf, type: 2}

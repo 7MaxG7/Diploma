@@ -1,5 +1,4 @@
-﻿using UI;
-using Utils;
+﻿using Utils;
 using Zenject;
 
 
@@ -21,23 +20,29 @@ namespace Infrastructure {
 			_sceneLoader = sceneLoader;
 		}
 		
-		public void Init(ICoroutineRunner coroutineRunner, PermanentUiView permanentUiView) {
-			_permanentUiController.Init(coroutineRunner, permanentUiView);
+		public void Init(ICoroutineRunner coroutineRunner) {
+			_permanentUiController.Init(coroutineRunner);
 			_sceneLoader.Init(coroutineRunner);
 			
-			_gameStateMachine.GetState(typeof(LoadMissionState)).OnStateEntered += EnterRunMissionState;
-			_gameStateMachine.GetState(typeof(GameBootstrapState)).OnStateEntered += EnterLoadMissionState;
+			_gameStateMachine.GetState(typeof(LoadMissionState)).OnStateChange += EnterRunMissionState;
+			_gameStateMachine.GetState(typeof(MainMenuState)).OnStateChange += EnterLoadMissionState;
+			_gameStateMachine.GetState(typeof(GameBootstrapState)).OnStateChange += EnterMainMenuState;
 			_gameStateMachine.Enter<GameBootstrapState>();
 
 
+			void EnterMainMenuState() {
+				_gameStateMachine.Enter<MainMenuState>();
+				_gameStateMachine.GetState(typeof(GameBootstrapState)).OnStateChange -= EnterMainMenuState;
+			}
+
 			void EnterLoadMissionState() {
 				_gameStateMachine.Enter<LoadMissionState, string>(TextConstants.MISSION_SCENE_NAME);
-				_gameStateMachine.GetState(typeof(GameBootstrapState)).OnStateEntered -= EnterLoadMissionState;
+				_gameStateMachine.GetState(typeof(MainMenuState)).OnStateChange -= EnterLoadMissionState;
 			}
 
 			void EnterRunMissionState() {
 				_gameStateMachine.Enter<RunMissionState>();
-				_gameStateMachine.GetState(typeof(LoadMissionState)).OnStateEntered -= EnterRunMissionState;
+				_gameStateMachine.GetState(typeof(LoadMissionState)).OnStateChange -= EnterRunMissionState;
 			}
 		}
 	}

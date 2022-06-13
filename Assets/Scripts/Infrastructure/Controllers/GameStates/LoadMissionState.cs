@@ -9,7 +9,7 @@ using Object = UnityEngine.Object;
 namespace Infrastructure {
 
 	internal class LoadMissionState : ILoadMissionState {
-		public event Action OnStateEntered;
+		public event Action OnStateChange;
 		
 		private readonly ISceneLoader _sceneLoader;
 		private readonly IPermanentUiController _permanentUiController;
@@ -27,22 +27,21 @@ namespace Infrastructure {
 		}
 
 		public void Enter(string sceneName) {
-			_sceneLoader.LoadScene(sceneName, PrepareScene);
+			_sceneLoader.LoadMissionScene(sceneName, PrepareScene);
 
 			
 			void PrepareScene() {
 				var player = Object.Instantiate(Resources.Load<CharacterController>(TextConstants.PLAYER_PREF_RESOURCES_PATH));
-				// var player = _unitsFactory.CreatePlayer();
 
 				_moveController.Init(player);
 				_cameraController.Follow(player.transform, new Vector3(0, 0, -1));
 				
-				OnStateEntered?.Invoke();
+				OnStateChange?.Invoke();
 			}
 		}
 
 		public void Exit() {
-			_permanentUiController.HideLoadingCurtain();
+			_permanentUiController.HideLoadingCurtain(isForced: true);
 		}
 	}
 

@@ -11,21 +11,14 @@ namespace Infrastructure {
 
 
 		[Inject]
-		public GameStateMachine(IGameBootstrapState gameBootstrapState, ILoadMissionState loadMissionState, IRunMissionState runMissionState) {
+		public GameStateMachine(IGameBootstrapState gameBootstrapState, IMainMenuState mainMenuState, ILoadMissionState loadMissionState, IRunMissionState runMissionState) {
 			_states = new Dictionary<Type, IGameState> {
 					[typeof(GameBootstrapState)] = gameBootstrapState,
+					[typeof(MainMenuState)] = mainMenuState,
 					[typeof(LoadMissionState)] = loadMissionState,
 					[typeof(RunMissionState)] = runMissionState
 			};
 		}
-
-		// public GameStateMachine(ControllersHolder controllers, SceneLoader sceneLoader, PermanentUiController permanentUiController) {
-		// 	_states = new Dictionary<Type, IGameState> {
-		// 			[typeof(GameBootstrapState)] = new GameBootstrapState(sceneLoader, permanentUiController),
-		// 			[typeof(LoadMissionState)] = new LoadMissionState(sceneLoader, controllers, permanentUiController),
-		// 			[typeof(RunMissionState)] = new RunMissionState()
-		// 	};
-		// }
 
 		public IGameState GetState(Type stateType) {
 			return _states[stateType];

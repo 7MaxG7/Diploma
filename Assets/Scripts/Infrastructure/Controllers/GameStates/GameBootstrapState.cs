@@ -1,4 +1,5 @@
 ﻿using System;
+using DG.Tweening;
 using Services;
 using Utils;
 using Zenject;
@@ -7,7 +8,7 @@ using Zenject;
 namespace Infrastructure {
 
 	internal class GameBootstrapState : IGameBootstrapState {
-		public event Action OnStateEntered;
+		public event Action OnStateChange;
 		
 		private readonly ISceneLoader _sceneLoader;
 		private readonly IPermanentUiController _permanentUiController;
@@ -22,9 +23,10 @@ namespace Infrastructure {
 		}
 		
 		public void Enter() {
+			DOTween.Init();
 			_permanentUiController.ShowLoadingCurtain(false);
 			_inputService.Init();
-			_sceneLoader.LoadScene(TextConstants.BOOTSTRAP_SCENE_NAME, () => OnStateEntered?.Invoke());
+			_sceneLoader.LoadScene(TextConstants.BOOTSTRAP_SCENE_NAME, () => OnStateChange?.Invoke());
 		}
 
 		public void Exit() {

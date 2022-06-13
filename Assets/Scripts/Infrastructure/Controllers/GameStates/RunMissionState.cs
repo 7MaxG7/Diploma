@@ -4,7 +4,7 @@
 namespace Infrastructure {
 
 	internal class RunMissionState : IRunMissionState {
-		public event Action OnStateEntered;
+		public event Action OnStateChange;
 
 		
 		public void Enter() {
