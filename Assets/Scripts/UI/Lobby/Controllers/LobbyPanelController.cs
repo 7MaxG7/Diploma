@@ -117,7 +117,7 @@ namespace Infrastructure {
 			if (_uiIsBlocked)
 				return;
 
-			LobbyPanelView.CreatePrivateRoomButton.interactable = !string.IsNullOrEmpty(privateRoomName) && _cachedRoomItemViews.ContainsKey(privateRoomName);
+			LobbyPanelView.CreatePrivateRoomButton.interactable = !string.IsNullOrEmpty(privateRoomName) && !_cachedRoomItemViews.ContainsKey(privateRoomName);
 			LobbyPanelView.JoinPrivateRoomButton.interactable = !string.IsNullOrEmpty(privateRoomName);
 		}
 
