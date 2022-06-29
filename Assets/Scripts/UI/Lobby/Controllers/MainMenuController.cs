@@ -1,9 +1,8 @@
-﻿using System;
+﻿using Infrastructure.Zenject;
 using Photon.Pun;
 using UnityEngine;
 using Utils;
 using Zenject;
-using Object = UnityEngine.Object;
 
 
 namespace Infrastructure {
@@ -11,16 +10,18 @@ namespace Infrastructure {
 	internal class MainMenuController : IMainMenuController, IDisposer {
 		
 		private string _userName;
-		private readonly IMainMenuView _mainMenuView;
+		private MainMenuView _mainMenuView;
 		private LoginPanelController _loginPanelController;
 		private LobbyScreenController _lobbyScreenController;
 		private readonly LobbyConfig _lobbyConfig;
+		private readonly IPermanentUiController _permanentUiController;
 
 
 		[Inject]
-		public MainMenuController(IMainMenuView mainMenuView, LobbyConfig lobbyConfig) {
-			_mainMenuView = mainMenuView;
+		public MainMenuController(/*MainMenuView mainMenuView, */LobbyConfig lobbyConfig, IPermanentUiController permanentUiController) {
+			// _mainMenuView = mainMenuView;
 			_lobbyConfig = lobbyConfig;
+			_permanentUiController = permanentUiController;
 		}
 
 		public void Dispose() {
@@ -38,6 +39,9 @@ namespace Infrastructure {
 		}
 
 		public void SetupMainMenu() {
+			if (_mainMenuView == null) {
+				_mainMenuView = Object.Instantiate(_lobbyConfig.MainMenuPref);
+			}
 			_mainMenuView.GameObject.SetActive(true);
 			_mainMenuView.HeaderLabel.text = TextConstants.MAIN_MENU_HEADER_TEXT;
 			InitButtons();
@@ -59,7 +63,7 @@ namespace Infrastructure {
 			}
 
 			void InitLobbyPanel() {
-				_lobbyScreenController = new LobbyScreenController(_mainMenuView.LobbyScreenView, _lobbyConfig);
+				_lobbyScreenController = new LobbyScreenController(_mainMenuView.LobbyScreenView, _lobbyConfig, _permanentUiController);
 			}
 		}
 

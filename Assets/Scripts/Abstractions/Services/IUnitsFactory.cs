@@ -1,10 +1,13 @@
-﻿using UnityEngine;
+﻿using Infrastructure;
+using Units;
+using UnityEngine;
 
 
 namespace Utils {
 
 	internal interface IUnitsFactory {
-		CharacterController CreatePlayer();
+		IUnit CreatePlayer(Vector2 position);
+		IUnit CreateMonster(int monsterParams, Vector2 spawnPosition);
 	}
 
 }

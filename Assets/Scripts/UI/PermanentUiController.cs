@@ -14,13 +14,14 @@ namespace Infrastructure {
 
 		public event Action OnCurtainShown;
 		public bool IsActivating => _loadingCurtainIsActivating;
+		public bool IsActive => _loadingCurtainIsActive;
 		
-		private bool IsFading => _loadingCurtainIsActivating || _loadingCurtainIsDeactivating;
 		private readonly IPermanentUiView _permanentUiView;
 		private ICoroutineRunner _coroutineRunner;
 		private bool _loadingCurtainIsActivating;
 		private bool _loadingCurtainIsDeactivating;
 		private bool _loadingCurtainIsActive;
+		private bool IsFading => _loadingCurtainIsActivating || _loadingCurtainIsDeactivating;
 
 
 		[Inject]
@@ -91,7 +92,7 @@ namespace Infrastructure {
 			const int startAwaitingTick = 0;
 			const int maxAwaitingTick = 5;
 			var currentAwaitingTick = startAwaitingTick;
-			while (_loadingCurtainIsActive) {
+			while (IsActive) {
 				_permanentUiView.LoadingCurtainText.text = $"{TextConstants.LOADING_STATUS_TEXT_TEMPLATE}{new string('.', currentAwaitingTick)}";
 				if (++currentAwaitingTick >= maxAwaitingTick)
 					currentAwaitingTick = startAwaitingTick;
@@ -103,8 +104,7 @@ namespace Infrastructure {
 			if (_loadingCurtainIsActivating) {
 				_coroutineRunner.StopCoroutine(ShowLoadingCurtainCoroutine());
 				_loadingCurtainIsActivating = false;
-			}
-			else if (_loadingCurtainIsDeactivating) {
+			} else if (_loadingCurtainIsDeactivating) {
 				_coroutineRunner.StopCoroutine(HideLoadingCurtainCoroutine());
 				_loadingCurtainIsDeactivating = false;
 			}

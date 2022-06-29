@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
 using DG.Tweening;
 using Photon.Pun;
 using Photon.Realtime;
@@ -11,18 +10,16 @@ using Object = UnityEngine.Object;
 namespace Infrastructure {
 
 	internal class RoomPanelController : IDisposable {
-		
-		public event Action OnGameStarted;
 		public RoomPanelView RoomPanelView { get; }
 
 		private readonly LobbyConfig _lobbyConfig;
-		private readonly ILobbyStatusDisplayer _lobbyScreenController;
-		private Dictionary<Player, RoomPlayerItemView> _cachedPlayerItemViews = new();
+		private readonly Dictionary<Player, RoomPlayerItemView> _cachedPlayerItemViews = new();
+		private readonly IPermanentUiController _permanentUiController;
 
 
-		public RoomPanelController(LobbyConfig lobbyConfig, RoomPanelView roomPanelView, ILobbyStatusDisplayer lobbyScreenController) {
+		public RoomPanelController(LobbyConfig lobbyConfig, RoomPanelView roomPanelView, IPermanentUiController permanentUiController) {
 			_lobbyConfig = lobbyConfig;
-			_lobbyScreenController = lobbyScreenController;
+			_permanentUiController = permanentUiController;
 			RoomPanelView = roomPanelView;
 		}
 
@@ -34,8 +31,8 @@ namespace Infrastructure {
 		public void Dispose() {
 			OnDispose();
 		}
-		
-		public void OnDispose() {
+
+		private void OnDispose() {
 			RoomPanelView.StartGameButton.onClick.RemoveAllListeners();
 			RoomPanelView.ClosePanelButton.onClick.RemoveAllListeners();
 			DOTween.KillAll();
@@ -45,6 +42,7 @@ namespace Infrastructure {
 			ClearPanel();
 			ToggleBlockingUi(true);
 			RoomPanelView.gameObject.SetActive(true);
+			RoomPanelView.StartGameButton.gameObject.SetActive(PhotonNetwork.IsMasterClient);
 			RoomPanelView.RoomPanelHeader.text = roomName;
 			RoomPanelView.CanvasGroup.alpha = 0;
 			return RoomPanelView.CanvasGroup.DOFade(1, Constants.LOBBY_PANEL_FADING_DURATION);
@@ -82,7 +80,13 @@ namespace Infrastructure {
 			PhotonNetwork.CurrentRoom.IsOpen = false;
 			PhotonNetwork.CurrentRoom.IsVisible = false;
 			ClearPanel();
-			
+
+			_permanentUiController.OnCurtainShown += LoadMission;
+			_permanentUiController.ShowLoadingCurtain();
+		}
+
+		private void LoadMission() {
+			_permanentUiController.OnCurtainShown -= LoadMission;
 			PhotonNetwork.LoadLevel(TextConstants.MISSION_SCENE_NAME);
 		}
 

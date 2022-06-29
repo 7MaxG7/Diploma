@@ -12,9 +12,13 @@ namespace Infrastructure.Zenject {
 				Container.Bind<IInputService>().To<PcInputService>().AsSingle();
 			else
 				Container.Bind<IInputService>().To<MobileInputService>().AsSingle();
-			Container.Bind<IMoveController>().To<MoveController>().AsSingle();
+			Container.Bind<IPlayerMoveController>().To<PlayerMoveController>().AsSingle();
 			Container.Bind<ICameraController>().To<CameraController>().AsSingle();
-			
+			Container.Bind<IMissionMapController>().To<MissionMapController>().AsSingle();
+			Container.Bind<IMapWrapper>().To<MapWrapper>().AsSingle();
+			Container.Bind<IMonstersSpawner>().To<MonstersSpawner>().AsSingle();
+			Container.Bind<IMonstersMoveController>().To<MonstersMoveController>().AsSingle();
+
 			Container.Bind<IControllersHolder>().To<ControllersHolder>().AsSingle();
 		}
 	}

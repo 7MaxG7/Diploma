@@ -2,13 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using DG.Tweening;
-using DG.Tweening.Core;
-using DG.Tweening.Plugins.Options;
 using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using Utils;
 
 
@@ -28,10 +25,10 @@ namespace Infrastructure {
 		public bool IsLoading { set; get; }
 
 
-		public LobbyScreenController(LobbyScreenView lobbyScreenView, LobbyConfig lobbyConfig) {
+		public LobbyScreenController(LobbyScreenView lobbyScreenView, LobbyConfig lobbyConfig, IPermanentUiController permanentUiController) {
 			_lobbyScreenView = lobbyScreenView;
 			_lobbyPanelController = new LobbyPanelController(lobbyConfig, _lobbyScreenView.LobbyPanelView, this);
-			_roomPanelController = new RoomPanelController(lobbyConfig, lobbyScreenView.RoomPanelView, this);
+			_roomPanelController = new RoomPanelController(lobbyConfig, lobbyScreenView.RoomPanelView, permanentUiController);
 		}
 
 		public void Init(string userName) {
@@ -99,21 +96,16 @@ namespace Infrastructure {
 		public void OnJoinedRoom() {
 			_lobbyPanelController.HidePanel()
 					.OnComplete(() => {
-						foreach (var player in PhotonNetwork.CurrentRoom.Players.Values) {
-							_roomPanelController.AddPlayer(player);
-						}
 						_roomPanelController.ShowPanel(PhotonNetwork.CurrentRoom.Name)
 								.OnComplete(() => {
 										_lobbyPanelController.DeactivatePanel();
 										IsLoading = false;
 										_roomPanelController.ToggleBlockingUi(false);
 								});
+						foreach (var player in PhotonNetwork.CurrentRoom.Players.Values) {
+							_roomPanelController.AddPlayer(player);
+						}
 					});
-			SceneManager.sceneUnloaded += SwitchState;
-		}
-
-		private void SwitchState(Scene arg0) {
-			
 		}
 
 		public void OnLeftRoom() {

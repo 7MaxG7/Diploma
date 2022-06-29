@@ -5,6 +5,8 @@ using Zenject;
 namespace Infrastructure {
 
 	internal class CameraController : ICameraController {
+		public bool CameraIsPositioned { get; private set; }
+		
 		private Transform _target;
 		private Camera _mainCamera;
 		private Vector3 _cameraOffset;
@@ -16,10 +18,13 @@ namespace Infrastructure {
 		}
 
 		public void OnLateUpdate(float deltaTime) {
-			if (_target == null || _mainCamera == null)
+			if (_target == null || _mainCamera == null) {
+				CameraIsPositioned = false;
 				return;
+			}
 
 			_mainCamera.transform.position = _target.transform.position + _cameraOffset;
+			CameraIsPositioned = true;
 		}
 
 		public void Follow(Transform target, Vector3 cameraOffset) {

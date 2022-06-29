@@ -5,7 +5,6 @@ using PlayFab;
 using PlayFab.ClientModels;
 using UnityEngine;
 using Utils;
-using Object = UnityEngine.Object;
 
 
 namespace Infrastructure {
@@ -43,7 +42,6 @@ namespace Infrastructure {
 			_loginPanelView.PasswordInputField.onValueChanged.RemoveAllListeners();
 			_loginPanelView.EmailInputField.onValueChanged.RemoveAllListeners();
 			_loginPanelView.EmailToggleSwitcher.onValueChanged.RemoveAllListeners();
-			Object.Destroy(_loginPanelView.gameObject);
 		}
 
 		public void Init() {

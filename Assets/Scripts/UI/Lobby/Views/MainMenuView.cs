@@ -6,6 +6,7 @@ using UnityEngine.UI;
 namespace Infrastructure.Zenject {
 
 	internal class MainMenuView : MonoBehaviour, IMainMenuView {
+		[SerializeField] private GameObject _gameObject;
 		[SerializeField] private TMP_Text _headerLabel;
 		[SerializeField] private TMP_Text _loginButtonText;
 		[SerializeField] private Button _loginPanelButton;
@@ -15,7 +16,7 @@ namespace Infrastructure.Zenject {
 		[SerializeField] private LoginPanelView _loginPanelView;
 		[SerializeField] private LobbyScreenView _lobbyScreenView;
 
-		public GameObject GameObject => gameObject;
+		public GameObject GameObject => _gameObject;
 		public TMP_Text HeaderLabel => _headerLabel;
 		public TMP_Text LoginButtonText => _loginButtonText;
 		public Button LoginPanelButton => _loginPanelButton;

@@ -12,7 +12,6 @@ namespace Infrastructure {
 		private readonly IMainMenuController _mainMenuController;
 		private readonly IPermanentUiController _permanentUiController;
 		private readonly ISceneLoader _sceneLoader;
-		private readonly IMainMenuView _mainMenuView;
 
 
 		[Inject]
@@ -35,7 +34,8 @@ namespace Infrastructure {
 
 		private void ShowCurtain(Scene scene) {
 			SceneManager.sceneUnloaded -= ShowCurtain;
-			_permanentUiController.ShowLoadingCurtain(isForced: true);
+			if (!_permanentUiController.IsActive)
+				_permanentUiController.ShowLoadingCurtain(animationIsOn: false, isForced: true);
 		}
 
 		private void SwitchState(Scene scene, LoadSceneMode sceneMode) {

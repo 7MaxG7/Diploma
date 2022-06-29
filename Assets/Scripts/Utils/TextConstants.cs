@@ -26,6 +26,10 @@
 		// Input
 		public const string HORIZONTAL = "Horizontal";
 		public const string VERTICAL = "Vertical";
+		
+		// Mission
+		public const string GROUND_ITEMS_PARENT_NAME = "[GROUND]";
+		public const string PLAYERS_PARENT_NAME = "[PLAYERS]";
 	}
 
 }

@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f315b262401e4cb9aa0583000dfa72b9, type: 3}
+  m_Name: MonstersConfig
+  m_EditorClassIdentifier: 
+  _spawnParams:
+  - SpawnerLevel: 1
+    SpawnCooldown: 3
+    WaveMaxMonstersAmount: 5
+    MaxMonsterLevel: 1
+  _monstersParams:
+  - MonsterLevel: 1
+    PrefabPath: Monster01
+    MoveSpeed: 3
+    Hp: 100
+    Damage: 50
