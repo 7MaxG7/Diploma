@@ -11,6 +11,7 @@ namespace Utils {
 	internal class UnitsFactory : IUnitsFactory {
 		private readonly PlayerConfig _playerConfig;
 		private readonly MonstersConfig _monstersConfig;
+		private IUnitsPool _unitsPool;
 
 
 		[Inject]
@@ -27,7 +28,11 @@ namespace Utils {
 		public IUnit CreateMonster(int monsterLevel, Vector2 spawnPosition) {
 			var monsterParams = _monstersConfig.GetMonsterParams(monsterLevel);
 			var enemyGO = PhotonNetwork.Instantiate(monsterParams.PrefabPath, spawnPosition, Quaternion.identity);
-			return new MonsterUnit(enemyGO, monsterParams);
+			return new MonsterUnit(enemyGO, monsterParams, _unitsPool);
+		}
+
+		public void SetUnitsPool(IUnitsPool unitsPool) {
+			_unitsPool = unitsPool;
 		}
 	}
 

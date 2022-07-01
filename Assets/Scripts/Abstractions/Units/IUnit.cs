@@ -1,10 +1,10 @@
-﻿using UnityEngine;
+﻿using Infrastructure;
+using UnityEngine;
 
 
 namespace Units {
 
-	internal interface IUnit {
-		Transform Transform { get; }
+	internal interface IUnit : IPoolObject {
 		CharacterController CharacterController { get; }
 		float MoveSpeed { get; }
 		bool IsDead { get; }

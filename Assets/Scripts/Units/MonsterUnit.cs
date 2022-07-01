@@ -7,8 +7,10 @@ namespace Units {
 
 	internal class MonsterUnit : Unit {
 		private readonly int _collisionDamage;
+		private readonly IUnitsPool _unitsPool;
 
-		public MonsterUnit(GameObject playerGO, MonstersParams monstersParam) : base(playerGO, monstersParam.MoveSpeed, monstersParam.Hp) {
+		public MonsterUnit(GameObject playerGO, MonstersParams monstersParam, IUnitsPool unitsPool) : base(playerGO, monstersParam.MoveSpeed, monstersParam.Hp) {
+			_unitsPool = unitsPool;
 			_collisionDamage = monstersParam.Damage;
 			var monsterView = playerGO.AddComponent<MonsterView>();
 			monsterView.OnCollisionEnter += DamageCollisionUnit;
@@ -30,6 +32,9 @@ namespace Units {
 			}
 		}
 
+		protected override void DestroyView() {
+			_unitsPool.ReturnObject(this);
+		}
 	}
 
 }

@@ -37,6 +37,10 @@ namespace Units {
 		public void Kill() {
 			TakeDamage(CurrentHp);
 		}
+
+		public void Restore() {
+			CurrentHp = BaseHp;
+		}
 	}
 
 }

@@ -25,15 +25,17 @@ namespace Infrastructure {
 		
 		private float _spawnWaveTimer;
 		private Camera _mainCamera;
+		private IUnitsPool _unitsPool;
 
 
 		[Inject]
 		public MonstersSpawner(IUnitsFactory unitsFactory, IMonstersMoveController monstersMoveController, IRandomController randomController
-				, ICameraController cameraController, MonstersConfig monstersConfig, IControllersHolder  controllersHolder) {
+				, ICameraController cameraController, IUnitsPool unitsPool, MonstersConfig monstersConfig, IControllersHolder  controllersHolder) {
 			_unitsFactory = unitsFactory;
 			_monstersMoveController = monstersMoveController;
 			_random = randomController;
 			_cameraController = cameraController;
+			_unitsPool = unitsPool;
 			_monstersConfig = monstersConfig;
 			_spawnerLevel = 1;
 			
@@ -73,8 +75,7 @@ namespace Infrastructure {
 		private IUnit SpawnMonster() {
 			var spawnPosition = GenerateSpawnPosition();
 			var currentMonsterLevel = _random.GetRandom(_monstersConfig.GetMaxMonsterLevel(_spawnerLevel) + 1, 1);
-			var monsterParams = _monstersConfig.GetMonsterParams(currentMonsterLevel);
-			return _unitsFactory.CreateMonster(currentMonsterLevel, spawnPosition);
+			return _unitsPool.SpawnObject(spawnPosition, currentMonsterLevel);
 
 
 			Vector2 GenerateSpawnPosition() {

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Photon.Pun;
+using UnityEngine;
 
 
 namespace Units {
@@ -11,6 +12,10 @@ namespace Units {
 
 		private void TakeDamage(int damage) {
 			
+		}
+
+		protected override void DestroyView() {
+			PhotonNetwork.Destroy(GameObject);
 		}
 	}
 

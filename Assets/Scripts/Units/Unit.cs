@@ -1,12 +1,13 @@
-﻿using Photon.Pun;
-using Units.Views;
+﻿using Units.Views;
 using UnityEngine;
+// ReSharper disable InconsistentNaming
 
 
 namespace Units {
 
 	internal abstract class Unit : IUnit {
 		protected UnitView _unitView;
+		public GameObject GameObject => _unitView.gameObject;
 		public Transform Transform { get; }
 		public CharacterController CharacterController { get; }
 		public float MoveSpeed { get; }
@@ -22,13 +23,17 @@ namespace Units {
 			Health.OnDied += DestroyView;
 		}
 
+		public void Respawn(Vector2 spawnPosition) {
+			Health.Restore();
+			Transform.position = spawnPosition;
+			GameObject.SetActive(true);
+		}
+
 		protected void KillMonster() {
 			Health.Kill();
 		}
 
-		private void DestroyView() {
-			PhotonNetwork.Destroy(_unitView.gameObject);
-		}
+		protected abstract void DestroyView();
 	}
 
 }
