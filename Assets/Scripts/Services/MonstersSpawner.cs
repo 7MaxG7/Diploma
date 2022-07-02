@@ -1,16 +1,14 @@
 ﻿using Enums;
-using Photon.Pun;
+using Infrastructure;
 using Units;
 using UnityEngine;
-using Utils;
 using Zenject;
 
 
-namespace Infrastructure {
+namespace Services {
 
 	class MonstersSpawner : IMonstersSpawner {
 		private const float SPAWN_FROM_SCREEN_OFFSET = 2;
-		private readonly IUnitsFactory _unitsFactory;
 		private readonly IMonstersMoveController _monstersMoveController;
 		private readonly MonstersConfig _monstersConfig;
 		private bool _spawnIsOn;
@@ -25,13 +23,12 @@ namespace Infrastructure {
 		
 		private float _spawnWaveTimer;
 		private Camera _mainCamera;
-		private IUnitsPool _unitsPool;
+		private readonly IUnitsPool _unitsPool;
 
 
 		[Inject]
-		public MonstersSpawner(IUnitsFactory unitsFactory, IMonstersMoveController monstersMoveController, IRandomController randomController
+		public MonstersSpawner(IMonstersMoveController monstersMoveController, IRandomController randomController
 				, ICameraController cameraController, IUnitsPool unitsPool, MonstersConfig monstersConfig, IControllersHolder  controllersHolder) {
-			_unitsFactory = unitsFactory;
 			_monstersMoveController = monstersMoveController;
 			_random = randomController;
 			_cameraController = cameraController;
@@ -51,7 +48,7 @@ namespace Infrastructure {
 			if (!_spawnIsOn || !_cameraController.CameraIsPositioned)
 				return;
 
-			var monstersAmount = _random.GetRandom(_monstersConfig.GetMaxMonstersAmount(_spawnerLevel));
+			var monstersAmount = _random.GetRandomIncludingMax(_monstersConfig.GetMaxMonstersAmount(_spawnerLevel));
 			for (var i = 0; i < monstersAmount; i++) {
 				var monster = SpawnMonster();
 				_monstersMoveController.RegisterMonster(monster);
@@ -74,12 +71,12 @@ namespace Infrastructure {
 
 		private IUnit SpawnMonster() {
 			var spawnPosition = GenerateSpawnPosition();
-			var currentMonsterLevel = _random.GetRandom(_monstersConfig.GetMaxMonsterLevel(_spawnerLevel) + 1, 1);
+			var currentMonsterLevel = _random.GetRandomIncludingMax(_monstersConfig.GetMaxMonsterLevel(_spawnerLevel), 1);
 			return _unitsPool.SpawnObject(spawnPosition, currentMonsterLevel);
 
 
 			Vector2 GenerateSpawnPosition() {
-				var spawnSide = (ScreenSide)_random.GetRandom((int)ScreenSide.Count, 1);
+				var spawnSide = (ScreenSide)_random.GetRandomExcludingMax((int)ScreenSide.Count, 1);
 				var bottomLeftCorner = _mainCamera.ViewportToWorldPoint(Vector3.zero);
 				bottomLeftCorner -= new Vector3(SPAWN_FROM_SCREEN_OFFSET, SPAWN_FROM_SCREEN_OFFSET);
 				var topRightCorner = _mainCamera.ViewportToWorldPoint(new Vector3(1, 1, 0));
@@ -87,13 +84,13 @@ namespace Infrastructure {
 				
 				switch (spawnSide) {
 					case ScreenSide.Left:
-						return new Vector2(bottomLeftCorner.x, _random.GetRandom((int)topRightCorner.y, (int)bottomLeftCorner.y));
+						return new Vector2(bottomLeftCorner.x, _random.GetRandomIncludingMax((int)topRightCorner.y, (int)bottomLeftCorner.y));
 					case ScreenSide.Bottom:
-						return new Vector2(_random.GetRandom((int)topRightCorner.x, (int)bottomLeftCorner.x), bottomLeftCorner.y);
+						return new Vector2(_random.GetRandomIncludingMax((int)topRightCorner.x, (int)bottomLeftCorner.x), bottomLeftCorner.y);
 					case ScreenSide.Right:
-						return new Vector2(topRightCorner.x, _random.GetRandom((int)topRightCorner.y, (int)bottomLeftCorner.y));
+						return new Vector2(topRightCorner.x, _random.GetRandomIncludingMax((int)topRightCorner.y, (int)bottomLeftCorner.y));
 					case ScreenSide.Top:
-						return new Vector2(_random.GetRandom((int)topRightCorner.x, (int)bottomLeftCorner.x), topRightCorner.y);
+						return new Vector2(_random.GetRandomIncludingMax((int)topRightCorner.x, (int)bottomLeftCorner.x), topRightCorner.y);
 					case ScreenSide.Count:
 					case ScreenSide.None:
 					default:

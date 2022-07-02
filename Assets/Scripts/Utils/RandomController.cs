@@ -19,8 +19,14 @@ namespace Infrastructure {
 			_random = new Random(seed);
 		}
 
-		public int GetRandom(int max = int.MaxValue, int min = 0) {
+		public int GetRandomExcludingMax(int max = int.MaxValue, int min = 0) {
 			return _random.Next(min, max);
+		}
+
+		public int GetRandomIncludingMax(int max = int.MaxValue, int min = 0) {
+			if (max < int.MaxValue)
+				max++;
+			return GetRandomExcludingMax(max, min);
 		}
 	}
 

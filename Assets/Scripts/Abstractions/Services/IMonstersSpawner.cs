@@ -1,4 +1,7 @@
-﻿namespace Infrastructure {
+﻿using Infrastructure;
+
+
+namespace Services {
 
 	internal interface IMonstersSpawner : IUpdater {
 		void Init();

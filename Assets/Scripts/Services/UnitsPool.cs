@@ -4,7 +4,7 @@ using Utils;
 using Zenject;
 
 
-namespace Infrastructure {
+namespace Services {
 
 	internal class UnitsPool : ObjectsPool<IUnit>, IUnitsPool {
 		private readonly IUnitsFactory _unitsFactory;

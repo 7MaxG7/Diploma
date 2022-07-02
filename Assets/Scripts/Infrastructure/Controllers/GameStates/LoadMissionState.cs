@@ -1,11 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Controllers;
 using Infrastructure.Zenject;
 using Photon.Pun;
+using Services;
 using Units;
 using UnityEngine;
 using Utils;
 using Zenject;
+using Object = UnityEngine.Object;
 
 
 namespace Infrastructure {
@@ -23,14 +28,16 @@ namespace Infrastructure {
 		private readonly IUnitsFactory _unitsFactory;
 		private readonly IMonstersSpawner _monstersSpawner;
 		private readonly IMonstersMoveController _monstersMoveController;
+		private readonly IUnitsPool _unitsPool;
+		private readonly IPhotonObjectsSynchronizer _photonObjectsSynchronizer;
 		private readonly MissionConfig _missionConfig;
-		private readonly PlayerConfig _playerConfig;
 
 
 		[Inject]
 		public LoadMissionState(ISceneLoader sceneLoader, IPermanentUiController permanentUiController, IMapWrapper mapWrapper, IUnitsFactory unitsFactory
 				, IPlayerMoveController playerMoveController, ICameraController cameraController, IMissionMapController missionMapController
-				, IMonstersSpawner monstersSpawner, IMonstersMoveController monstersMoveController, MissionConfig missionConfig, PlayerConfig playerConfig) {
+				, IMonstersSpawner monstersSpawner, IMonstersMoveController monstersMoveController, IUnitsPool unitsPool, IPhotonObjectsSynchronizer photonObjectsSynchronizer
+				, MissionConfig missionConfig) {
 			_sceneLoader = sceneLoader;
 			_permanentUiController = permanentUiController;
 			_unitsFactory = unitsFactory;
@@ -39,16 +46,24 @@ namespace Infrastructure {
 			_missionMapController = missionMapController;
 			_monstersSpawner = monstersSpawner;
 			_monstersMoveController = monstersMoveController;
+			_unitsPool = unitsPool;
+			_photonObjectsSynchronizer = photonObjectsSynchronizer;
 			_mapWrapper = mapWrapper;
 			_missionConfig = missionConfig;
-			_playerConfig = playerConfig;
 		}
 
 		public void Enter(string sceneName) {
 			_sceneLoader.LoadMissionScene(sceneName, PrepareScene);
 
-			
-			void PrepareScene() {
+
+			async void PrepareScene() {
+				var minePhotonDataExchanger = PhotonNetwork
+							.Instantiate(_missionConfig.PhotonDataSynchronizerPath, Vector3.zero, Quaternion.identity)
+							.GetComponent<PhotonDataExchanger>();
+
+				var othersPhotonDataExchangers = await FindSynchronizers(minePhotonDataExchanger);
+				_unitsPool.Init(minePhotonDataExchanger);
+				_photonObjectsSynchronizer.Init(othersPhotonDataExchangers);
 				var groundItemSize = _missionConfig.GroundItemPref.GetComponent<SpriteRenderer>().size;
 				InitMapWrapper(groundItemSize);
 				var player = PreparePlayer(groundItemSize);
@@ -78,6 +93,17 @@ namespace Infrastructure {
 				_playerMoveController.Init(player);
 				return player;
 			}
+		}
+
+		private async Task<List<PhotonDataExchanger>> FindSynchronizers(PhotonDataExchanger minePhotonDataExchanger) {
+			var photonDataExchangers = new PhotonDataExchanger[] { };
+			while (photonDataExchangers.Length != PhotonNetwork.CurrentRoom.PlayerCount) {
+				photonDataExchangers = Object.FindObjectsOfType<PhotonDataExchanger>();
+				await Task.Yield();
+			}
+			var photonDataExchangersList = photonDataExchangers.ToList();
+			photonDataExchangersList.Remove(minePhotonDataExchanger);
+			return photonDataExchangersList;
 		}
 
 		public void Exit() {
