@@ -23,7 +23,7 @@ namespace Utils {
 
 		public IUnit CreatePlayer(Vector2 position) {
 			var playerGO = PhotonNetwork.Instantiate(TextConstants.PLAYER_PREF_RESOURCES_PATH, position, quaternion.identity);
-			return new PlayerUnit(playerGO, _playerConfig.BaseMoveSpeed, _playerConfig.BaseHp);
+			return new PlayerUnit(playerGO, _playerConfig);
 		}
 
 		public IUnit CreateMonster(int monsterLevel, Vector2 spawnPosition) {

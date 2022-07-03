@@ -14,3 +14,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _baseMoveSpeed: 5
   _baseHp: 1000
+  _levelParameters:
+  - _level: 1
+    _targetExp: 0
+  - _level: 2
+    _targetExp: 100
+  - _level: 3
+    _targetExp: 300
+  - _level: 4
+    _targetExp: 500
+  - _level: 5
+    _targetExp: 1000
+  - _level: 6
+    _targetExp: 1500
+  - _level: 7
+    _targetExp: 3000
+  - _level: 8
+    _targetExp: 5000
+  - _level: 9
+    _targetExp: 10000
+  - _level: 10
+    _targetExp: 25000

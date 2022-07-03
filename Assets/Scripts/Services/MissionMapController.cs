@@ -1,5 +1,4 @@
 ﻿using System;
-using Infrastructure.Zenject;
 using UnityEngine;
 using Utils;
 using Zenject;

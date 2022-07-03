@@ -8,9 +8,10 @@ using UnityEngine;
 namespace Units {
 
 	internal abstract class Unit : IUnit, IDisposable {
-		protected UnitView _unitView;
 		public float MoveSpeed { get; }
-		protected Health Health { get; }
+		public Health Health { get; }
+		public Experience Experience { get; set; }
+		protected UnitView _unitView;
 
 		public GameObject GameObject => _unitView.GameObject;
 		public Transform Transform => _unitView.Transform;

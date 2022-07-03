@@ -1,5 +1,6 @@
 ﻿using Controllers;
 using Services;
+using UI;
 using UnityEngine;
 using Zenject;
 
@@ -21,6 +22,7 @@ namespace Infrastructure.Zenject {
 			Container.Bind<IMonstersMoveController>().To<MonstersMoveController>().AsSingle();
 			Container.Bind<IPhotonDataExchangeController>().To<PhotonDataExchangeController>().AsSingle();
 			Container.Bind<IPhotonObjectsSynchronizer>().To<PhotonObjectsSynchronizer>().AsSingle();
+			Container.Bind<IMissionUiController>().To<MissionUiController>().AsSingle();
 
 			Container.Bind<IControllersHolder>().To<ControllersHolder>().AsSingle();
 		}

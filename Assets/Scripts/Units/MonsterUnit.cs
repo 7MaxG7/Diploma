@@ -9,7 +9,9 @@ namespace Units {
 	internal class MonsterUnit : Unit {
 		private readonly int _collisionDamage;
 		private readonly IUnitsPool _unitsPool;
-
+		private MonsterView MonsterView => _unitView as MonsterView;
+		
+		
 		public MonsterUnit(GameObject playerGO, MonstersParams monstersParam, IUnitsPool unitsPool) : base(monstersParam.MoveSpeed, monstersParam.Hp) {
 			_unitsPool = unitsPool;
 			_collisionDamage = monstersParam.Damage;
@@ -17,6 +19,12 @@ namespace Units {
 			monsterView.OnCollisionEnter += DamageCollisionUnit;
 			monsterView.OnDamageTake += TakeDamage;
 			_unitView = monsterView;
+		}
+
+		public override void Dispose() {
+			base.Dispose();
+			_unitView.OnDamageTake -= TakeDamage;
+			MonsterView.OnCollisionEnter -= DamageCollisionUnit;
 		}
 
 		private void TakeDamage(int damage) {

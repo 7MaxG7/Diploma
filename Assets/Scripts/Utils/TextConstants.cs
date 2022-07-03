@@ -29,6 +29,8 @@
 		
 		// Mission
 		public const string GROUND_ITEMS_PARENT_NAME = "[GROUND]";
+		public const string UI_ROOT_NAME = "[UI]";
+		public const string HEALTH_BAR_TEXT_TEMPLATE = "{0} / {1}";
 	}
 
 }

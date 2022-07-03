@@ -1,11 +1,14 @@
-﻿using Photon.Pun;
+﻿using Infrastructure;
+using Photon.Pun;
 using UnityEngine;
 
 
 namespace Units {
 
 	internal class PlayerUnit : Unit {
-		public PlayerUnit(GameObject playerGO, float moveSpeed, int hp) : base(moveSpeed, hp) {
+		
+		public PlayerUnit(GameObject playerGO, PlayerConfig playerConfig) : base(playerConfig.BaseMoveSpeed, playerConfig.BaseHp) {
+			Experience = new Experience(1, playerConfig.LevelParameters);
 			var playerView = playerGO.GetComponent<PlayerView>();
 			playerView.OnDamageTake += TakeDamage;
 			_unitView = playerView;
@@ -17,7 +20,7 @@ namespace Units {
 		}
 
 		private void TakeDamage(int damage) {
-			
+			Health.TakeDamage(damage);
 		}
 
 		protected override void DestroyView() {

@@ -8,13 +8,15 @@ namespace Infrastructure.Zenject {
 		[SerializeField] private LobbyConfig _lobbyConfig;
 		[SerializeField] private MissionConfig _missionConfig;
 		[SerializeField] private PlayerConfig _playerConfig;
-		[SerializeField] private MonstersConfig monstersConfig;
+		[SerializeField] private MonstersConfig _monstersConfig;
+		[SerializeField] private UiConfig _uiConfig;
 		
 		public override void InstallBindings() {
 			Container.Bind<LobbyConfig>().FromScriptableObject(_lobbyConfig).AsSingle();
 			Container.Bind<MissionConfig>().FromScriptableObject(_missionConfig).AsSingle();
 			Container.Bind<PlayerConfig>().FromScriptableObject(_playerConfig).AsSingle();
-			Container.Bind<MonstersConfig>().FromScriptableObject(monstersConfig).AsSingle();
+			Container.Bind<MonstersConfig>().FromScriptableObject(_monstersConfig).AsSingle();
+			Container.Bind<UiConfig>().FromScriptableObject(_uiConfig).AsSingle();
 		}
 	}
 

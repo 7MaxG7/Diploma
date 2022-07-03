@@ -16,8 +16,8 @@ namespace Units {
 				}
 			}
 		}
+		public int MaxHp { get; }
 		private int BaseHp { get; }
-		private int MaxHp { get; }
 		
 		private int _currentHp;
 

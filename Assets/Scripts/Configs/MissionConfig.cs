@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 
-namespace Infrastructure.Zenject {
+namespace Infrastructure {
 
 	[CreateAssetMenu(menuName = "Configs/" + nameof(MissionConfig), fileName = nameof(MissionConfig), order = 2)]
 	internal class MissionConfig : ScriptableObject {

@@ -148,4 +148,5 @@ MonoBehaviour:
   _lobbyConfig: {fileID: 11400000, guid: 69df7e3a17d79a44e82e91b65e290ecf, type: 2}
   _missionConfig: {fileID: 11400000, guid: 0060b55e0708c7746bf00c089e7d7577, type: 2}
   _playerConfig: {fileID: 11400000, guid: a1aa564dd1c554344928a6fa57df7174, type: 2}
-  monstersConfig: {fileID: 11400000, guid: 6a30652dd47945346a97dcf03f7275b9, type: 2}
+  _monstersConfig: {fileID: 11400000, guid: 6a30652dd47945346a97dcf03f7275b9, type: 2}
+  _uiConfig: {fileID: 11400000, guid: dcf1945d43aa50e4683580c7b4bb359c, type: 2}

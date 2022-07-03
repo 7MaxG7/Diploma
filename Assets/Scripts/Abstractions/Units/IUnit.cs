@@ -8,6 +8,8 @@ namespace Units {
 		CharacterController CharacterController { get; }
 		float MoveSpeed { get; }
 		bool IsDead { get; }
+		Health Health { get; }
+		Experience Experience { get; }
 	}
 
 }

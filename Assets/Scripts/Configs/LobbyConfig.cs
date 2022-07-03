@@ -6,6 +6,7 @@ namespace Infrastructure {
 
 	[CreateAssetMenu(menuName = "Configs/" + nameof(LobbyConfig), fileName = nameof(LobbyConfig), order = 1)]
 	internal class LobbyConfig : ScriptableObject {
+		[Header("Lobby")]
 		[SerializeField] private MainMenuView _mainMenuPref;
 		[SerializeField] private LobbyCachedRoomItemView _lobbyCachedRoomItemPref;
 		[SerializeField] private RoomPlayerItemView _roomCachedPlayerItemPref;
