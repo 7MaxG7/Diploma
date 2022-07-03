@@ -1,6 +1,6 @@
 ﻿namespace Enums {
 
-	public enum PhotonSynchronizerDataType {
+	public enum PhotonExchangerDataType {
 		None = 0,
 		ObjectInstantiation = 1,
 		ObjectActivation = 2,

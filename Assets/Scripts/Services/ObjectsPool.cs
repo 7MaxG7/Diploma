@@ -1,25 +1,24 @@
-﻿using System.Collections.Generic;
-using Enums;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 
 namespace Services {
 
 	internal abstract class ObjectsPool<T> where T : IPoolObject {
-		private PhotonDataExchanger _photonDataExchanger;
+		public event Action<int> OnObjectInstantiated;
+		public event Action<int, bool> OnObjectActivationToggle;
+		
+		private readonly IPhotonDataExchangeController _photonDataExchangeController;
 		private readonly List<T> _objects = new();
 
-
-		public void Init(PhotonDataExchanger photonDataExchanger) {
-			_photonDataExchanger = photonDataExchanger;
-		}
 
 		public T SpawnObject(Vector2 spawnPosition, params object[] parameters) {
 			T obj;
 			if (_objects.Count == 0) {
 				_objects.Capacity++;
 				obj = SpawnSpecifiedObject(spawnPosition, parameters);
-				_photonDataExchanger.SendData(PhotonSynchronizerDataType.ObjectInstantiation, obj.PhotonView.ViewID);
+				OnObjectInstantiated?.Invoke(obj.PhotonView.ViewID);
 			} else {
 				var objIndex = _objects.Count - 1;
 				obj = _objects[objIndex];
@@ -40,7 +39,7 @@ namespace Services {
 
 		private void TogglePoolObjectActivation(T obj, bool isActive) {
 			obj.GameObject.SetActive(isActive);
-			_photonDataExchanger.SendData(PhotonSynchronizerDataType.ObjectActivation, obj.PhotonView.ViewID, isActive);
+			OnObjectActivationToggle?.Invoke(obj.PhotonView.ViewID, isActive);
 		}
 
 	}

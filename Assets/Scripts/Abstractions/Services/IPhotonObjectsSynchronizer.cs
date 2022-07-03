@@ -1,10 +1,7 @@
-﻿using System.Collections.Generic;
-
-
-namespace Services {
+﻿namespace Services {
 
 	internal interface IPhotonObjectsSynchronizer {
-		void Init(List<PhotonDataExchanger> photonDataExchangers);
+		void Init(IPhotonDataExchangeController photonDataExchangers, IUnitsPool unitsPool);
 	}
 
 }

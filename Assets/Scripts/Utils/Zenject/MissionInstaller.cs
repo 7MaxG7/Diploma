@@ -19,6 +19,7 @@ namespace Infrastructure.Zenject {
 			Container.Bind<IUnitsPool>().To<UnitsPool>().AsSingle();
 			Container.Bind<IMonstersSpawner>().To<MonstersSpawner>().AsSingle();
 			Container.Bind<IMonstersMoveController>().To<MonstersMoveController>().AsSingle();
+			Container.Bind<IPhotonDataExchangeController>().To<PhotonDataExchangeController>().AsSingle();
 			Container.Bind<IPhotonObjectsSynchronizer>().To<PhotonObjectsSynchronizer>().AsSingle();
 
 			Container.Bind<IControllersHolder>().To<ControllersHolder>().AsSingle();

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Enums;
 using Photon.Pun;
 
 
@@ -8,22 +9,33 @@ namespace Services {
 
 	internal class PhotonObjectsSynchronizer : IPhotonObjectsSynchronizer, IDisposable {
 		private readonly List<PhotonView> _otherPlayersObjects = new();
-		private List<PhotonDataExchanger> _photonDataExchangers;
+		private IPhotonDataExchangeController _photonDataExchangeController;
+		private IUnitsPool _unitsPool;
 
 
 		public void Dispose() {
-			foreach (var dataExchanger in _photonDataExchangers) {
-				dataExchanger.OnActivationDataRecieved -= SetActive;
-				dataExchanger.OnInstantiationDataRecieved -= Register;
-			}
+			_unitsPool.OnObjectInstantiated -= SendInstantiationData;
+			_unitsPool.OnObjectActivationToggle -= SendActivationToggleData;
+			_photonDataExchangeController.OnInstantiationDataRecieved -= Register;
+			_photonDataExchangeController.OnActivationDataRecieved -= SetActive;
 		}
 
-		public void Init(List<PhotonDataExchanger> photonDataExchangers) {
-			_photonDataExchangers = photonDataExchangers;
-			foreach (var dataExchanger in _photonDataExchangers) {
-				dataExchanger.OnActivationDataRecieved += SetActive;
-				dataExchanger.OnInstantiationDataRecieved += Register;
-			}
+		public void Init(IPhotonDataExchangeController photonDataExchangeController, IUnitsPool unitsPool) {
+			_photonDataExchangeController = photonDataExchangeController;
+			_unitsPool = unitsPool;
+			
+			_unitsPool.OnObjectInstantiated += SendInstantiationData;
+			_unitsPool.OnObjectActivationToggle += SendActivationToggleData;
+			_photonDataExchangeController.OnInstantiationDataRecieved += Register;
+			_photonDataExchangeController.OnActivationDataRecieved += SetActive;
+		}
+
+		private void SendInstantiationData(int photonViewId) {
+			_photonDataExchangeController.PrepareDataForSending(PhotonExchangerDataType.ObjectInstantiation, photonViewId);
+		}
+
+		private void SendActivationToggleData(int photonViewId, bool isActivated) {
+			_photonDataExchangeController.PrepareDataForSending(PhotonExchangerDataType.ObjectActivation, photonViewId, isActivated);
 		}
 
 		private void Register(int photonViewId) {

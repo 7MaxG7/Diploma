@@ -1,5 +1,4 @@
-﻿using System;
-using Units.Views;
+﻿using Units.Views;
 
 
 namespace Units {
