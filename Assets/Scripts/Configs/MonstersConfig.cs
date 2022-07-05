@@ -20,6 +20,7 @@ namespace Infrastructure {
 		public float MoveSpeed;
 		public int Hp;
 		public int Damage;
+		public int ExperienceOnKill;
 	}
 
 	[CreateAssetMenu(menuName = "Configs/" + nameof(MonstersConfig), fileName = nameof(MonstersConfig), order = 3)]

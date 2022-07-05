@@ -9,56 +9,83 @@ namespace UI {
 	internal class PlayerUiController : IDisposable {
 		private IUnit _player;
 		private readonly PlayerPanelView _playerPanel;
-		private readonly Smoother _healthSmoother;
+		private readonly Smoother _currentHealthSmoother;
+		private readonly Smoother _maxHealthSmoother;
 		private readonly Smoother _expSmoother;
 		
-		private int _maxHp;
+		private float _currentHp;
+		private float _maxHp;
 		private int _currentLevel;
 		private int _currentLevelMaxExp;
 
 
 		public PlayerUiController(PlayerPanelView playerPanel, UiConfig uiConfig) {
 			_playerPanel = playerPanel;
-			_healthSmoother = new Smoother(uiConfig.HpBarAnimationDurationInFrames);
+			_currentHealthSmoother = new Smoother(uiConfig.HpBarAnimationDurationInFrames);
+			_maxHealthSmoother = new Smoother(uiConfig.HpBarAnimationDurationInFrames);
 			_expSmoother = new Smoother(uiConfig.HpBarAnimationDurationInFrames);
 		}
 
 		public void Dispose() {
+			_currentHealthSmoother.OnValueUpdateCallback -= UpdateCurrentHealth;
 			_player.Health.OnCurrentHpChange -= UpdateCurrentHealthSmoothly;
-			_healthSmoother.OnValueUpdateCallback -= UpdateCurrentHealth;
+			_maxHealthSmoother.OnValueUpdateCallback -= UpdateMaxHealth;
+			_player.Health.OnMaxHpChange -= UpdateMaxHealthSmoothly;
+			_expSmoother.OnValueUpdateCallback -= UpdateCurrentExperience;
+			_player.Experience.OnExpChange -= UpdateCurrentExperienceSmoothly;
 		}
 
 		public void Init(IUnit player) {
 			_player = player;
-			_maxHp = _player.Health.MaxHp;
+			
 			UpdateCurrentHealth(_player.Health.CurrentHp);
-			_healthSmoother.OnValueUpdateCallback += UpdateCurrentHealth;
-			_healthSmoother.SetStartValue(_player.Health.CurrentHp);
+			_currentHealthSmoother.OnValueUpdateCallback += UpdateCurrentHealth;
 			_player.Health.OnCurrentHpChange += UpdateCurrentHealthSmoothly;
+			_currentHealthSmoother.SetStartValue(_player.Health.CurrentHp);
+			
+			UpdateMaxHealth(_player.Health.MaxHp);
+			_maxHealthSmoother.OnValueUpdateCallback += UpdateMaxHealth;
+			_player.Health.OnMaxHpChange += UpdateMaxHealthSmoothly;
+			_maxHealthSmoother.SetStartValue(_player.Health.MaxHp);
 
 			_currentLevel = _player.Experience.CurrentLevel;
 			_playerPanel.LevelText.text = _player.Experience.CurrentLevel.ToString();
 			_currentLevelMaxExp = _player.Experience.GetExpTarget();
 			UpdateCurrentExperience(_player.Experience.CurrentExp);
 			_expSmoother.OnValueUpdateCallback += UpdateCurrentExperience;
-			_expSmoother.SetStartValue(_player.Experience.CurrentExp);
 			_player.Experience.OnExpChange += UpdateCurrentExperienceSmoothly;
+			_expSmoother.SetStartValue(_player.Experience.CurrentExp);
 		}
 
 		public void UpdateSmoother() {
-			_healthSmoother.SmoothUpdate();
+			_currentHealthSmoother.SmoothUpdate();
+			_maxHealthSmoother.SmoothUpdate();
 			_expSmoother.SmoothUpdate();
 		}
 
 		private void UpdateCurrentHealthSmoothly(int hp) {
-			_healthSmoother.SetTargetValue(hp);
+			_currentHealthSmoother.SetTargetValue(hp);
+		}
+
+		private void UpdateMaxHealthSmoothly(int maxHp) {
+			_maxHealthSmoother.SetTargetValue(maxHp);
 		}
 
 		private void UpdateCurrentHealth(float hp) {
-			_playerPanel.HealthSlider.value = hp / _maxHp;
-			_playerPanel.HealthText.text = string.Format(TextConstants.HEALTH_BAR_TEXT_TEMPLATE, (int)hp, _maxHp);
+			_currentHp = hp;
+			UpdateHealth(_currentHp, _maxHp);
 		}
-		
+
+		private void UpdateMaxHealth(float maxHp) {
+			_maxHp = maxHp;
+			UpdateHealth(_currentHp, _maxHp);
+		}
+
+		private void UpdateHealth(float hp, float maxHp) {
+			_playerPanel.HealthSlider.value = hp / maxHp;
+			_playerPanel.HealthText.text = string.Format(TextConstants.HEALTH_BAR_TEXT_TEMPLATE, (int)hp, (int)maxHp);
+		}
+
 		private void UpdateCurrentExperienceSmoothly(int xp) {
 			_expSmoother.SetTargetValue(xp);
 		}

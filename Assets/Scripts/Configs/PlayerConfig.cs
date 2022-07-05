@@ -17,14 +17,23 @@ namespace Infrastructure {
 			public int TargetExp => _targetExp;
 		}
 		
+		[Serializable]
+		internal class LevelHealthParam {
+			[SerializeField] private int _level;
+			[SerializeField] private int _health;
+
+			public int Level => _level;
+			public int Health => _health;
+		}
+
 		
 		[SerializeField] private float _baseMoveSpeed;
-		[SerializeField] private int _baseHp;
-		[SerializeField] private LevelExperienceParam[] _levelParameters;
+		[SerializeField] private LevelExperienceParam[] _levelExpParameters;
+		[SerializeField] private LevelHealthParam[] _levelHpParameters;
 
 		public float BaseMoveSpeed => _baseMoveSpeed;
-		public int BaseHp => _baseHp;
-		public LevelExperienceParam[] LevelParameters => _levelParameters;
+		public LevelExperienceParam[] LevelExpParameters => _levelExpParameters.OrderBy(item => item.Level).ToArray();
+		public LevelHealthParam[] LevelHpParameters => _levelHpParameters.OrderBy(item => item.Level).ToArray();
 	}
 
 }

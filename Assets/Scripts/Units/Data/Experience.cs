@@ -8,6 +8,7 @@ namespace Units {
 
 	internal class Experience {
 		public event Action<int> OnExpChange;
+		public event Action<int> OnLevelUp;
 
 		public int CurrentExp {
 			get => _currentExp;
@@ -16,10 +17,17 @@ namespace Units {
 				OnExpChange?.Invoke(_currentExp);
 			}
 		}
-		public int CurrentLevel { get; private set; }
+		public int CurrentLevel {
+			get => _currentLevel;
+			private set {
+				_currentLevel = value;
+				OnLevelUp?.Invoke(_currentLevel);
+			}
+		}
 
 		private readonly Dictionary<int,int> _levelParameters;
 		private int _currentExp;
+		private int _currentLevel;
 
 
 		public Experience(int level, PlayerConfig.LevelExperienceParam[] levelParameters) {
@@ -30,7 +38,7 @@ namespace Units {
 
 		public void AddExp(int deltaExp) {
 			CurrentExp += deltaExp;
-			while (CurrentExp > _levelParameters[CurrentLevel]) {
+			while (CurrentLevel < _levelParameters.Keys.Max() && CurrentExp >= _levelParameters[CurrentLevel + 1]) {
 				CurrentLevel++;
 			}
 		}

@@ -23,3 +23,4 @@ MonoBehaviour:
     MoveSpeed: 3
     Hp: 100
     Damage: 50
+    ExperienceOnKill: 50

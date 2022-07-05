@@ -9,12 +9,15 @@ namespace Units {
 	internal class MonsterUnit : Unit {
 		private readonly int _collisionDamage;
 		private readonly IUnitsPool _unitsPool;
+		private int _killExperience;
 		private MonsterView MonsterView => _unitView as MonsterView;
 		
 		
 		public MonsterUnit(GameObject playerGO, MonstersParams monstersParam, IUnitsPool unitsPool) : base(monstersParam.MoveSpeed, monstersParam.Hp) {
+			Experience = new Experience(monstersParam.MonsterLevel, null);
 			_unitsPool = unitsPool;
 			_collisionDamage = monstersParam.Damage;
+			_killExperience = monstersParam.ExperienceOnKill;
 			var monsterView = playerGO.GetComponent<MonsterView>();
 			monsterView.OnCollisionEnter += DamageCollisionUnit;
 			monsterView.OnDamageTake += TakeDamage;
@@ -38,6 +41,9 @@ namespace Units {
 				
 				damageTaker.TakeDamage(_collisionDamage);
 				KillMonster();
+			}
+			if (IsDead && otherUnit.gameObject.TryGetComponent<IExperienceReciever>(out var experienceReciever)) {
+				experienceReciever.RecieveExperience(_killExperience);
 			}
 		}
 
