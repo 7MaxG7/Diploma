@@ -29,7 +29,7 @@ namespace Infrastructure {
 		}
 
 		private void FixedUpdate() {
-			_game.Controllers?.OnFixedUpdate();
+			_game.Controllers?.OnFixedUpdate(Time.fixedDeltaTime);
 		}
 	}
 

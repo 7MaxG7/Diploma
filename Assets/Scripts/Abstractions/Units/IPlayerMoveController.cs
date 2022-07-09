@@ -4,7 +4,7 @@ using Units;
 
 namespace Controllers {
 
-	internal interface IPlayerMoveController : IUpdater {
+	internal interface IPlayerMoveController : IFixedUpdater {
 		void Init(IUnit player);
 	}
 

@@ -5,11 +5,11 @@ using UnityEngine;
 namespace Units.Views {
 
 	internal sealed class MonsterView : UnitView {
-		public event Action<ControllerColliderHit> OnCollisionEnter; 
+		public event Action<Collision2D> OnTriggerEnter;
 
-		
-		private void OnControllerColliderHit(ControllerColliderHit hit) {
-			OnCollisionEnter?.Invoke(hit);
+
+		private void OnCollisionEnter2D(Collision2D other) {
+			OnTriggerEnter?.Invoke(other);
 		}
 	}
 

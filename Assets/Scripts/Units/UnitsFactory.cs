@@ -22,7 +22,7 @@ namespace Utils {
 		}
 
 		public IUnit CreatePlayer(Vector2 position) {
-			var playerGO = PhotonNetwork.Instantiate(TextConstants.PLAYER_PREF_RESOURCES_PATH, position, quaternion.identity);
+			var playerGO = PhotonNetwork.Instantiate(_playerConfig.PlayerPrefabPath, position, quaternion.identity);
 			return new PlayerUnit(playerGO, _playerConfig);
 		}
 

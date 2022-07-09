@@ -9,7 +9,7 @@ namespace Units {
 	internal class MonsterUnit : Unit {
 		private readonly int _collisionDamage;
 		private readonly IUnitsPool _unitsPool;
-		private int _killExperience;
+		private readonly int _killExperience;
 		private MonsterView MonsterView => _unitView as MonsterView;
 		
 		
@@ -19,7 +19,7 @@ namespace Units {
 			_collisionDamage = monstersParam.Damage;
 			_killExperience = monstersParam.ExperienceOnKill;
 			var monsterView = playerGO.GetComponent<MonsterView>();
-			monsterView.OnCollisionEnter += DamageCollisionUnit;
+			monsterView.OnTriggerEnter += DamageTriggerUnit;
 			monsterView.OnDamageTake += TakeDamage;
 			_unitView = monsterView;
 		}
@@ -27,14 +27,14 @@ namespace Units {
 		public override void Dispose() {
 			base.Dispose();
 			_unitView.OnDamageTake -= TakeDamage;
-			MonsterView.OnCollisionEnter -= DamageCollisionUnit;
+			MonsterView.OnTriggerEnter -= DamageTriggerUnit;
 		}
 
 		private void TakeDamage(int damage) {
 			Health.TakeDamage(damage);
 		}
 
-		private void DamageCollisionUnit(ControllerColliderHit otherUnit) {
+		private void DamageTriggerUnit(Collision2D otherUnit) {
 			if (otherUnit.gameObject.TryGetComponent<IDamagableView>(out var damageTaker)) {
 				if (damageTaker is MonsterView)
 					return;

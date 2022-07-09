@@ -32,16 +32,16 @@ namespace Infrastructure {
 		private readonly IMissionUiController _missionUiController;
 		private readonly IPhotonDataExchangeController _photonDataExchangeController;
 		private readonly IPhotonObjectsSynchronizer _photonObjectsSynchronizer;
+		private readonly IWeaponsController _weaponsController;
 		private readonly MissionConfig _missionConfig;
-		private readonly UiConfig _uiConfig;
 
 
 		[Inject]
 		public LoadMissionState(ISceneLoader sceneLoader, IPermanentUiController permanentUiController, IMapWrapper mapWrapper, IUnitsFactory unitsFactory
 				, IPlayerMoveController playerMoveController, ICameraController cameraController, IMissionMapController missionMapController
 				, IMonstersSpawner monstersSpawner, IMonstersMoveController monstersMoveController, IUnitsPool unitsPool, IMissionUiController missionUiController
-				, IPhotonDataExchangeController photonDataExchangeController, IPhotonObjectsSynchronizer photonObjectsSynchronizer
-				, MissionConfig missionConfig, UiConfig uiConfig) {
+				, IPhotonDataExchangeController photonDataExchangeController, IPhotonObjectsSynchronizer photonObjectsSynchronizer, IWeaponsController weaponsController
+				, MissionConfig missionConfig) {
 			_sceneLoader = sceneLoader;
 			_permanentUiController = permanentUiController;
 			_unitsFactory = unitsFactory;
@@ -54,9 +54,9 @@ namespace Infrastructure {
 			_missionUiController = missionUiController;
 			_photonDataExchangeController = photonDataExchangeController;
 			_photonObjectsSynchronizer = photonObjectsSynchronizer;
+			_weaponsController = weaponsController;
 			_mapWrapper = mapWrapper;
 			_missionConfig = missionConfig;
-			_uiConfig = uiConfig;
 		}
 
 		public void Enter(string sceneName) {
@@ -107,6 +107,8 @@ namespace Infrastructure {
 				_missionMapController.Init(player.Transform, vector2);
 				_monstersSpawner.Init();
 				_monstersMoveController.Init(player.Transform);
+				_weaponsController.Init(player);
+				_weaponsController.StopShooting();
 			}
 
 			IUnit PreparePlayer(Vector2 groundItemSize) {

@@ -16,13 +16,15 @@ namespace Infrastructure {
 			controllersHolder.AddController(this);
 		}
 		
-		public void OnUpdate(float deltaTime) {
+		public void OnFixedUpdate(float deltaTime) {
 			if (_target == null)
 				return;
 			
 			_enemies.RemoveAll(enemy => enemy.IsDead);
 			foreach (var enemy in _enemies) {
-				enemy.CharacterController.Move((_target.position - enemy.CharacterController.transform.position).normalized * deltaTime * enemy.MoveSpeed);
+				var enemyPosition = enemy.Transform.position;
+				enemy.Rigidbody.MovePosition(enemyPosition + (_target.position - enemyPosition).normalized * deltaTime * enemy.MoveSpeed);
+				// enemy.CharacterController.Move((_target.position - enemy.CharacterController.transform.position).normalized * deltaTime * enemy.MoveSpeed);
 			}
 		}
 

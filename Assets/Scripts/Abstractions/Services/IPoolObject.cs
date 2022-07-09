@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Services {
 
-	internal interface IPoolObject {
+	internal interface IPoolObject : IMovable {
 		GameObject GameObject { get; }
 		Transform Transform { get; }
 		PhotonView PhotonView { get; }

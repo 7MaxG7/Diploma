@@ -61,9 +61,9 @@ namespace Infrastructure {
 			}
 		}
 
-		public void OnFixedUpdate() {
+		public void OnFixedUpdate(float deltaTime) {
 			foreach (var fixedUpdater in _fixedUpdaters) {
-				fixedUpdater.OnFixedUpdate();
+				fixedUpdater.OnFixedUpdate(deltaTime);
 			}
 		}
 

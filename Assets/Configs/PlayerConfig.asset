@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2eec7be9a1ce4cc3b88bef59ca73aa58, type: 3}
   m_Name: PlayerConfig
   m_EditorClassIdentifier: 
-  _baseMoveSpeed: 5
+  _playerPrefabPath: Player
+  _baseMoveSpeed: 6
   _levelExpParameters:
   - _level: 2
     _targetExp: 100

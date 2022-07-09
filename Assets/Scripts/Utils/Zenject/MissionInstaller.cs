@@ -23,6 +23,8 @@ namespace Infrastructure.Zenject {
 			Container.Bind<IPhotonDataExchangeController>().To<PhotonDataExchangeController>().AsSingle();
 			Container.Bind<IPhotonObjectsSynchronizer>().To<PhotonObjectsSynchronizer>().AsSingle();
 			Container.Bind<IMissionUiController>().To<MissionUiController>().AsSingle();
+			Container.Bind<IAmmosPool>().To<AmmosPool>().AsSingle();
+			Container.Bind<IWeaponsController>().To<WeaponsController>().AsSingle();
 
 			Container.Bind<IControllersHolder>().To<ControllersHolder>().AsSingle();
 		}

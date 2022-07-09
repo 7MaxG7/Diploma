@@ -11,6 +11,7 @@ namespace Services {
 		
 		private readonly IPhotonDataExchangeController _photonDataExchangeController;
 		private readonly List<T> _objects = new();
+		protected readonly List<T> _spawnedObjects = new();
 
 
 		public T SpawnObject(Vector2 spawnPosition, params object[] parameters) {
@@ -25,14 +26,17 @@ namespace Services {
 				_objects.RemoveAt(objIndex);
 				obj.Respawn(spawnPosition);
 			}
+			_spawnedObjects.Add(obj);
 			TogglePoolObjectActivation(obj, true);
 			return obj;
 		}
 
 		public void ReturnObject(T obj) {
 			TogglePoolObjectActivation(obj, false);
+			obj.StopObj();
 			obj.Transform.position = Vector3.zero;
 			_objects.Add(obj);
+			_spawnedObjects.Remove(obj);
 		}
 
 		protected abstract T SpawnSpecifiedObject(Vector2 spawnPosition, object[] parameters);

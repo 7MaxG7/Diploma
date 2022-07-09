@@ -33,8 +33,8 @@ namespace Controllers {
 			_player = player;
 		}
 
-		public void OnUpdate(float deltaTime) {
-			if (_player == null || _camera == null)
+		public void OnFixedUpdate(float deltaTime) {
+			if (_player == null || _camera == null || _player.IsDead)
 				return;
 			
 			if (_inputService.Axis.sqrMagnitude < Constants.CHARACTER_SPEED_STOP_TRESHOLD)
@@ -43,7 +43,8 @@ namespace Controllers {
 			var moveDiredtion = _camera.transform.TransformDirection(_inputService.Axis);
 			moveDiredtion.Normalize();
 			_player.Transform.up = moveDiredtion;
-			_player.CharacterController.Move(moveDiredtion * (deltaTime * _player.MoveSpeed));
+			// _player.CharacterController.Move(moveDiredtion * (deltaTime * _player.MoveSpeed));
+			_player.Rigidbody.MovePosition(_player.Transform.position + moveDiredtion * (deltaTime * _player.MoveSpeed));
 			_mapWrapper.CheckAndReturnInsideMap(_player.Transform);
 		}
 
@@ -51,6 +52,9 @@ namespace Controllers {
 			_player = null;
 		}
 
+		public void OnFixedUpdate() {
+			throw new NotImplementedException();
+		}
 	}
 
 }

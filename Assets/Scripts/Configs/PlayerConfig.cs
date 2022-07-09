@@ -27,6 +27,7 @@ namespace Infrastructure {
 		}
 
 		
+		[SerializeField] private string _playerPrefabPath;
 		[SerializeField] private float _baseMoveSpeed;
 		[SerializeField] private LevelExperienceParam[] _levelExpParameters;
 		[SerializeField] private LevelHealthParam[] _levelHpParameters;
@@ -34,6 +35,7 @@ namespace Infrastructure {
 		public float BaseMoveSpeed => _baseMoveSpeed;
 		public LevelExperienceParam[] LevelExpParameters => _levelExpParameters.OrderBy(item => item.Level).ToArray();
 		public LevelHealthParam[] LevelHpParameters => _levelHpParameters.OrderBy(item => item.Level).ToArray();
+		public string PlayerPrefabPath => _playerPrefabPath;
 	}
 
 }

@@ -61,7 +61,7 @@ namespace Infrastructure {
 		}
 
 		public void OnUpdate(float deltaTime) {
-			if (_groundItems == null)
+			if (_groundItems == null || _playerTransform == null)
 				return;
 			
 			RelocateGround();

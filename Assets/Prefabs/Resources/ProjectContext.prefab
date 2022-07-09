@@ -150,3 +150,4 @@ MonoBehaviour:
   _playerConfig: {fileID: 11400000, guid: a1aa564dd1c554344928a6fa57df7174, type: 2}
   _monstersConfig: {fileID: 11400000, guid: 6a30652dd47945346a97dcf03f7275b9, type: 2}
   _uiConfig: {fileID: 11400000, guid: dcf1945d43aa50e4683580c7b4bb359c, type: 2}
+  weaponsConfig: {fileID: 11400000, guid: a97d145ac1a4acc4db0bec5a227b2c30, type: 2}

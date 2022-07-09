@@ -19,9 +19,6 @@
 		public const string LOGIN_PANEL_CONFIRM_BUTTON_CREATE_ACCOUNT_TEXT = "Sign up";
 		public const string LOGIN_PANEL_CONFIRM_BUTTON_LOGIN_ACCOUNT_TEXT = "Sign in";
 		public const string ROOM_NAME_TEMPLATE = "Game {0} {1}";
-		
-		// Resources
-		public const string PLAYER_PREF_RESOURCES_PATH = "Player";
 
 		// Input
 		public const string HORIZONTAL = "Horizontal";
