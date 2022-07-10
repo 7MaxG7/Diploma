@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Infrastructure;
+using Unity.Mathematics;
 
 
 namespace Units {
@@ -13,38 +14,57 @@ namespace Units {
 		public int CurrentExp {
 			get => _currentExp;
 			private set {
-				_currentExp = value;
-				OnExpChange?.Invoke(_currentExp);
+				var exp = Math.Min(value, MaxExp);
+				if (exp != _currentExp) {
+					_currentExp = exp;
+					OnExpChange?.Invoke(_currentExp);
+				}
 			}
 		}
+		
 		public int CurrentLevel {
 			get => _currentLevel;
 			private set {
-				_currentLevel = value;
-				OnLevelUp?.Invoke(_currentLevel);
+				var level = Math.Min(value, _maxLevel);
+				if (level != _currentExp) {
+					_currentLevel = level;
+					OnLevelUp?.Invoke(_currentLevel);
+				}
 			}
 		}
 
+		public int MaxExp { get; }
+		
 		private readonly Dictionary<int,int> _levelParameters;
 		private int _currentExp;
 		private int _currentLevel;
+		private readonly int _maxLevel;
 
 
 		public Experience(int level, PlayerConfig.LevelExperienceParam[] levelParameters) {
-			CurrentLevel = level;
-			if (levelParameters != null)
+			if (levelParameters != null) {
 				_levelParameters = levelParameters.ToDictionary(item => item.Level, item => item.TargetExp);
+				_maxLevel = _levelParameters.Keys.Max();
+				MaxExp = _levelParameters.Values.Max();
+			} else {
+				_maxLevel = level;
+			}
+			CurrentLevel = level;
 		}
 
 		public void AddExp(int deltaExp) {
 			CurrentExp += deltaExp;
-			while (CurrentLevel < _levelParameters.Keys.Max() && CurrentExp >= _levelParameters[CurrentLevel + 1]) {
+			while (CurrentLevel < _maxLevel && CurrentExp >= _levelParameters[CurrentLevel + 1]) {
 				CurrentLevel++;
 			}
 		}
 
 		public int GetExpTarget(int level = -1) {
-			return _levelParameters[level == -1 ? CurrentLevel + 1 : level];
+			if (_levelParameters == null) {
+				return -1;
+			}
+			level = Math.Min(level == -1 ? CurrentLevel + 1 : level, _maxLevel);
+			return _levelParameters[level];
 		}
 	}
 

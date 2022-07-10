@@ -58,7 +58,7 @@ namespace UI {
 			_expSmoother.SetStartValue(_player.Experience.CurrentExp);
 		}
 
-		public void UpdateSmoother() {
+		public void UpdateSmoothers() {
 			_currentHealthSmoother.SmoothUpdate();
 			_maxHealthSmoother.SmoothUpdate();
 			_expSmoother.SmoothUpdate();
@@ -97,7 +97,10 @@ namespace UI {
 				_playerPanel.LevelText.text = string.Format(TextConstants.EXPERIENCE_BAR_LEVEL_TEXT_TEMPLATE, ++_currentLevel);
 				_currentLevelMaxExp = _player.Experience.GetExpTarget(_currentLevel + 1);
 			}
-			_playerPanel.ExpSlider.value = (xp - _currentLevelMinExp) / (_currentLevelMaxExp - _currentLevelMinExp);
+			if (xp < _player.Experience.MaxExp)
+				_playerPanel.ExpSlider.value = (xp - _currentLevelMinExp) / (_currentLevelMaxExp - _currentLevelMinExp);
+			else
+				_playerPanel.ExpSlider.value = 1f;
 		}
 	}
 

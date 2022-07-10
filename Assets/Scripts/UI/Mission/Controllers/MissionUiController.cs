@@ -24,7 +24,7 @@ namespace UI {
 		}
 
 		public void Dispose() {
-			OnUpdateCallback -= _playerUiController.UpdateSmoother;
+			OnUpdateCallback -= _playerUiController.UpdateSmoothers;
 			_playerUiController?.Dispose();
 		}
 
@@ -39,7 +39,7 @@ namespace UI {
 			var missionUiView = Object.Instantiate(_uiConfig.MissionUiView, new GameObject(TextConstants.UI_ROOT_NAME).transform);
 			_playerUiController = new PlayerUiController(missionUiView.PlayerPanel, _uiConfig);
 			_playerUiController.Init(player);
-			OnUpdateCallback += _playerUiController.UpdateSmoother;
+			OnUpdateCallback += _playerUiController.UpdateSmoothers;
 			_isInited = true;
 		}
 
