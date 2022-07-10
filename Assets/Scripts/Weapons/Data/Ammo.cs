@@ -12,23 +12,31 @@ namespace Infrastructure {
 		public PhotonView PhotonView => _ammoView.PhotonView;
 		public Rigidbody2D RigidBody => _ammoView.RigidBody;
 
-		private readonly int _baseDamage;
+		private readonly int[] _baseDamage;
+		private readonly float _damageTicksCooldown;
+		private readonly bool _isPiercing;
 		
 		private readonly AmmoView _ammoView;
 		private IUnit _owner;
 		private readonly IAmmosPool _ammosPool;
+		private readonly IHandleDamageController _handleDamageController;
 
 
-		public Ammo(GameObject ammoGo, int baseDamage, IAmmosPool ammosPool) {
-			_baseDamage = baseDamage;
+		public Ammo(GameObject ammoGo, WeaponsConfig.WeaponParam ammoParam, IAmmosPool ammosPool, IHandleDamageController handleDamageController) {
+			_baseDamage = ammoParam.BaseDamage;
+			if (_baseDamage.Length > 1) {
+				_damageTicksCooldown = ammoParam.DamageTicksCooldown;
+			}
+			_isPiercing = ammoParam.IsPiercing;
 			_ammosPool = ammosPool;
+			_handleDamageController = handleDamageController;
 			_ammoView = ammoGo.GetComponent<AmmoView>();
-			_ammoView.OnTriggerEntered += DamageTriggeredUnit;
+			_ammoView.OnTriggerEntered += HandleCollision;
 			_ammoView.OnBecomeInvisible += DeactivateObj;
 		}
 
 		public void Dispose() {
-			_ammoView.OnTriggerEntered -= DamageTriggeredUnit;
+			_ammoView.OnTriggerEntered -= HandleCollision;
 			_ammoView.OnBecomeInvisible -= DeactivateObj;
 		}
 
@@ -44,12 +52,15 @@ namespace Infrastructure {
 			RigidBody.velocity = Vector2.zero;
 		}
 
-		private void DamageTriggeredUnit(Collider2D collider) {
-			if (collider.TryGetComponent<IDamagableView>(out var damageTaker)) {
-				if (!_owner.CheckOwnView(damageTaker)) {
+		private void HandleCollision(Collider2D collider) {
+			if (collider.TryGetComponent<IDamagableView>(out var damageTaker) && !_owner.CheckOwnView(damageTaker)) {
+				if (_baseDamage.Length == 1)
+					_handleDamageController.DealPermanentDamage(damageTaker, _baseDamage[0], _owner);
+				else if (_baseDamage.Length > 1)
+					_handleDamageController.DealPeriodicalDamage(damageTaker, _baseDamage, _damageTicksCooldown, _owner);
+				
+				if (!_isPiercing)
 					_ammosPool.ReturnObject(this);
-					damageTaker.TakeDamage(_baseDamage, _owner);
-				}
 			}
 		}
 

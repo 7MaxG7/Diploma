@@ -10,13 +10,15 @@ using Zenject;
 namespace Utils {
 
 	internal class UnitsFactory : IUnitsFactory {
+		private readonly IHandleDamageController _handleDamageController;
 		private readonly PlayerConfig _playerConfig;
 		private readonly MonstersConfig _monstersConfig;
 		private IUnitsPool _unitsPool;
 
 
 		[Inject]
-		public UnitsFactory(PlayerConfig playerConfig, MonstersConfig monstersConfig) {
+		public UnitsFactory(IHandleDamageController handleDamageController, PlayerConfig playerConfig, MonstersConfig monstersConfig) {
+			_handleDamageController = handleDamageController;
 			_playerConfig = playerConfig;
 			_monstersConfig = monstersConfig;
 		}
@@ -29,7 +31,7 @@ namespace Utils {
 		public IUnit CreateMonster(int monsterLevel, Vector2 spawnPosition) {
 			var monsterParams = _monstersConfig.GetMonsterParams(monsterLevel);
 			var enemyGO = PhotonNetwork.Instantiate(monsterParams.PrefabPath, spawnPosition, Quaternion.identity);
-			return new MonsterUnit(enemyGO, monsterParams, _unitsPool);
+			return new MonsterUnit(enemyGO, monsterParams, _unitsPool, _handleDamageController);
 		}
 
 		public void SetUnitsPool(IUnitsPool unitsPool) {

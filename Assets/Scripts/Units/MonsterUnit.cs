@@ -9,13 +9,16 @@ namespace Units {
 	internal class MonsterUnit : Unit {
 		private readonly int _collisionDamage;
 		private readonly IUnitsPool _unitsPool;
+		private readonly IHandleDamageController _handleDamageController;
 		private readonly int _killExperience;
 		private MonsterView MonsterView => _unitView as MonsterView;
 		
 		
-		public MonsterUnit(GameObject playerGO, MonstersParams monstersParam, IUnitsPool unitsPool) : base(monstersParam.MoveSpeed, monstersParam.Hp) {
+		public MonsterUnit(GameObject playerGO, MonstersParams monstersParam, IUnitsPool unitsPool, IHandleDamageController handleDamageController) 
+				: base(monstersParam.MoveSpeed, monstersParam.Hp) {
 			Experience = new Experience(monstersParam.MonsterLevel, null);
 			_unitsPool = unitsPool;
+			_handleDamageController = handleDamageController;
 			_collisionDamage = monstersParam.Damage;
 			_killExperience = monstersParam.ExperienceOnKill;
 			var monsterView = playerGO.GetComponent<MonsterView>();
@@ -47,6 +50,7 @@ namespace Units {
 		}
 
 		protected override void DestroyView() {
+			_handleDamageController.StopPeriodicalDamageForUnit(MonsterView);
 			_unitsPool.ReturnObject(this);
 		}
 	}

@@ -14,14 +14,19 @@ namespace Infrastructure {
 			[SerializeField] private float _range;
 			[SerializeField] private float _cooldown;
 			[SerializeField] private float _ammoSpeed;
-			[SerializeField] private int _baseDamage;
+			[Tooltip("Damage of each tick in case of periodical damage")]
+			[SerializeField] private int[] _baseDamage;
+			[SerializeField] private float _damageTicksCooldown;
+			[SerializeField] private bool _isPiercing;
 
 			public WeaponType WeaponType => weaponType;
 			public string AmmoPrefabPath => _ammoPrefabPath;
 			public float Range => _range;
 			public float Cooldown => _cooldown;
 			public float AmmoSpeed => _ammoSpeed;
-			public int BaseDamage => _baseDamage;
+			public int[] BaseDamage => _baseDamage;
+			public float DamageTicksCooldown => _damageTicksCooldown;
+			public bool IsPiercing => _isPiercing;
 		}
 
 		public int WeaponsAmount => _ammoParams.Length;

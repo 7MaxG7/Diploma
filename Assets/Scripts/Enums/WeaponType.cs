@@ -2,7 +2,7 @@
 
 	internal enum WeaponType {
 		None = 0,
-		Pistol = 1,
+		SmallOrb = 1,
 	}
 
 }

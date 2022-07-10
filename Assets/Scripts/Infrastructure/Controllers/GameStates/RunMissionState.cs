@@ -19,7 +19,7 @@ namespace Infrastructure {
 		}
 		
 		public void Enter() {
-			_weaponsController.AddWeapon(WeaponType.Pistol);
+			_weaponsController.AddWeapon(WeaponType.SmallOrb);
 			_monstersSpawner.StartSpawn();
 			_weaponsController.StartShooting();
 		}

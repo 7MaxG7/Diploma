@@ -14,8 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _ammoParams:
   - weaponType: 1
-    _ammoPrefabPath: Bullet
+    _ammoPrefabPath: PurpleOrb
     _range: 5
     _cooldown: 2
     _ammoSpeed: 1
-    _baseDamage: 250
+    _baseDamage: 96000000
+    _damageTicksCooldown: 0
+    _isPiercing: 0
