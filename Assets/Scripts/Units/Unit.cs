@@ -16,7 +16,6 @@ namespace Units {
 		public GameObject GameObject => _unitView.GameObject;
 		public Transform Transform => _unitView.Transform;
 		public PhotonView PhotonView => _unitView.PhotonView;
-		// public CharacterController CharacterController => _unitView.CharacterController;
 		public bool IsDead => Health.CurrentHp <= 0;
 
 		protected UnitView _unitView;
@@ -45,7 +44,6 @@ namespace Units {
 		}
 
 		public void StopObj() {
-			// CharacterController.Move(Vector3.zero);
 			Rigidbody.velocity = Vector2.zero;
 		}
 

@@ -16,6 +16,7 @@ namespace UI {
 		private float _currentHp;
 		private float _maxHp;
 		private int _currentLevel;
+		private int _currentLevelMinExp;
 		private int _currentLevelMaxExp;
 
 
@@ -91,13 +92,12 @@ namespace UI {
 		}
 
 		private void UpdateCurrentExperience(float xp) {
-			var currentExp = xp;
 			if (xp >= _currentLevelMaxExp) {
-				_playerPanel.LevelText.text = $"{++_currentLevel}";
-				currentExp -= _currentLevelMaxExp;
+				_currentLevelMinExp = _currentLevelMaxExp;
+				_playerPanel.LevelText.text = string.Format(TextConstants.EXPERIENCE_BAR_LEVEL_TEXT_TEMPLATE, ++_currentLevel);
 				_currentLevelMaxExp = _player.Experience.GetExpTarget(_currentLevel + 1);
 			}
-			_playerPanel.ExpSlider.value = currentExp / _currentLevelMaxExp;
+			_playerPanel.ExpSlider.value = (xp - _currentLevelMinExp) / (_currentLevelMaxExp - _currentLevelMinExp);
 		}
 	}
 

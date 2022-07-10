@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Units {
 
-	internal class PlayerUnit : Unit {
+	internal class PlayerUnit : Unit, IExperienceReciever {
 		
 		public PlayerUnit(GameObject playerGO, PlayerConfig playerConfig) : base(playerConfig.BaseMoveSpeed, playerConfig.LevelHpParameters[0].Health) {
 			Experience = new Experience(playerConfig.LevelHpParameters[0].Level, playerConfig.LevelExpParameters);
@@ -25,11 +25,11 @@ namespace Units {
 			Experience.OnLevelUp -= Health.AddLevelUpHealth;
 		}
 
-		private void TakeDamage(int damage) {
+		private void TakeDamage(int damage, IUnit damager) {
 			Health.TakeDamage(damage);
 		}
 
-		private void RecieveExperience(int exp) {
+		public void RecieveExperience(int exp) {
 			Experience.AddExp(exp);
 		}
 

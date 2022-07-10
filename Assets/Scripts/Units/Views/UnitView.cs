@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Units.Views {
 
 	internal abstract class UnitView : MonoBehaviour, IDamagableView {
-		public event Action<int> OnDamageTake;
+		public event Action<int, IUnit> OnDamageTake;
 		
 		// [SerializeField] private CharacterController _characterController;
 		[SerializeField] private GameObject _gameObject;
@@ -20,8 +20,8 @@ namespace Units.Views {
 		public PhotonView PhotonView => _photonView;
 		public Rigidbody2D RigidBody => _rigidBody;
 
-		public void TakeDamage(int damage) {
-			OnDamageTake?.Invoke(damage);
+		public void TakeDamage(int damage, IUnit damager) {
+			OnDamageTake?.Invoke(damage, damager);
 		}
 	}
 

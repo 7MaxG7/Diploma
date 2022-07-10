@@ -4,12 +4,8 @@ using Units.Views;
 
 namespace Units {
 
-	internal class PlayerView : UnitView, IExperienceReciever {
+	internal class PlayerView : UnitView {
 		public event Action<int> OnRecieveExperience;
-
-		public void RecieveExperience(int killExperience) {
-			OnRecieveExperience?.Invoke(killExperience);
-		}
 	}
 
 }

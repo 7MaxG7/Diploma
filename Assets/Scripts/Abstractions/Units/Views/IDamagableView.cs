@@ -1,7 +1,7 @@
 ﻿namespace Units {
 
 	internal interface IDamagableView {
-		void TakeDamage(int damage);
+		void TakeDamage(int damage, IUnit damager);
 	}
 
 }

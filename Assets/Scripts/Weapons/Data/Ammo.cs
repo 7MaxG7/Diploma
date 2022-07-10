@@ -48,7 +48,7 @@ namespace Infrastructure {
 			if (collider.TryGetComponent<IDamagableView>(out var damageTaker)) {
 				if (!_owner.CheckOwnView(damageTaker)) {
 					_ammosPool.ReturnObject(this);
-					damageTaker.TakeDamage(_baseDamage);
+					damageTaker.TakeDamage(_baseDamage, _owner);
 				}
 			}
 		}

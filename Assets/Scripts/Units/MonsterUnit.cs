@@ -30,8 +30,10 @@ namespace Units {
 			MonsterView.OnTriggerEnter -= DamageTriggerUnit;
 		}
 
-		private void TakeDamage(int damage) {
+		private void TakeDamage(int damage, IUnit damager) {
 			Health.TakeDamage(damage);
+			if (IsDead && damager is IExperienceReciever experienceReciever)
+				experienceReciever.RecieveExperience(_killExperience);
 		}
 
 		private void DamageTriggerUnit(Collision2D otherUnit) {
@@ -39,11 +41,8 @@ namespace Units {
 				if (damageTaker is MonsterView)
 					return;
 				
-				damageTaker.TakeDamage(_collisionDamage);
+				damageTaker.TakeDamage(_collisionDamage, this);
 				KillMonster();
-			}
-			if (IsDead && otherUnit.gameObject.TryGetComponent<IExperienceReciever>(out var experienceReciever)) {
-				experienceReciever.RecieveExperience(_killExperience);
 			}
 		}
 
