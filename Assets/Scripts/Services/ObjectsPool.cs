@@ -10,7 +10,7 @@ namespace Services {
 		public event Action<int, bool> OnObjectActivationToggle;
 		
 		private readonly IPhotonDataExchangeController _photonDataExchangeController;
-		private readonly List<T> _objects = new();
+		protected readonly List<T> _objects = new();
 		protected readonly List<T> _spawnedObjects = new();
 
 

@@ -47,7 +47,8 @@ namespace Infrastructure {
 			}
 		}
 
-		public void StopPeriodicalDamageForUnit(IDamagableView damageTaker) {
+		public void StopPeriodicalDamageForUnit(IUnit unit) {
+			var damageTaker = unit.UnitView as IDamagableView;
 			foreach (var comingDamage in _comingDamages.Where(damage => damage.DamageTaker == damageTaker)) {
 				comingDamage.StopDamage();
 			}

@@ -14,13 +14,13 @@ namespace Units {
 			var playerView = playerGO.GetComponent<PlayerView>();
 			playerView.OnDamageTake += TakeDamage;
 			playerView.OnRecieveExperience += RecieveExperience;
-			_unitView = playerView;
+			UnitView = playerView;
 		}
 
 		public override void Dispose() {
 			base.Dispose();
-			_unitView.OnDamageTake -= TakeDamage;
-			if (_unitView is PlayerView playerView)
+			UnitView.OnDamageTake -= TakeDamage;
+			if (UnitView is PlayerView playerView)
 				playerView.OnRecieveExperience -= RecieveExperience;
 			Experience.OnLevelUp -= Health.AddLevelUpHealth;
 		}
@@ -33,7 +33,8 @@ namespace Units {
 			Experience.AddExp(exp);
 		}
 
-		protected override void DestroyView() {
+		protected override void KillView() {
+			base.KillView();
 			PhotonNetwork.Destroy(GameObject);
 		}
 	}

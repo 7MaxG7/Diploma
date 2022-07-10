@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using Infrastructure;
 using Units;
 using UnityEngine;
 using Utils;
@@ -7,22 +9,38 @@ using Zenject;
 
 namespace Services {
 
-	internal class UnitsPool : ObjectsPool<IUnit>, IUnitsPool {
+	internal class UnitsPool : ObjectsPool<IUnit>, IUnitsPool, IDisposable {
 		private readonly IUnitsFactory _unitsFactory;
+		private readonly IHandleDamageController _handleDamageController;
 		public List<IUnit> ActiveMonsters => _spawnedObjects;
 
 		
 		[Inject]
-		public UnitsPool(IUnitsFactory unitsFactory) {
+		public UnitsPool(IUnitsFactory unitsFactory, IHandleDamageController handleDamageController) {
 			_unitsFactory = unitsFactory;
-			_unitsFactory.SetUnitsPool(this);
-		}
-		
-		protected override IUnit SpawnSpecifiedObject(Vector2 spawnPosition, object[] parameters) {
-			var currentMonsterLevel = (int)parameters[0];
-			return _unitsFactory.CreateMonster(currentMonsterLevel, spawnPosition);
+			_handleDamageController = handleDamageController;
 		}
 
+		public void Dispose() {
+			foreach (var obj in _objects) {
+				var unit = obj;
+				unit.OnDied -= ReturnObject;
+				unit.OnDied -= _handleDamageController.StopPeriodicalDamageForUnit;
+			}
+			foreach (var obj in _spawnedObjects) {
+				var unit = obj;
+				unit.OnDied -= ReturnObject;
+				unit.OnDied -= _handleDamageController.StopPeriodicalDamageForUnit;
+			}
+		}
+
+		protected override IUnit SpawnSpecifiedObject(Vector2 spawnPosition, object[] parameters) {
+			var currentMonsterLevel = (int)parameters[0];
+			var unit = _unitsFactory.CreateMonster(currentMonsterLevel, spawnPosition);
+			unit.OnDied += ReturnObject;
+			unit.OnDied += _handleDamageController.StopPeriodicalDamageForUnit;
+			return unit;
+		}
 	}
 
 }

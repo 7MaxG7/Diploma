@@ -8,27 +8,28 @@ using UnityEngine;
 namespace Units {
 
 	internal abstract class Unit : IUnit, IDisposable {
+		public event Action<IUnit> OnDied;
+		
 		public float MoveSpeed { get; }
 		public Health Health { get; }
 		public Experience Experience { get; protected set; }
-		public Rigidbody2D Rigidbody => _unitView.RigidBody;
-
-		public GameObject GameObject => _unitView.GameObject;
-		public Transform Transform => _unitView.Transform;
-		public PhotonView PhotonView => _unitView.PhotonView;
+		public UnitView UnitView { get; protected set; }
+		
+		public Rigidbody2D Rigidbody => UnitView.RigidBody;
+		public GameObject GameObject => UnitView.GameObject;
+		public Transform Transform => UnitView.Transform;
+		public PhotonView PhotonView => UnitView.PhotonView;
 		public bool IsDead => Health.CurrentHp <= 0;
 
-		protected UnitView _unitView;
-		
 
 		protected Unit(float moveSpeed, int hp) {
 			MoveSpeed = moveSpeed;
 			Health = new Health(hp);
-			Health.OnDied += DestroyView;
+			Health.OnDied += KillView;
 		}
 
 		public virtual void Dispose() {
-			Health.OnDied -= DestroyView;
+			Health.OnDied -= KillView;
 		}
 
 		public void Respawn(Vector2 spawnPosition) {
@@ -38,7 +39,7 @@ namespace Units {
 
 		public bool CheckOwnView(IDamagableView damageTaker) {
 			if (damageTaker is UnitView unitView) {
-				return unitView == _unitView;
+				return unitView == UnitView;
 			}
 			return false;
 		}
@@ -51,7 +52,9 @@ namespace Units {
 			Health.Kill();
 		}
 
-		protected abstract void DestroyView();
+		protected virtual void KillView() {
+			OnDied?.Invoke(this);
+		}
 
 	}
 
