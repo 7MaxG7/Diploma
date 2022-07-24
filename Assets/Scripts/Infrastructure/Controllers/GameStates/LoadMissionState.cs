@@ -33,6 +33,7 @@ namespace Infrastructure {
 		private readonly IPhotonDataExchangeController _photonDataExchangeController;
 		private readonly IPhotonObjectsSynchronizer _photonObjectsSynchronizer;
 		private readonly IWeaponsController _weaponsController;
+		private readonly ISkillsController _skillsController;
 		private readonly MissionConfig _missionConfig;
 
 
@@ -41,7 +42,7 @@ namespace Infrastructure {
 				, IPlayerMoveController playerMoveController, ICameraController cameraController, IMissionMapController missionMapController
 				, IMonstersSpawner monstersSpawner, IMonstersMoveController monstersMoveController, IUnitsPool unitsPool, IMissionUiController missionUiController
 				, IPhotonDataExchangeController photonDataExchangeController, IPhotonObjectsSynchronizer photonObjectsSynchronizer, IWeaponsController weaponsController
-				, MissionConfig missionConfig) {
+				, ISkillsController skillsController, MissionConfig missionConfig) {
 			_sceneLoader = sceneLoader;
 			_permanentUiController = permanentUiController;
 			_unitsFactory = unitsFactory;
@@ -55,6 +56,7 @@ namespace Infrastructure {
 			_photonDataExchangeController = photonDataExchangeController;
 			_photonObjectsSynchronizer = photonObjectsSynchronizer;
 			_weaponsController = weaponsController;
+			_skillsController = skillsController;
 			_mapWrapper = mapWrapper;
 			_missionConfig = missionConfig;
 		}
@@ -109,6 +111,7 @@ namespace Infrastructure {
 				_monstersMoveController.Init(player.Transform);
 				_weaponsController.Init(player);
 				_weaponsController.StopShooting();
+				_skillsController.Init(player);
 			}
 
 			IUnit PreparePlayer(Vector2 groundItemSize) {

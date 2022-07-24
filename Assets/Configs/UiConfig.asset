@@ -14,3 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _missionUiView: {fileID: 8977646226471751123, guid: 5e47b395351f0eb40a6a36dc35c5941e, type: 3}
   _hpBarAnimationDurationInFrames: 50
+  _canvasFadeAnimationDuration: 0.5
+  _skillUiItemPrefab: {fileID: 7329006160628604031, guid: b34bc457af516824388803ea60f6a5f1, type: 3}
+  _skillChooserActivationDelay: 0.5

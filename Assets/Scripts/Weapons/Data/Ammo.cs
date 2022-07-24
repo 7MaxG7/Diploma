@@ -11,10 +11,11 @@ namespace Infrastructure {
 		public Transform Transform => _ammoView.Transform;
 		public PhotonView PhotonView => _ammoView.PhotonView;
 		public Rigidbody2D RigidBody => _ammoView.RigidBody;
+		public int PoolIndex { get; }
 
-		private readonly int[] _baseDamage;
-		private readonly float _damageTicksCooldown;
-		private readonly bool _isPiercing;
+		private int[] _damage;
+		private float _damageTicksCooldown;
+		private bool _isPiercing;
 		
 		private readonly AmmoView _ammoView;
 		private IUnit _owner;
@@ -22,12 +23,8 @@ namespace Infrastructure {
 		private readonly IHandleDamageController _handleDamageController;
 
 
-		public Ammo(GameObject ammoGo, WeaponsConfig.WeaponParam ammoParam, IAmmosPool ammosPool, IHandleDamageController handleDamageController) {
-			_baseDamage = ammoParam.BaseDamage;
-			if (_baseDamage.Length > 1) {
-				_damageTicksCooldown = ammoParam.DamageTicksCooldown;
-			}
-			_isPiercing = ammoParam.IsPiercing;
+		public Ammo(GameObject ammoGo, IAmmosPool ammosPool, IHandleDamageController handleDamageController, int poolIndex) {
+			PoolIndex = poolIndex;
 			_ammosPool = ammosPool;
 			_handleDamageController = handleDamageController;
 			_ammoView = ammoGo.GetComponent<AmmoView>();
@@ -40,8 +37,13 @@ namespace Infrastructure {
 			_ammoView.OnBecomeInvisible -= DeactivateObj;
 		}
 
-		public void Init(IUnit owner) {
+		public void Init(IUnit owner, int[] damage, float damageTicksCooldown = 0, bool isPiercing = false) {
 			_owner = owner;
+			_damage = damage;
+			if (_damage.Length > 1) {
+				_damageTicksCooldown = damageTicksCooldown;
+			}
+			_isPiercing = isPiercing;
 		}
 
 		public void Respawn(Vector2 spawnPosition) {
@@ -54,10 +56,10 @@ namespace Infrastructure {
 
 		private void HandleCollision(Collider2D collider) {
 			if (collider.TryGetComponent<IDamagableView>(out var damageTaker) && !_owner.CheckOwnView(damageTaker)) {
-				if (_baseDamage.Length == 1)
-					_handleDamageController.DealPermanentDamage(damageTaker, _baseDamage[0], _owner);
-				else if (_baseDamage.Length > 1)
-					_handleDamageController.DealPeriodicalDamage(damageTaker, _baseDamage, _damageTicksCooldown, _owner);
+				if (_damage.Length == 1)
+					_handleDamageController.DealPermanentDamage(damageTaker, _damage[0], _owner);
+				else if (_damage.Length > 1)
+					_handleDamageController.DealPeriodicalDamage(damageTaker, _damage, _damageTicksCooldown, _owner);
 				
 				if (!_isPiercing)
 					_ammosPool.ReturnObject(this);

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Infrastructure;
 using Services;
 using Units;
@@ -12,15 +13,20 @@ namespace Controllers {
 	internal sealed class PlayerMoveController : IPlayerMoveController, IDisposable {
 		private readonly IMapWrapper _mapWrapper;
 		private readonly IInputService _inputService;
+		private readonly IUnitsPool _unitsPool;
+		private readonly IMissionMapController _missionMapController;
 		private IUnit _player;
 		private Vector2 _moveDiredtion;
 		private Camera _camera;
 
 
 		[Inject]
-		public PlayerMoveController(IMapWrapper mapWrapper, IInputService inputService, IControllersHolder controllersHolder) {
+		public PlayerMoveController(IMapWrapper mapWrapper, IInputService inputService, IUnitsPool unitsPool, IMissionMapController missionMapController
+				, IControllersHolder controllersHolder) {
 			_mapWrapper = mapWrapper;
 			_inputService = inputService;
+			_unitsPool = unitsPool;
+			_missionMapController = missionMapController;
 			controllersHolder.AddController(this);
 		}
 
@@ -43,9 +49,8 @@ namespace Controllers {
 			var moveDiredtion = _camera.transform.TransformDirection(_inputService.Axis);
 			moveDiredtion.Normalize();
 			_player.Transform.up = moveDiredtion;
-			// _player.CharacterController.Move(moveDiredtion * (deltaTime * _player.MoveSpeed));
 			_player.Rigidbody.MovePosition(_player.Transform.position + moveDiredtion * (deltaTime * _player.MoveSpeed));
-			_mapWrapper.CheckAndReturnInsideMap(_player.Transform);
+			_mapWrapper.CheckAndReturnInsideMap(_player.Transform, _unitsPool.ActiveMonsters.Select(monster => monster.Transform).Concat(_missionMapController.GroundItems));
 		}
 
 		private void OnDispose() {

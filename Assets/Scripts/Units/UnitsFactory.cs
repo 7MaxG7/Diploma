@@ -27,7 +27,7 @@ namespace Utils {
 		public IUnit CreateMonster(int monsterLevel, Vector2 spawnPosition) {
 			var monsterParams = _monstersConfig.GetMonsterParams(monsterLevel);
 			var enemyGO = PhotonNetwork.Instantiate(monsterParams.PrefabPath, spawnPosition, Quaternion.identity);
-			return new MonsterUnit(enemyGO, monsterParams);
+			return new MonsterUnit(enemyGO, monsterParams, monsterLevel);
 		}
 	}
 

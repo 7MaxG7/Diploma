@@ -7,7 +7,7 @@ namespace Units {
 
 	internal class PlayerUnit : Unit, IExperienceReciever {
 		
-		public PlayerUnit(GameObject playerGO, PlayerConfig playerConfig) : base(playerConfig.BaseMoveSpeed, playerConfig.LevelHpParameters[0].Health) {
+		public PlayerUnit(GameObject playerGO, PlayerConfig playerConfig) : base(playerConfig.BaseMoveSpeed, playerConfig.LevelHpParameters[0].Health, -1) {
 			Experience = new Experience(playerConfig.LevelHpParameters[0].Level, playerConfig.LevelExpParameters);
 			Health.SetLevelUpHpParams(playerConfig.LevelHpParameters);
 			Experience.OnLevelUp += Health.AddLevelUpHealth;

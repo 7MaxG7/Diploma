@@ -29,6 +29,8 @@
 		public const string UI_ROOT_NAME = "[UI]";
 		public const string HEALTH_BAR_TEXT_TEMPLATE = "{0} / {1}";
 		public const string EXPERIENCE_BAR_LEVEL_TEXT_TEMPLATE = "{0}";
+		public const string NEW_WEAPON_LEVEL_TEXT = "New!";
+		public const string UPGRADE_WEAPON_LEVEL_TEXT = "Lvl. {0}";
 	}
 
 }

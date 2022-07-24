@@ -7,7 +7,6 @@ namespace Services {
 		void Init();
 		void StartSpawn();
 		void StopSpawn();
-
 	}
 
 }

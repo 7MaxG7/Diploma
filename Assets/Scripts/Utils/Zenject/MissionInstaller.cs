@@ -26,6 +26,7 @@ namespace Infrastructure.Zenject {
 			Container.Bind<IAmmosPool>().To<AmmosPool>().AsSingle();
 			Container.Bind<IWeaponsController>().To<WeaponsController>().AsSingle();
 			Container.Bind<IHandleDamageController>().To<HandleDamageController>().AsSingle();
+			Container.Bind<ISkillsController>().To<SkillsController>().AsSingle();
 
 			Container.Bind<IControllersHolder>().To<ControllersHolder>().AsSingle();
 		}

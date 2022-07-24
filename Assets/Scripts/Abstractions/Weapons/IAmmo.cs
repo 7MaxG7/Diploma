@@ -8,7 +8,7 @@ namespace Infrastructure {
 	internal interface IAmmo : IPoolObject {
 		Rigidbody2D RigidBody { get; }
 
-		void Init(IUnit owner);
+		void Init(IUnit owner, int[] damage, float damageTicksCooldown, bool isPiercing);
 	}
 
 }

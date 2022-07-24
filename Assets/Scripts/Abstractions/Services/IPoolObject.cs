@@ -8,6 +8,7 @@ namespace Services {
 		GameObject GameObject { get; }
 		Transform Transform { get; }
 		PhotonView PhotonView { get; }
+		int PoolIndex { get; }
 
 		void Respawn(Vector2 spawnPosition);
 	}

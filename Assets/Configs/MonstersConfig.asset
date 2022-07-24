@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _spawnParams:
   - SpawnerLevel: 1
-    SpawnCooldown: 3
-    WaveMaxMonstersAmount: 1
+    SpawnCooldown: 2
+    WaveMaxMonstersAmount: 2
     MaxMonsterLevel: 1
   _monstersParams:
   - MonsterLevel: 1

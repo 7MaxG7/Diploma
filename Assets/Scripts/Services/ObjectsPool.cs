@@ -10,20 +10,25 @@ namespace Services {
 		public event Action<int, bool> OnObjectActivationToggle;
 		
 		private readonly IPhotonDataExchangeController _photonDataExchangeController;
-		protected readonly List<T> _objects = new();
+		protected readonly Dictionary<int,List<T>> _objects = new();
 		protected readonly List<T> _spawnedObjects = new();
 
 
 		public T SpawnObject(Vector2 spawnPosition, params object[] parameters) {
 			T obj;
-			if (_objects.Count == 0) {
-				_objects.Capacity++;
+			var poolIndex = GetSpecifiedPoolIndex(parameters);
+			if (!_objects.ContainsKey(poolIndex))
+				_objects.Add(poolIndex, new List<T>());
+			
+			var objects = _objects[poolIndex];
+			if (objects.Count == 0) {
+				objects.Capacity++;
 				obj = SpawnSpecifiedObject(spawnPosition, parameters);
 				OnObjectInstantiated?.Invoke(obj.PhotonView.ViewID);
 			} else {
-				var objIndex = _objects.Count - 1;
-				obj = _objects[objIndex];
-				_objects.RemoveAt(objIndex);
+				var objIndex = objects.Count - 1;
+				obj = objects[objIndex];
+				objects.RemoveAt(objIndex);
 				obj.Respawn(spawnPosition);
 			}
 			_spawnedObjects.Add(obj);
@@ -35,17 +40,18 @@ namespace Services {
 			TogglePoolObjectActivation(obj, false);
 			obj.StopObj();
 			obj.Transform.position = Vector3.zero;
-			_objects.Add(obj);
+			_objects[obj.PoolIndex].Add(obj);
 			_spawnedObjects.Remove(obj);
 		}
-
-		protected abstract T SpawnSpecifiedObject(Vector2 spawnPosition, object[] parameters);
 
 		private void TogglePoolObjectActivation(T obj, bool isActive) {
 			obj.GameObject.SetActive(isActive);
 			OnObjectActivationToggle?.Invoke(obj.PhotonView.ViewID, isActive);
 		}
 
+		protected abstract int GetSpecifiedPoolIndex(object[] parameters);
+
+		protected abstract T SpawnSpecifiedObject(Vector2 spawnPosition, object[] parameters);
 	}
 
 }

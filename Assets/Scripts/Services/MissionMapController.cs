@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using Utils;
 using Zenject;
@@ -19,8 +20,9 @@ namespace Infrastructure {
 		/// </summary>
 		private const int GROUND_ITEM_RELOCATION_DISTANCE_RATE = 3;
 
+		public Transform[] GroundItems { get; private set; }
+
 		private readonly MissionConfig _missionConfig;
-		private Transform[] _groundItems;
 		private Transform _playerTransform;
 		private Vector2 _groundItemSize;
 		
@@ -34,9 +36,9 @@ namespace Infrastructure {
 		}
 
 		public void Dispose() {
-			_groundItems = null;
+			GroundItems = null;
 		}
-
+		
 		public void Init(Transform playerTransform, Vector2 groundItemSize) {
 			InitFields();
 			InstantiateGround();
@@ -48,27 +50,27 @@ namespace Infrastructure {
 			}
 
 			void InstantiateGround() {
-				_groundItems = new Transform[HORIZONTAL_GROUND_ITEMS_AMOUNT * VERTICAL_GROUND_ITEMS_AMOUNT];
+				GroundItems = new Transform[HORIZONTAL_GROUND_ITEMS_AMOUNT * VERTICAL_GROUND_ITEMS_AMOUNT];
 				var groundParent = new GameObject(TextConstants.GROUND_ITEMS_PARENT_NAME).transform;
 				for (var i = 0; i < HORIZONTAL_GROUND_ITEMS_AMOUNT; i++) {
 					for (var j = 0; j < VERTICAL_GROUND_ITEMS_AMOUNT; j++) {
 						var groundPosition = playerTransform.position + new Vector3(_groundItemSize.x * (i - 1), _groundItemSize.y * (j - 1));
 						var groundItem = Object.Instantiate(_missionConfig.GroundItemPref, groundPosition, Quaternion.identity, groundParent);
-						_groundItems[i * VERTICAL_GROUND_ITEMS_AMOUNT + j] = groundItem;
+						GroundItems[i * VERTICAL_GROUND_ITEMS_AMOUNT + j] = groundItem;
 					}
 				}
 			}
 		}
 
 		public void OnUpdate(float deltaTime) {
-			if (_groundItems == null || _playerTransform == null)
+			if (GroundItems == null || _playerTransform == null)
 				return;
 			
 			RelocateGround();
 
 			
 			void RelocateGround() {
-				foreach (var groundItem in _groundItems) {
+				foreach (var groundItem in GroundItems) {
 					_groundItemPositionTmp = groundItem.position;
 					if (ItemIsTooLeft()) {
 						_groundItemPositionTmp.x += _groundItemSize.x * GROUND_ITEM_RELOCATION_DISTANCE_RATE;

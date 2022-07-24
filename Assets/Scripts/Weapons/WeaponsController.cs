@@ -15,6 +15,7 @@ namespace Infrastructure {
 		private readonly List<IWeapon> _activeWeapons;
 		private readonly List<IUnit> _monsters;
 		private bool _isShooting;
+		public List<WeaponType> UpgradableWeaponTypes { get; private set; }
 
 
 		[Inject]
@@ -59,22 +60,57 @@ namespace Infrastructure {
 
 		public void Init(IUnit player) {
 			_player = player;
+			UpgradableWeaponTypes = _weaponsConfig.GetAllWeaponTypes().ToList();
 		}
 
 		public void StartShooting() {
 			_isShooting = true;
 		}
 
+		public void StopShooting() {
+			_isShooting = false;
+		}
+
 		public void AddWeapon(WeaponType type) {
 			if (_activeWeapons.Any(weapon => weapon.Type == type))
 				return;
 
-			_activeWeapons.Add(new Weapon(_player, _weaponsConfig.GetWeaponBaseParam(type), _ammosPool));
+			var newWeapon = new Weapon(_player, _weaponsConfig.GetWeaponBaseParam(type), _ammosPool);
+			_activeWeapons.Add(newWeapon);
+			UpdateUpgradableWeaponsList(newWeapon);
 		}
 
-		public void StopShooting() {
-			_isShooting = false;
+		public int GetCurrentLevelOfWeapon(WeaponType weaponType) {
+			var requiredWeapon = _activeWeapons.FirstOrDefault(weapon => weapon.Type == weaponType);
+			if (requiredWeapon == null)
+				return 0;
+
+			return requiredWeapon.Level;
 		}
+
+		public void AddOrUpgradeWeapon(WeaponType weaponType) {
+			var desiredWeapon = _activeWeapons.FirstOrDefault(weapon => weapon.Type == weaponType);
+			if (desiredWeapon == null) {
+				AddWeapon(weaponType);
+			} else {
+				UpgradeActiveWeapon(desiredWeapon);
+			}
+			
+
+			void UpgradeActiveWeapon(IWeapon upgradingWeapon) {
+				// TODO. Апгрейдить параметры
+				var upgradeParam = _weaponsConfig.GetWeaponUpgradeParam(upgradingWeapon.Type);
+				upgradingWeapon.Upgrade(upgradeParam?.GetUpgradeParamForLevel(upgradingWeapon.Level + 1));
+				
+				UpdateUpgradableWeaponsList(upgradingWeapon);
+			}
+		}
+
+		private void UpdateUpgradableWeaponsList(IWeapon newWeapon) {
+			if (_weaponsConfig.GetMaxLevelOfType(newWeapon.Type) <= newWeapon.Level)
+				UpgradableWeaponTypes.Remove(newWeapon.Type);
+		}
+
 	}
 
 }

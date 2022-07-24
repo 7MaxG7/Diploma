@@ -14,7 +14,11 @@ namespace Infrastructure {
 			_ammosFactory = ammosFactory;
 			_ammosFactory.SetAmmosPool(this);
 		}
-		
+
+		protected override int GetSpecifiedPoolIndex(object[] parameters) {
+			return (int)parameters[0];
+		}
+
 		protected override IAmmo SpawnSpecifiedObject(Vector2 spawnPosition, object[] parameters) {
 			var ammoType = (WeaponType)parameters[0];
 			return _ammosFactory.CreateAmmo(spawnPosition, ammoType);

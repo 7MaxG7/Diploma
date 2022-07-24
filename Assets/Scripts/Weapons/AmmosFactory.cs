@@ -19,7 +19,7 @@ namespace Infrastructure {
 		public IAmmo CreateAmmo(Vector2 position, WeaponType weaponType) {
 			var ammoParam = _weaponsConfig.GetWeaponBaseParam(weaponType);
 			var ammoGo = PhotonNetwork.Instantiate(ammoParam.AmmoPrefabPath, position, Quaternion.identity);
-			return new Ammo(ammoGo, ammoParam, _ammosPool, _handleDamageController);
+			return new Ammo(ammoGo, _ammosPool, _handleDamageController, (int)weaponType);
 		}
 
 		public void SetAmmosPool(IAmmosPool ammosPool) {

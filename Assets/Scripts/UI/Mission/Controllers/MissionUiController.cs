@@ -10,10 +10,12 @@ using Object = UnityEngine.Object;
 namespace UI {
 
 	internal class MissionUiController : IMissionUiController, IDisposable {
+		public event Action<WeaponType> OnSkillChoose;
 		private event Action OnUpdateCallback;
-		
+
 		private readonly UiConfig _uiConfig;
 		private PlayerUiController _playerUiController;
+		private SkillsUiController _skillsUiController;
 		private bool _isInited;
 
 
@@ -25,6 +27,7 @@ namespace UI {
 
 		public void Dispose() {
 			OnUpdateCallback -= _playerUiController.UpdateSmoothers;
+			_skillsUiController.OnSkillChoose -= UpgradeSkill;
 			_playerUiController?.Dispose();
 		}
 
@@ -40,9 +43,20 @@ namespace UI {
 			_playerUiController = new PlayerUiController(missionUiView.PlayerPanel, _uiConfig);
 			_playerUiController.Init(player);
 			OnUpdateCallback += _playerUiController.UpdateSmoothers;
+			
+			missionUiView.SkillsPanel.CanvasGroup.alpha = 0;
+			_skillsUiController = new SkillsUiController(missionUiView.SkillsPanel, _uiConfig);
+			_skillsUiController.OnSkillChoose += UpgradeSkill;
 			_isInited = true;
 		}
 
+		private void UpgradeSkill(WeaponType weaponType) {
+			OnSkillChoose?.Invoke(weaponType);
+		}
+
+		public void ShowSkillsChoose(ActualSkillInfo[] skills) {
+			_skillsUiController.ShowSkillsChoose(skills);
+		}
 	}
 
 }

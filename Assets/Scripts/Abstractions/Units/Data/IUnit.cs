@@ -17,6 +17,8 @@ namespace Units {
 		UnitView UnitView { get; }
 
 		bool CheckOwnView(IDamagableView damageTaker);
+
+		void KillUnit();
 	}
 
 }

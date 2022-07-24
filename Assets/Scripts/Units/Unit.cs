@@ -19,10 +19,12 @@ namespace Units {
 		public GameObject GameObject => UnitView.GameObject;
 		public Transform Transform => UnitView.Transform;
 		public PhotonView PhotonView => UnitView.PhotonView;
+		public int PoolIndex { get; }
 		public bool IsDead => Health.CurrentHp <= 0;
 
 
-		protected Unit(float moveSpeed, int hp) {
+		protected Unit(float moveSpeed, int hp, int poolIndex) {
+			PoolIndex = poolIndex;
 			MoveSpeed = moveSpeed;
 			Health = new Health(hp);
 			Health.OnDied += KillView;
@@ -48,7 +50,7 @@ namespace Units {
 			Rigidbody.velocity = Vector2.zero;
 		}
 
-		protected void KillMonster() {
+		public void KillUnit() {
 			Health.Kill();
 		}
 
