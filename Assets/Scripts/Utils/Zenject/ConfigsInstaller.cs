@@ -11,6 +11,7 @@ namespace Infrastructure.Zenject {
 		[SerializeField] private MonstersConfig _monstersConfig;
 		[SerializeField] private UiConfig _uiConfig;
 		[SerializeField] private WeaponsConfig weaponsConfig;
+		[SerializeField] private SoundConfig _soundConfig;
 		
 		public override void InstallBindings() {
 			Container.Bind<LobbyConfig>().FromScriptableObject(_lobbyConfig).AsSingle();
@@ -19,6 +20,7 @@ namespace Infrastructure.Zenject {
 			Container.Bind<MonstersConfig>().FromScriptableObject(_monstersConfig).AsSingle();
 			Container.Bind<UiConfig>().FromScriptableObject(_uiConfig).AsSingle();
 			Container.Bind<WeaponsConfig>().FromScriptableObject(weaponsConfig).AsSingle();
+			Container.Bind<SoundConfig>().FromScriptableObject(_soundConfig).AsSingle();
 		}
 	}
 

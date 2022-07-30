@@ -3,6 +3,7 @@ using System.Collections;
 using System.Threading.Tasks;
 using UI;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using Utils;
 using Zenject;
 using Object = UnityEngine.Object;
@@ -10,13 +11,14 @@ using Object = UnityEngine.Object;
 
 namespace Infrastructure {
 
-	internal class PermanentUiController : IPermanentUiController {
+	internal class PermanentUiController : IPermanentUiController, IDisposable {
 
 		public event Action OnCurtainShown;
 		public bool IsActivating => _loadingCurtainIsActivating;
 		public bool IsActive => _loadingCurtainIsActive;
 		
 		private readonly IPermanentUiView _permanentUiView;
+		private readonly ISoundController _soundController;
 		private ICoroutineRunner _coroutineRunner;
 		private bool _loadingCurtainIsActivating;
 		private bool _loadingCurtainIsDeactivating;
@@ -25,14 +27,31 @@ namespace Infrastructure {
 
 
 		[Inject]
-		public PermanentUiController(IPermanentUiView permanentUiView) {
+		public PermanentUiController(IPermanentUiView permanentUiView, ISoundController soundController) {
 			_permanentUiView = permanentUiView;
+			_soundController = soundController;
 		}
 		
+		public void Dispose() {
+			_permanentUiView.SettingsPanel.MusicVolumeSlider.onValueChanged.RemoveAllListeners();
+			_permanentUiView.SettingsPanel.SoundVolumeSlider.onValueChanged.RemoveAllListeners();
+			_permanentUiView.SettingsPanel.CloseButton.onClick.RemoveAllListeners();
+		}
+
 		public void Init(ICoroutineRunner coroutineRunner) {
 			_coroutineRunner = coroutineRunner;
-			
+			InitSettingsPanel();
 			Object.DontDestroyOnLoad(_permanentUiView.GameObject);
+
+			
+			void InitSettingsPanel() {
+				_permanentUiView.SettingsPanel.MusicVolumeSlider.value = _soundController.MusicVolume;
+				_permanentUiView.SettingsPanel.SoundVolumeSlider.value = _soundController.SoundVolume;
+				_permanentUiView.SettingsPanel.MusicVolumeSlider.onValueChanged.AddListener(volume => _soundController.MusicVolume = volume);
+				_permanentUiView.SettingsPanel.SoundVolumeSlider.onValueChanged.AddListener(volume => _soundController.SoundVolume = volume);
+				_permanentUiView.SettingsPanel.CloseButton.onClick.AddListener(HideSettingsPanel);
+				_permanentUiView.SettingsPanel.gameObject.SetActive(false);
+			}
 		}
 
 		public void ShowLoadingCurtain(bool animationIsOn = true, bool isForced = false) {
@@ -56,6 +75,17 @@ namespace Infrastructure {
 				_permanentUiView.LoadingCurtainCanvasGroup.alpha = 0;
 				_loadingCurtainIsActive = false;
 			}
+		}
+
+		public void ShowSettingsPanel() {
+			_permanentUiView.SettingsPanel.gameObject.SetActive(true);
+		}
+
+		private void HideSettingsPanel() {
+			_permanentUiView.SettingsPanel.gameObject.SetActive(false);
+			PlayerPrefs.SetFloat(TextConstants.MUSIC_VOLUME_PREFS_KEY, _permanentUiView.SettingsPanel.MusicVolumeSlider.value);
+			PlayerPrefs.SetFloat(TextConstants.SOUND_VOLUME_PREFS_KEY, _permanentUiView.SettingsPanel.SoundVolumeSlider.value);
+			PlayerPrefs.Save();
 		}
 
 		private IEnumerator ShowLoadingCurtainCoroutine() {

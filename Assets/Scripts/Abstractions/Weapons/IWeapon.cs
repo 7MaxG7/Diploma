@@ -1,4 +1,5 @@
-﻿using Units;
+﻿using System;
+using Units;
 
 
 namespace Infrastructure {
@@ -12,6 +13,8 @@ namespace Infrastructure {
 		void ReduceCooldown(float deltaTime);
 		void Shoot(IUnit target);
 		void Upgrade(WeaponLevelUpgradeParam upgradeParam);
+
+		event Action<WeaponType> OnShooted;
 	}
 
 }

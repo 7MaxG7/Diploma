@@ -6,7 +6,8 @@ namespace Infrastructure {
 
 	internal interface IWeaponsController : IUpdater {
 		List<WeaponType> UpgradableWeaponTypes { get; }
-		void Init(IUnit player);
+		
+		void Init(IUnit player, ISoundController soundController);
 		void StopShooting();
 		void StartShooting();
 		void AddWeapon(WeaponType type);

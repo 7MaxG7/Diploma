@@ -6,11 +6,11 @@ namespace Infrastructure {
 
 	[CreateAssetMenu(menuName = "Configs/" + nameof(WeaponsConfig), fileName = nameof(WeaponsConfig), order = 6)]
 	internal class WeaponsConfig : ScriptableObject {
-
-		public int WeaponsAmount => _weaponParams.Length;
 		
 		[SerializeField] private WeaponBaseParam[] _weaponParams;
 		[SerializeField] private WeaponUpgradeParam[] _weaponUpgradeParams;
+
+		public int WeaponsAmount => _weaponParams.Length;
 
 
 		public WeaponBaseParam GetWeaponBaseParam(WeaponType weaponType) {

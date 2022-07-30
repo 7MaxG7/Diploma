@@ -11,6 +11,8 @@ namespace Infrastructure.Zenject {
 		[SerializeField] private TMP_Text _loginButtonText;
 		[SerializeField] private Button _loginPanelButton;
 		[SerializeField] private Button _playButton;
+		[SerializeField] private Button _settingsButton;
+		[SerializeField] private Button _creditsButton;
 		[SerializeField] private Button _quitGameButton;
 		[Header("Panels")]
 		[SerializeField] private LoginPanelView _loginPanelView;
@@ -21,6 +23,8 @@ namespace Infrastructure.Zenject {
 		public TMP_Text LoginButtonText => _loginButtonText;
 		public Button LoginPanelButton => _loginPanelButton;
 		public Button PlayButton => _playButton;
+		public Button SettingsButton => _settingsButton;
+		public Button CreditsButton => _creditsButton;
 		public Button QuitGameButton => _quitGameButton;
 		// Panels
 		public LoginPanelView LoginPanelView => _loginPanelView;

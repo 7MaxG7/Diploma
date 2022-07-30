@@ -11,7 +11,8 @@ namespace Infrastructure {
 		public int Level { get; private set; }
 
 		public bool IsReady => _cooldownTimer <= 0;
-		
+		public event Action<WeaponType> OnShooted;
+
 		private float _cooldown;
 		private readonly IUnit _owner;
 		private readonly IAmmosPool _ammosPool;
@@ -48,6 +49,7 @@ namespace Infrastructure {
 			ammo.Init(_owner, _damage, _damageTickCooldown, _isPiercing);
 			var destination = target.Transform.position - ownerPosition;
 			ammo.RigidBody.AddForce(destination * _ammoSpeed, ForceMode2D.Impulse);
+			OnShooted?.Invoke(Type);
 		}
 
 		public void Upgrade(WeaponLevelUpgradeParam upgradeParam) {

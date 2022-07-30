@@ -11,18 +11,22 @@ namespace Infrastructure {
 		
 		private readonly IMainMenuController _mainMenuController;
 		private readonly IPermanentUiController _permanentUiController;
+		private readonly ISoundController _soundController;
 		private readonly ISceneLoader _sceneLoader;
 
 
 		[Inject]
-		public MainMenuState(ISceneLoader sceneLoader, IMainMenuController mainMenuController, IPermanentUiController permanentUiController) {
+		public MainMenuState(ISceneLoader sceneLoader, IMainMenuController mainMenuController, IPermanentUiController permanentUiController
+				, ISoundController soundController) {
 			_sceneLoader = sceneLoader;
 			_mainMenuController = mainMenuController;
 			_permanentUiController = permanentUiController;
+			_soundController = soundController;
 		}
 
 		public void Enter() {
 			_permanentUiController.HideLoadingCurtain();
+			_soundController.PlayRandomMenuMusic();
 			_sceneLoader.LoadScene(TextConstants.MAIN_MENU_SCENE_NAME, SetupMainMenu);
 		}
 
@@ -44,6 +48,7 @@ namespace Infrastructure {
 		}
 
 		public void Exit() {
+			_soundController.StopAll();
 			if (!_permanentUiController.IsActivating)
 				_mainMenuController.Dispose();
 			else

@@ -31,6 +31,9 @@
 		public const string EXPERIENCE_BAR_LEVEL_TEXT_TEMPLATE = "{0}";
 		public const string NEW_WEAPON_LEVEL_TEXT = "New!";
 		public const string UPGRADE_WEAPON_LEVEL_TEXT = "Lvl. {0}";
+		
+		public const string MUSIC_VOLUME_PREFS_KEY = "music_volume";
+		public const string SOUND_VOLUME_PREFS_KEY = "sound_value";
 	}
 
 }

@@ -53,6 +53,8 @@ namespace Infrastructure {
 			void InitButtons() {
 				_mainMenuView.LoginPanelButton.onClick.AddListener(OpenLoginPanel);
 				_mainMenuView.PlayButton.onClick.AddListener(OpenPlayPanel);
+				_mainMenuView.SettingsButton.onClick.AddListener(OpenSettingsPanel);
+				_mainMenuView.CreditsButton.onClick.AddListener(ShowCredits);
 				_mainMenuView.QuitGameButton.onClick.AddListener(QuitGame);
 			}
 
@@ -73,6 +75,14 @@ namespace Infrastructure {
 
 		private void OpenPlayPanel() {
 			_lobbyScreenController.ShowScreen();
+		}
+
+		private void OpenSettingsPanel() {
+			_permanentUiController.ShowSettingsPanel();
+		}
+
+		private void ShowCredits() {
+			
 		}
 
 		private void QuitGame() {

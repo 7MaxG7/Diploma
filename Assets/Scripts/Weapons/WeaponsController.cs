@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Services;
 using Units;
@@ -8,13 +9,14 @@ using Zenject;
 
 namespace Infrastructure {
 
-	internal class WeaponsController : IWeaponsController {
+	internal class WeaponsController : IWeaponsController, IDisposable {
 		private readonly IAmmosPool _ammosPool;
 		private readonly WeaponsConfig _weaponsConfig;
 		private IUnit _player;
 		private readonly List<IWeapon> _activeWeapons;
 		private readonly List<IUnit> _monsters;
 		private bool _isShooting;
+		private ISoundController _soundController;
 		public List<WeaponType> UpgradableWeaponTypes { get; private set; }
 
 
@@ -25,6 +27,13 @@ namespace Infrastructure {
 			controllersHolder.AddController(this);
 			_activeWeapons = new List<IWeapon>(weaponsConfig.WeaponsAmount);
 			_monsters = unitsPool.ActiveMonsters;
+		}
+
+		public void Dispose() {
+			foreach (var weapon in _activeWeapons) {
+				weapon.OnShooted -= _soundController.PlayWeaponShootSound;
+			}
+			_activeWeapons.Clear();
 		}
 
 		public void OnUpdate(float deltaTime) {
@@ -58,7 +67,8 @@ namespace Infrastructure {
 			}
 		}
 
-		public void Init(IUnit player) {
+		public void Init(IUnit player, ISoundController soundController) {
+			_soundController = soundController;
 			_player = player;
 			UpgradableWeaponTypes = _weaponsConfig.GetAllWeaponTypes().ToList();
 		}
@@ -71,11 +81,29 @@ namespace Infrastructure {
 			_isShooting = false;
 		}
 
+		public void AddOrUpgradeWeapon(WeaponType weaponType) {
+			var desiredWeapon = _activeWeapons.FirstOrDefault(weapon => weapon.Type == weaponType);
+			if (desiredWeapon == null) {
+				AddWeapon(weaponType);
+			} else {
+				UpgradeActiveWeapon(desiredWeapon);
+			}
+			
+
+			void UpgradeActiveWeapon(IWeapon upgradingWeapon) {
+				var upgradeParam = _weaponsConfig.GetWeaponUpgradeParam(upgradingWeapon.Type);
+				upgradingWeapon.Upgrade(upgradeParam?.GetUpgradeParamForLevel(upgradingWeapon.Level + 1));
+				
+				UpdateUpgradableWeaponsList(upgradingWeapon);
+			}
+		}
+
 		public void AddWeapon(WeaponType type) {
 			if (_activeWeapons.Any(weapon => weapon.Type == type))
 				return;
 
 			var newWeapon = new Weapon(_player, _weaponsConfig.GetWeaponBaseParam(type), _ammosPool);
+			newWeapon.OnShooted += _soundController.PlayWeaponShootSound;
 			_activeWeapons.Add(newWeapon);
 			UpdateUpgradableWeaponsList(newWeapon);
 		}
@@ -88,29 +116,10 @@ namespace Infrastructure {
 			return requiredWeapon.Level;
 		}
 
-		public void AddOrUpgradeWeapon(WeaponType weaponType) {
-			var desiredWeapon = _activeWeapons.FirstOrDefault(weapon => weapon.Type == weaponType);
-			if (desiredWeapon == null) {
-				AddWeapon(weaponType);
-			} else {
-				UpgradeActiveWeapon(desiredWeapon);
-			}
-			
-
-			void UpgradeActiveWeapon(IWeapon upgradingWeapon) {
-				// TODO. Апгрейдить параметры
-				var upgradeParam = _weaponsConfig.GetWeaponUpgradeParam(upgradingWeapon.Type);
-				upgradingWeapon.Upgrade(upgradeParam?.GetUpgradeParamForLevel(upgradingWeapon.Level + 1));
-				
-				UpdateUpgradableWeaponsList(upgradingWeapon);
-			}
-		}
-
 		private void UpdateUpgradableWeaponsList(IWeapon newWeapon) {
 			if (_weaponsConfig.GetMaxLevelOfType(newWeapon.Type) <= newWeapon.Level)
 				UpgradableWeaponTypes.Remove(newWeapon.Type);
 		}
-
 	}
 
 }

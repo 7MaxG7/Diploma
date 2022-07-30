@@ -9,6 +9,7 @@ namespace UI {
 		Canvas PermanentCanvas { get; }
 		CanvasGroup LoadingCurtainCanvasGroup { get; }
 		TMP_Text LoadingCurtainText { get; }
+		SettingsPanelView SettingsPanel { get; }
 	}
 
 }
