@@ -10,6 +10,7 @@ namespace UI {
 		CanvasGroup LoadingCurtainCanvasGroup { get; }
 		TMP_Text LoadingCurtainText { get; }
 		SettingsPanelView SettingsPanel { get; }
+		GameObject MissionSettingsPanel { get; }
 	}
 
 }

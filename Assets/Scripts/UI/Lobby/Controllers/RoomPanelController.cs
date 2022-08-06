@@ -12,13 +12,13 @@ namespace Infrastructure {
 	internal class RoomPanelController : IDisposable {
 		public RoomPanelView RoomPanelView { get; }
 
-		private readonly LobbyConfig _lobbyConfig;
+		private readonly MainMenuConfig _mainMenuConfig;
 		private readonly Dictionary<Player, RoomPlayerItemView> _cachedPlayerItemViews = new();
 		private readonly IPermanentUiController _permanentUiController;
 
 
-		public RoomPanelController(LobbyConfig lobbyConfig, RoomPanelView roomPanelView, IPermanentUiController permanentUiController) {
-			_lobbyConfig = lobbyConfig;
+		public RoomPanelController(MainMenuConfig mainMenuConfig, RoomPanelView roomPanelView, IPermanentUiController permanentUiController) {
+			_mainMenuConfig = mainMenuConfig;
 			_permanentUiController = permanentUiController;
 			RoomPanelView = roomPanelView;
 		}
@@ -59,7 +59,7 @@ namespace Infrastructure {
 		}
 
 		public void AddPlayer(Player player) {
-			var playerItem = Object.Instantiate(_lobbyConfig.RoomCachedPlayerItemPref, RoomPanelView.PlayersListContent);
+			var playerItem = Object.Instantiate(_mainMenuConfig.RoomCachedPlayerItemPref, RoomPanelView.PlayersListContent);
 			playerItem.PlayerName.text = player.NickName;
 			_cachedPlayerItemViews.Add(player, playerItem);
 		}

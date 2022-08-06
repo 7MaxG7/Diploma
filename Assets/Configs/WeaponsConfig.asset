@@ -38,7 +38,7 @@ MonoBehaviour:
     _range: 3
     _cooldown: 5
     _ammoSpeed: 0
-    _baseTicksDamage: c2010000
+    _baseTicksDamage: 05020000
     _damageTicksCooldown: 0
     _isPiercing: 0
     _name: Mine
@@ -166,26 +166,26 @@ MonoBehaviour:
   - _weaponType: 3
     _weaponLevelUpgradeParams:
     - _weaponLevel: 2
-      _name: 
-      _description: 
+      _name: More Mines
+      _description: Reloading of projectiles 10% faster
       _upgrades:
-      - _characteristicType: 0
-        _arithmetic: 0
-        _deltaValue: 0
+      - _characteristicType: 3
+        _arithmetic: 3
+        _deltaValue: 0.9
     - _weaponLevel: 3
-      _name: 
-      _description: 
+      _name: Painful Mine
+      _description: Projectile damage increases by 15%
       _upgrades:
-      - _characteristicType: 0
-        _arithmetic: 0
-        _deltaValue: 0
+      - _characteristicType: 1
+        _arithmetic: 3
+        _deltaValue: 1.15
     - _weaponLevel: 4
-      _name: 
-      _description: 
+      _name: Far Mine
+      _description: Weapon detects enemies for shooting 15% farer
       _upgrades:
-      - _characteristicType: 0
-        _arithmetic: 0
-        _deltaValue: 0
+      - _characteristicType: 2
+        _arithmetic: 3
+        _deltaValue: 1.15
     - _weaponLevel: 5
       _name: Rapid Mine
       _description: Reloading of projectiles 50% faster
@@ -194,26 +194,26 @@ MonoBehaviour:
         _arithmetic: 3
         _deltaValue: 0.5
     - _weaponLevel: 6
-      _name: 
-      _description: 
+      _name: Painful Mine
+      _description: Projectile damage increases by 25%
       _upgrades:
-      - _characteristicType: 0
-        _arithmetic: 0
-        _deltaValue: 0
+      - _characteristicType: 1
+        _arithmetic: 3
+        _deltaValue: 1.25
     - _weaponLevel: 7
-      _name: 
-      _description: 
+      _name: Far Mine
+      _description: Weapon detects enemies for shooting 25% farer
       _upgrades:
-      - _characteristicType: 0
-        _arithmetic: 0
-        _deltaValue: 0
+      - _characteristicType: 2
+        _arithmetic: 3
+        _deltaValue: 1.25
     - _weaponLevel: 8
-      _name: 
-      _description: 
+      _name: More Mines
+      _description: Reloading of projectiles 20% faster
       _upgrades:
-      - _characteristicType: 0
-        _arithmetic: 0
-        _deltaValue: 0
+      - _characteristicType: 3
+        _arithmetic: 3
+        _deltaValue: 0.8
     - _weaponLevel: 9
       _name: Deadly mine
       _description: Projectile damage increased by 1500

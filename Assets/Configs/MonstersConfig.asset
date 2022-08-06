@@ -15,7 +15,7 @@ MonoBehaviour:
   _spawnParams:
   - SpawnerLevel: 1
     SpawnCooldown: 2
-    WaveMaxMonstersAmount: 2
+    WaveMaxMonstersAmount: 1
     MaxMonsterLevel: 1
   _monstersParams:
   - MonsterLevel: 1

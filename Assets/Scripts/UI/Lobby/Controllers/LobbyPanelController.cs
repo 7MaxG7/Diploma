@@ -13,15 +13,15 @@ namespace Infrastructure {
 		
 		public LobbyPanelView LobbyPanelView { get; }
 
-		private readonly LobbyConfig _lobbyConfig;
+		private readonly MainMenuConfig _mainMenuConfig;
 		private readonly ILobbyStatusDisplayer _lobbyStatusDisplayer;
 		private readonly Dictionary<string, LobbyCachedRoomItemView> _cachedRoomItemViews = new();
 		private bool _uiIsBlocked;
 
 
-		public LobbyPanelController(LobbyConfig lobbyConfig, LobbyPanelView lobbyPanelView, ILobbyStatusDisplayer lobbyStatusDisplayer) {
+		public LobbyPanelController(MainMenuConfig mainMenuConfig, LobbyPanelView lobbyPanelView, ILobbyStatusDisplayer lobbyStatusDisplayer) {
 			LobbyPanelView = lobbyPanelView;
-			_lobbyConfig = lobbyConfig;
+			_mainMenuConfig = mainMenuConfig;
 			_lobbyStatusDisplayer = lobbyStatusDisplayer;
 		}
 
@@ -93,7 +93,7 @@ namespace Infrastructure {
 					}
 				} else {
 					if (!_cachedRoomItemViews.ContainsKey(roomName)) {
-						var roomItem = Object.Instantiate(_lobbyConfig.LobbyCachedRoomItemPref, LobbyPanelView.RoomsListContent);
+						var roomItem = Object.Instantiate(_mainMenuConfig.LobbyCachedRoomItemPref, LobbyPanelView.RoomsListContent);
 						roomItem.RoomName.text = roomName;
 						roomItem.RoomButton.onClick.AddListener(() => this.JoinRoom(roomName));
 						_cachedRoomItemViews[roomName] = roomItem;

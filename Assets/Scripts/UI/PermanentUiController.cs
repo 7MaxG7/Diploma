@@ -3,7 +3,6 @@ using System.Collections;
 using System.Threading.Tasks;
 using UI;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using Utils;
 using Zenject;
 using Object = UnityEngine.Object;
@@ -77,7 +76,8 @@ namespace Infrastructure {
 			}
 		}
 
-		public void ShowSettingsPanel() {
+		public void ShowSettingsPanel(bool missionPanelIsActive = false) {
+			_permanentUiView.MissionSettingsPanel.SetActive(missionPanelIsActive);
 			_permanentUiView.SettingsPanel.gameObject.SetActive(true);
 		}
 

@@ -1,4 +1,5 @@
-﻿using Infrastructure.Zenject;
+﻿using System.Collections;
+using DG.Tweening;
 using Photon.Pun;
 using UnityEngine;
 using Utils;
@@ -13,14 +14,13 @@ namespace Infrastructure {
 		private MainMenuView _mainMenuView;
 		private LoginPanelController _loginPanelController;
 		private LobbyScreenController _lobbyScreenController;
-		private readonly LobbyConfig _lobbyConfig;
+		private readonly MainMenuConfig _mainMenuConfig;
 		private readonly IPermanentUiController _permanentUiController;
 
 
 		[Inject]
-		public MainMenuController(/*MainMenuView mainMenuView, */LobbyConfig lobbyConfig, IPermanentUiController permanentUiController) {
-			// _mainMenuView = mainMenuView;
-			_lobbyConfig = lobbyConfig;
+		public MainMenuController(MainMenuConfig mainMenuConfig, IPermanentUiController permanentUiController) {
+			_mainMenuConfig = mainMenuConfig;
 			_permanentUiController = permanentUiController;
 		}
 
@@ -31,7 +31,10 @@ namespace Infrastructure {
 		public void OnDispose() {
 			_mainMenuView.LoginPanelButton.onClick.RemoveAllListeners();
 			_mainMenuView.PlayButton.onClick.RemoveAllListeners();
+			_mainMenuView.SettingsButton.onClick.RemoveAllListeners();
+			_mainMenuView.CreditsButton.onClick.RemoveAllListeners();
 			_mainMenuView.QuitGameButton.onClick.RemoveAllListeners();
+			_mainMenuView.CreditsView.CloseCreditsButton.onClick.RemoveAllListeners();
 			_loginPanelController.OnUserLoginSuccess -= SetUser;
 			_loginPanelController.Dispose();
 			_lobbyScreenController.Dispose();
@@ -40,7 +43,7 @@ namespace Infrastructure {
 
 		public void SetupMainMenu() {
 			if (_mainMenuView == null) {
-				_mainMenuView = Object.Instantiate(_lobbyConfig.MainMenuPref);
+				_mainMenuView = Object.Instantiate(_mainMenuConfig.MainMenuPref);
 			}
 			_mainMenuView.GameObject.SetActive(true);
 			_mainMenuView.HeaderLabel.text = TextConstants.MAIN_MENU_HEADER_TEXT;
@@ -56,6 +59,7 @@ namespace Infrastructure {
 				_mainMenuView.SettingsButton.onClick.AddListener(OpenSettingsPanel);
 				_mainMenuView.CreditsButton.onClick.AddListener(ShowCredits);
 				_mainMenuView.QuitGameButton.onClick.AddListener(QuitGame);
+				_mainMenuView.CreditsView.CloseCreditsButton.onClick.AddListener(HideCredits);
 			}
 
 			void InitLoginPanel() {
@@ -65,7 +69,7 @@ namespace Infrastructure {
 			}
 
 			void InitLobbyPanel() {
-				_lobbyScreenController = new LobbyScreenController(_mainMenuView.LobbyScreenView, _lobbyConfig, _permanentUiController);
+				_lobbyScreenController = new LobbyScreenController(_mainMenuView.LobbyScreenView, _mainMenuConfig, _permanentUiController);
 			}
 		}
 
@@ -82,7 +86,41 @@ namespace Infrastructure {
 		}
 
 		private void ShowCredits() {
+			PrepareCredits();
+			_mainMenuView.CreditsView.CanvasGroup.DOFade(1, _mainMenuConfig.CreditsFadingDuration)
+					.OnComplete(() => {
+						_mainMenuView.CreditsView.StartCoroutine(ScrollCredits());
+					});
 			
+
+			void PrepareCredits() {
+				_mainMenuView.CreditsView.GameObject.SetActive(true);
+				_mainMenuView.CreditsView.CanvasGroup.alpha = 0;
+				_mainMenuView.CreditsView.CreditsScroll.content.anchoredPosition = Vector2.zero;
+				_mainMenuView.CreditsView.CanvasGroup.interactable = true;
+			}
+
+			IEnumerator ScrollCredits() {
+				var endContentYPosition = _mainMenuView.CreditsView.CreditsScroll.content.rect.height -
+				                          _mainMenuView.CreditsView.CreditsScroll.viewport.rect.height;
+				var creditsScrollDelta = new Vector2(0, _mainMenuConfig.CreditsScrollSpeed);
+				while (_mainMenuView.CreditsView.CreditsScroll.content.anchoredPosition.y < endContentYPosition) {
+					_mainMenuView.CreditsView.CreditsScroll.content.anchoredPosition += creditsScrollDelta * Time.deltaTime;
+					yield return new WaitForEndOfFrame();
+				}
+
+				HideCredits();
+			}
+		}
+
+		private void HideCredits() {
+			_mainMenuView.CreditsView.CanvasGroup.interactable = false;
+			_mainMenuView.CreditsView.CanvasGroup.DOKill();
+			_mainMenuView.CreditsView.StopAllCoroutines();
+			_mainMenuView.CreditsView.CanvasGroup.DOFade(0, _mainMenuConfig.CreditsFadingDuration)
+					.OnComplete(() => {
+						_mainMenuView.CreditsView.GameObject.SetActive(false);
+					});
 		}
 
 		private void QuitGame() {

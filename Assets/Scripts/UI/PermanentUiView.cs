@@ -9,12 +9,14 @@ namespace UI {
 		[SerializeField] private CanvasGroup _loadingCurtainCanvasGroup;
 		[SerializeField] private TMP_Text _loadingCurtainText;
 		[SerializeField] private SettingsPanelView _settingsPanel;
+		[SerializeField] private GameObject _missionSettingsPanel;
 
 		public GameObject GameObject => gameObject;
 		public Canvas PermanentCanvas => _permanentCanvas;
 		public CanvasGroup LoadingCurtainCanvasGroup => _loadingCurtainCanvasGroup;
 		public TMP_Text LoadingCurtainText => _loadingCurtainText;
 		public SettingsPanelView SettingsPanel => _settingsPanel;
+		public GameObject MissionSettingsPanel => _missionSettingsPanel;
 	}
 
 }

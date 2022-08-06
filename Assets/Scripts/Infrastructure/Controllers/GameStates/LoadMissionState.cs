@@ -107,7 +107,7 @@ namespace Infrastructure {
 
 			void InitUnits(Vector2 vector2, out IUnit player) {
 				player = PreparePlayer(vector2);
-				_cameraController.Follow(player.Transform, new Vector3(0, 0, -1));
+				_cameraController.Follow(player.Transform, _missionConfig.CameraOffset);
 				_missionMapController.Init(player.Transform, vector2);
 				_monstersSpawner.Init();
 				_monstersMoveController.Init(player.Transform);

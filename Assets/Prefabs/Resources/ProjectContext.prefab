@@ -145,7 +145,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6883dc7202104a35957065f2acd2db08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _lobbyConfig: {fileID: 11400000, guid: 69df7e3a17d79a44e82e91b65e290ecf, type: 2}
+  mainMenuConfig: {fileID: 11400000, guid: 69df7e3a17d79a44e82e91b65e290ecf, type: 2}
   _missionConfig: {fileID: 11400000, guid: 0060b55e0708c7746bf00c089e7d7577, type: 2}
   _playerConfig: {fileID: 11400000, guid: a1aa564dd1c554344928a6fa57df7174, type: 2}
   _monstersConfig: {fileID: 11400000, guid: 6a30652dd47945346a97dcf03f7275b9, type: 2}

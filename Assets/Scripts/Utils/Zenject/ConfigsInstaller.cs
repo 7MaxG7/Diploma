@@ -5,7 +5,7 @@ using Zenject;
 namespace Infrastructure.Zenject {
 
 	internal sealed class ConfigsInstaller : MonoInstaller {
-		[SerializeField] private LobbyConfig _lobbyConfig;
+		[SerializeField] private MainMenuConfig mainMenuConfig;
 		[SerializeField] private MissionConfig _missionConfig;
 		[SerializeField] private PlayerConfig _playerConfig;
 		[SerializeField] private MonstersConfig _monstersConfig;
@@ -14,7 +14,7 @@ namespace Infrastructure.Zenject {
 		[SerializeField] private SoundConfig _soundConfig;
 		
 		public override void InstallBindings() {
-			Container.Bind<LobbyConfig>().FromScriptableObject(_lobbyConfig).AsSingle();
+			Container.Bind<MainMenuConfig>().FromScriptableObject(mainMenuConfig).AsSingle();
 			Container.Bind<MissionConfig>().FromScriptableObject(_missionConfig).AsSingle();
 			Container.Bind<PlayerConfig>().FromScriptableObject(_playerConfig).AsSingle();
 			Container.Bind<MonstersConfig>().FromScriptableObject(_monstersConfig).AsSingle();

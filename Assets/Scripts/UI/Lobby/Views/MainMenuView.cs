@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 
-namespace Infrastructure.Zenject {
+namespace Infrastructure {
 
 	internal class MainMenuView : MonoBehaviour, IMainMenuView {
 		[SerializeField] private GameObject _gameObject;
@@ -17,6 +17,7 @@ namespace Infrastructure.Zenject {
 		[Header("Panels")]
 		[SerializeField] private LoginPanelView _loginPanelView;
 		[SerializeField] private LobbyScreenView _lobbyScreenView;
+		[SerializeField] private CreditsView _creditsView;
 
 		public GameObject GameObject => _gameObject;
 		public TMP_Text HeaderLabel => _headerLabel;
@@ -29,6 +30,7 @@ namespace Infrastructure.Zenject {
 		// Panels
 		public LoginPanelView LoginPanelView => _loginPanelView;
 		public LobbyScreenView LobbyScreenView => _lobbyScreenView;
+		public CreditsView CreditsView => _creditsView;
 	}
 
 }

@@ -25,10 +25,10 @@ namespace Infrastructure {
 		public bool IsLoading { set; get; }
 
 
-		public LobbyScreenController(LobbyScreenView lobbyScreenView, LobbyConfig lobbyConfig, IPermanentUiController permanentUiController) {
+		public LobbyScreenController(LobbyScreenView lobbyScreenView, MainMenuConfig mainMenuConfig, IPermanentUiController permanentUiController) {
 			_lobbyScreenView = lobbyScreenView;
-			_lobbyPanelController = new LobbyPanelController(lobbyConfig, _lobbyScreenView.LobbyPanelView, this);
-			_roomPanelController = new RoomPanelController(lobbyConfig, lobbyScreenView.RoomPanelView, permanentUiController);
+			_lobbyPanelController = new LobbyPanelController(mainMenuConfig, _lobbyScreenView.LobbyPanelView, this);
+			_roomPanelController = new RoomPanelController(mainMenuConfig, lobbyScreenView.RoomPanelView, permanentUiController);
 		}
 
 		public void Init(string userName) {
