@@ -10,7 +10,9 @@ namespace Services {
 		public event Action<int, bool> OnObjectActivationToggle;
 		
 		private readonly IPhotonDataExchangeController _photonDataExchangeController;
+		// ReSharper disable once InconsistentNaming
 		protected readonly Dictionary<int,List<T>> _objects = new();
+		// ReSharper disable once InconsistentNaming
 		protected readonly List<T> _spawnedObjects = new();
 
 
@@ -37,11 +39,15 @@ namespace Services {
 		}
 
 		public void ReturnObject(T obj) {
+			// In case of ammo it can be returned twice: on collision it returnes, deactivates and becomes invisible - so returnes second time OnBecameInvisible.
+			// Thats why we check if its active first
+			if (!_spawnedObjects.Remove(obj))
+				return;
+
 			TogglePoolObjectActivation(obj, false);
 			obj.StopObj();
 			obj.Transform.position = Vector3.zero;
 			_objects[obj.PoolIndex].Add(obj);
-			_spawnedObjects.Remove(obj);
 		}
 
 		private void TogglePoolObjectActivation(T obj, bool isActive) {
