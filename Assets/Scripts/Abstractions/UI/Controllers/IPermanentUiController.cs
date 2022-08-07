@@ -5,6 +5,8 @@ namespace Infrastructure {
 
 	internal interface IPermanentUiController {
 		event Action OnCurtainShown;
+		event  Action OnLeaveGameClicked;
+		event  Action OnResultPanelClosed;
 		bool IsActivating { get; }
 		bool IsActive { get; }
 
@@ -12,6 +14,8 @@ namespace Infrastructure {
 		void ShowLoadingCurtain(bool animationIsOn = true, bool isForced = false);
 		void HideLoadingCurtain(bool animationIsOn = true, bool isForced = false);
 		void ShowSettingsPanel(bool missionPanelIsActive = false);
+		void ShowMissionResult();
+		void HideMissionResult();
 	}
 
 }

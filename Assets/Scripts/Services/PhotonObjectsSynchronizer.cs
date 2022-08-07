@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Enums;
 using Photon.Pun;
@@ -7,7 +6,7 @@ using Photon.Pun;
 
 namespace Services {
 
-	internal class PhotonObjectsSynchronizer : IPhotonObjectsSynchronizer, IDisposable {
+	internal class PhotonObjectsSynchronizer : IPhotonObjectsSynchronizer {
 		private readonly List<PhotonView> _otherPlayersObjects = new();
 		private IPhotonDataExchangeController _photonDataExchangeController;
 		private IUnitsPool _unitsPool;
@@ -18,6 +17,9 @@ namespace Services {
 			_unitsPool.OnObjectActivationToggle -= SendActivationToggleData;
 			_photonDataExchangeController.OnInstantiationDataRecieved -= Register;
 			_photonDataExchangeController.OnActivationDataRecieved -= SetActive;
+			_unitsPool = null;
+			_photonDataExchangeController = null;
+			_otherPlayersObjects.Clear();
 		}
 
 		public void Init(IPhotonDataExchangeController photonDataExchangeController, IUnitsPool unitsPool) {

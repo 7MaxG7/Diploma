@@ -1,4 +1,5 @@
-﻿using Services;
+﻿using System.Linq;
+using Services;
 using UnityEngine;
 using Zenject;
 
@@ -15,6 +16,20 @@ namespace Infrastructure {
 			_ammosFactory.SetAmmosPool(this);
 		}
 
+		public void Dispose() {
+			foreach (var ammo in _objects.Values.SelectMany(obj => obj)) {
+				ammo.Dispose();
+			}
+			foreach (var objList in _objects.Values) {
+				objList.Clear();
+			}
+			_objects.Clear();
+			foreach (var ammo in _spawnedObjects) {
+				ammo.Dispose();
+			}
+			_spawnedObjects.Clear();
+		}
+
 		protected override int GetSpecifiedPoolIndex(object[] parameters) {
 			return (int)parameters[0];
 		}
@@ -23,6 +38,7 @@ namespace Infrastructure {
 			var ammoType = (WeaponType)parameters[0];
 			return _ammosFactory.CreateAmmo(spawnPosition, ammoType);
 		}
+
 	}
 
 }

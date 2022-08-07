@@ -1,12 +1,11 @@
-﻿using System;
-using Photon.Pun;
+﻿using Photon.Pun;
 using Units;
 using UnityEngine;
 
 
 namespace Infrastructure {
 
-	internal class Ammo : IAmmo, IDisposable {
+	internal class Ammo : IAmmo {
 		public GameObject GameObject => _ammoView.GameObject;
 		public Transform Transform => _ammoView.Transform;
 		public PhotonView PhotonView => _ammoView.PhotonView;
@@ -19,8 +18,8 @@ namespace Infrastructure {
 		
 		private readonly AmmoView _ammoView;
 		private IUnit _owner;
-		private readonly IAmmosPool _ammosPool;
-		private readonly IHandleDamageController _handleDamageController;
+		private IAmmosPool _ammosPool;
+		private IHandleDamageController _handleDamageController;
 
 
 		public Ammo(GameObject ammoGo, IAmmosPool ammosPool, IHandleDamageController handleDamageController, int poolIndex) {
@@ -35,6 +34,10 @@ namespace Infrastructure {
 		public void Dispose() {
 			_ammoView.OnTriggerEntered -= HandleCollision;
 			_ammoView.OnBecomeInvisible -= DeactivateObj;
+			PhotonNetwork.Destroy(_ammoView.GameObject);
+			_ammosPool = null;
+			_handleDamageController = null;
+			_owner = null;
 		}
 
 		public void Init(IUnit owner, int[] damage, float damageTicksCooldown = 0, bool isPiercing = false) {

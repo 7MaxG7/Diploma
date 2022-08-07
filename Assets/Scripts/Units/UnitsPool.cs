@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Infrastructure;
 using Units;
@@ -10,7 +9,7 @@ using Zenject;
 
 namespace Services {
 
-	internal class UnitsPool : ObjectsPool<IUnit>, IUnitsPool, IDisposable {
+	internal class UnitsPool : ObjectsPool<IUnit>, IUnitsPool {
 		private readonly IUnitsFactory _unitsFactory;
 		private readonly IHandleDamageController _handleDamageController;
 		public List<IUnit> ActiveMonsters => _spawnedObjects;
@@ -23,16 +22,21 @@ namespace Services {
 		}
 
 		public void Dispose() {
-			foreach (var obj in _objects.Values.SelectMany(obj => obj)) {
-				var unit = obj;
+			foreach (var unit in _objects.Values.SelectMany(obj => obj)) {
 				unit.OnDied -= ReturnObject;
 				unit.OnDied -= _handleDamageController.StopPeriodicalDamageForUnit;
+				unit.Dispose();
 			}
-			foreach (var obj in _spawnedObjects) {
-				var unit = obj;
+			foreach (var objList in _objects.Values) {
+				objList.Clear();
+			}
+			_objects.Clear();
+			foreach (var unit in ActiveMonsters) {
 				unit.OnDied -= ReturnObject;
 				unit.OnDied -= _handleDamageController.StopPeriodicalDamageForUnit;
+				unit.Dispose();
 			}
+			ActiveMonsters.Clear();
 		}
 
 		protected override int GetSpecifiedPoolIndex(object[] parameters) {

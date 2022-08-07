@@ -25,7 +25,6 @@ namespace Infrastructure {
 		}
 
 		public void Enter() {
-			_permanentUiController.HideLoadingCurtain();
 			_soundController.PlayRandomMenuMusic();
 			_sceneLoader.LoadScene(TextConstants.MAIN_MENU_SCENE_NAME, SetupMainMenu);
 		}
@@ -34,6 +33,8 @@ namespace Infrastructure {
 			_mainMenuController.SetupMainMenu();
 			SceneManager.sceneUnloaded += ShowCurtain;
 			SceneManager.sceneLoaded += SwitchState;
+			
+			_permanentUiController.HideLoadingCurtain();
 		}
 
 		private void ShowCurtain(Scene scene) {

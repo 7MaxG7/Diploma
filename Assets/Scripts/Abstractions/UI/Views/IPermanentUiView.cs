@@ -11,6 +11,8 @@ namespace UI {
 		TMP_Text LoadingCurtainText { get; }
 		SettingsPanelView SettingsPanel { get; }
 		GameObject MissionSettingsPanel { get; }
+		ResultPanelView ResultPanel { get; }
+		
 	}
 
 }

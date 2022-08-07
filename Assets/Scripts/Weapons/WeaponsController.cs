@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Services;
 using Units;
@@ -9,31 +8,38 @@ using Zenject;
 
 namespace Infrastructure {
 
-	internal class WeaponsController : IWeaponsController, IDisposable {
-		private readonly IAmmosPool _ammosPool;
+	internal class WeaponsController : IWeaponsController {
+		private IAmmosPool _ammosPool;
 		private readonly WeaponsConfig _weaponsConfig;
 		private IUnit _player;
 		private readonly List<IWeapon> _activeWeapons;
-		private readonly List<IUnit> _monsters;
+		private List<IUnit> _monsters;
 		private bool _isShooting;
 		private ISoundController _soundController;
 		public List<WeaponType> UpgradableWeaponTypes { get; private set; }
 
 
 		[Inject]
-		public WeaponsController(IUnitsPool unitsPool, IAmmosPool ammosPool, WeaponsConfig weaponsConfig, IControllersHolder controllersHolder) {
+		public WeaponsController(IUnitsPool unitsPool, IAmmosPool ammosPool, ISoundController soundController, WeaponsConfig weaponsConfig
+				, IControllersHolder controllersHolder) {
 			_ammosPool = ammosPool;
+			_soundController = soundController;
 			_weaponsConfig = weaponsConfig;
-			controllersHolder.AddController(this);
 			_activeWeapons = new List<IWeapon>(weaponsConfig.WeaponsAmount);
 			_monsters = unitsPool.ActiveMonsters;
+			controllersHolder.AddController(this);
 		}
 
 		public void Dispose() {
+			StopShooting();
 			foreach (var weapon in _activeWeapons) {
 				weapon.OnShooted -= _soundController.PlayWeaponShootSound;
 			}
 			_activeWeapons.Clear();
+			_soundController = null;
+			_player = null;
+			_monsters = null;
+			_ammosPool = null;
 		}
 
 		public void OnUpdate(float deltaTime) {
@@ -67,8 +73,7 @@ namespace Infrastructure {
 			}
 		}
 
-		public void Init(IUnit player, ISoundController soundController) {
-			_soundController = soundController;
+		public void Init(IUnit player) {
 			_player = player;
 			UpgradableWeaponTypes = _weaponsConfig.GetAllWeaponTypes().ToList();
 		}

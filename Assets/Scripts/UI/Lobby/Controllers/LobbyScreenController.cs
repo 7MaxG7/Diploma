@@ -31,6 +31,12 @@ namespace Infrastructure {
 			_roomPanelController = new RoomPanelController(mainMenuConfig, lobbyScreenView.RoomPanelView, permanentUiController);
 		}
 
+		public void Dispose() {
+			OnDispose();
+			PhotonNetwork.RemoveCallbackTarget(this);
+			DOTween.Clear();
+		}
+
 		public void Init(string userName) {
 			_userName = userName;
 			InitPhoton();
@@ -43,12 +49,6 @@ namespace Infrastructure {
 				PhotonNetwork.AddCallbackTarget(this);
 				PhotonNetwork.AutomaticallySyncScene = true;
 			}
-		}
-
-		public void Dispose() {
-			OnDispose();
-			PhotonNetwork.RemoveCallbackTarget(this);
-			DOTween.Clear();
 		}
 
 		public void OnDispose() {

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using DG.Tweening;
 using Photon.Pun;
+using PlayFab;
 using UnityEngine;
 using Utils;
 using Zenject;
@@ -70,6 +71,9 @@ namespace Infrastructure {
 
 			void InitLobbyPanel() {
 				_lobbyScreenController = new LobbyScreenController(_mainMenuView.LobbyScreenView, _mainMenuConfig, _permanentUiController);
+				if (PlayFabClientAPI.IsClientLoggedIn()) {
+					_lobbyScreenController.Init(_userName);
+				}
 			}
 		}
 

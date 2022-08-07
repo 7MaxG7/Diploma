@@ -9,9 +9,9 @@ namespace UI {
 	internal class PlayerUiController : IDisposable {
 		private IUnit _player;
 		private readonly PlayerPanelView _playerPanel;
-		private readonly Smoother _currentHealthSmoother;
-		private readonly Smoother _maxHealthSmoother;
-		private readonly Smoother _expSmoother;
+		private Smoother _currentHealthSmoother;
+		private Smoother _maxHealthSmoother;
+		private Smoother _expSmoother;
 		
 		private float _currentHp;
 		private float _maxHp;
@@ -34,6 +34,10 @@ namespace UI {
 			_player.Health.OnMaxHpChange -= UpdateMaxHealthSmoothly;
 			_expSmoother.OnValueUpdateCallback -= UpdateCurrentExperience;
 			_player.Experience.OnExpChange -= UpdateCurrentExperienceSmoothly;
+			_currentHealthSmoother = null;
+			_maxHealthSmoother = null;
+			_expSmoother = null;
+			_player = null;
 		}
 
 		public void Init(IUnit player) {

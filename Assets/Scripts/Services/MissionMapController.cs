@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using Utils;
 using Zenject;
 using Object = UnityEngine.Object;
@@ -7,7 +6,7 @@ using Object = UnityEngine.Object;
 
 namespace Infrastructure {
 
-	internal class MissionMapController : IMissionMapController, IDisposable {
+	internal class MissionMapController : IMissionMapController {
 		private const int HORIZONTAL_GROUND_ITEMS_AMOUNT = 3;
 		private const int VERTICAL_GROUND_ITEMS_AMOUNT = 3;
 		/// <summary>
@@ -35,6 +34,7 @@ namespace Infrastructure {
 		}
 
 		public void Dispose() {
+			_playerTransform = null;
 			GroundItems = null;
 		}
 		

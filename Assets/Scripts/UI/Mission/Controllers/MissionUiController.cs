@@ -1,4 +1,5 @@
 ﻿using System;
+using DG.Tweening;
 using Infrastructure;
 using Units;
 using UnityEngine;
@@ -9,7 +10,7 @@ using Object = UnityEngine.Object;
 
 namespace UI {
 
-	internal class MissionUiController : IMissionUiController, IDisposable {
+	internal class MissionUiController : IMissionUiController {
 		public event Action<WeaponType> OnSkillChoose;
 		private event Action OnUpdateCallback;
 
@@ -17,7 +18,7 @@ namespace UI {
 		private PlayerUiController _playerUiController;
 		private SkillsUiController _skillsUiController;
 		private MissionUiView _missionUiView;
-		private readonly IPermanentUiController _permanentUiController;
+		private IPermanentUiController _permanentUiController;
 		private bool _isInited;
 
 
@@ -31,8 +32,13 @@ namespace UI {
 		public void Dispose() {
 			OnUpdateCallback -= _playerUiController.UpdateSmoothers;
 			_skillsUiController.OnSkillChoose -= UpgradeSkill;
+			_skillsUiController.Dispose();
+			_skillsUiController = null;
 			_playerUiController?.Dispose();
+			_playerUiController = null;
 			_missionUiView.SettingsButton.onClick.RemoveAllListeners();
+			Object.Destroy(_missionUiView.gameObject);
+			_permanentUiController = null;
 		}
 
 		public void OnUpdate(float deltaTime) {
@@ -41,9 +47,10 @@ namespace UI {
 
 			OnUpdateCallback?.Invoke();
 		}
-
+		
 		public void Init(IUnit player) {
-			_missionUiView = Object.Instantiate(_uiConfig.MissionUiView, new GameObject(TextConstants.UI_ROOT_NAME).transform);
+			var uiRoot = GameObject.Find(TextConstants.UI_ROOT_NAME) ?? new GameObject(TextConstants.UI_ROOT_NAME);
+			_missionUiView = Object.Instantiate(_uiConfig.MissionUiView, uiRoot.transform);
 			_playerUiController = new PlayerUiController(_missionUiView.PlayerPanel, _uiConfig);
 			_playerUiController.Init(player);
 			OnUpdateCallback += _playerUiController.UpdateSmoothers;

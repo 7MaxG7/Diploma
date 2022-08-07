@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Infrastructure;
 using Services;
 using Units;
@@ -10,12 +9,13 @@ using Zenject;
 
 namespace Controllers {
 
-	internal sealed class PlayerMoveController : IPlayerMoveController, IDisposable {
-		private readonly IMapWrapper _mapWrapper;
+	internal sealed class PlayerMoveController : IPlayerMoveController {
+		public IUnit Player { get; private set; }
+
 		private readonly IInputService _inputService;
-		private readonly IUnitsPool _unitsPool;
-		private readonly IMissionMapController _missionMapController;
-		private IUnit _player;
+		private IMapWrapper _mapWrapper;
+		private IUnitsPool _unitsPool;
+		private IMissionMapController _missionMapController;
 		private Vector2 _moveDiredtion;
 		private Camera _camera;
 
@@ -31,16 +31,20 @@ namespace Controllers {
 		}
 
 		public void Dispose() {
-			OnDispose();
+			_camera = null;
+			_mapWrapper = null;
+			_unitsPool = null;
+			_missionMapController = null;
+			Player = null;
 		}
 
 		public void Init(IUnit player) {
 			_camera = Camera.main;
-			_player = player;
+			Player = player;
 		}
 
 		public void OnFixedUpdate(float deltaTime) {
-			if (_player == null || _camera == null || _player.IsDead)
+			if (Player == null || _camera == null || Player.IsDead)
 				return;
 			
 			if (_inputService.Axis.sqrMagnitude < Constants.CHARACTER_SPEED_STOP_TRESHOLD)
@@ -48,17 +52,9 @@ namespace Controllers {
 			
 			var moveDiredtion = _camera.transform.TransformDirection(_inputService.Axis);
 			moveDiredtion.Normalize();
-			_player.Transform.up = moveDiredtion;
-			_player.Rigidbody.MovePosition(_player.Transform.position + moveDiredtion * (deltaTime * _player.MoveSpeed));
-			_mapWrapper.CheckAndReturnInsideMap(_player.Transform, _unitsPool.ActiveMonsters.Select(monster => monster.Transform).Concat(_missionMapController.GroundItems));
-		}
-
-		private void OnDispose() {
-			_player = null;
-		}
-
-		public void OnFixedUpdate() {
-			throw new NotImplementedException();
+			Player.Transform.up = moveDiredtion;
+			Player.Rigidbody.MovePosition(Player.Transform.position + moveDiredtion * (deltaTime * Player.MoveSpeed));
+			_mapWrapper.CheckAndReturnInsideMap(Player.Transform, _unitsPool.ActiveMonsters.Select(monster => monster.Transform).Concat(_missionMapController.GroundItems));
 		}
 	}
 

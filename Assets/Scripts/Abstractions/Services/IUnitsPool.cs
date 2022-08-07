@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Services {
 
-	internal interface IUnitsPool {
+	internal interface IUnitsPool : IDisposable {
 		event Action<int> OnObjectInstantiated;
 		event Action<int, bool> OnObjectActivationToggle;
 		List<IUnit> ActiveMonsters { get; }

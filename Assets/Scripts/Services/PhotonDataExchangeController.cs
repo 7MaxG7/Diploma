@@ -2,22 +2,27 @@
 using System.Collections.Generic;
 using Enums;
 using Photon.Pun;
+using Object = UnityEngine.Object;
 
 
 namespace Services {
 
-	internal class PhotonDataExchangeController : IPhotonDataExchangeController, IDisposable {
+	internal class PhotonDataExchangeController : IPhotonDataExchangeController {
 		public event Action<int, bool> OnActivationDataRecieved;
 		public event Action<int> OnInstantiationDataRecieved;
 		
 		private readonly List<List<object>> _data = new();
-
 		private PhotonDataExchanger _minePhotonDataExchanger;
 		private List<PhotonDataExchanger> _othersPhotonDataExchangers;
 
 		
 		public void Dispose() {
 			_minePhotonDataExchanger.OnDataWriting -= SendData;
+			foreach (var othersPhotonDataExchanger in _othersPhotonDataExchangers) {
+				othersPhotonDataExchanger.OnDataReading -= RecieveData;
+			}
+			_othersPhotonDataExchangers.Clear();
+			Object.Destroy(_minePhotonDataExchanger);
 		}
 
 		public void Init(PhotonDataExchanger minePhotonDataExchanger, List<PhotonDataExchanger> othersPhotonDataExchangers) {
@@ -28,6 +33,12 @@ namespace Services {
 			foreach (var othersPhotonDataExchanger in _othersPhotonDataExchangers) {
 				othersPhotonDataExchanger.OnDataReading += RecieveData;
 			}
+		}
+
+		public void PrepareDataForSending(PhotonExchangerDataType dataType, params object[] data) {
+			var parameters = new List<object> { dataType };
+			parameters.AddRange(data);
+			_data.Add(parameters);
 		}
 
 		private void RecieveData(PhotonStream stream) {
@@ -61,12 +72,6 @@ namespace Services {
 				}
 			}
 			_data.Clear();
-		}
-
-		public void PrepareDataForSending(PhotonExchangerDataType dataType, params object[] data) {
-			var parameters = new List<object> { dataType };
-			parameters.AddRange(data);
-			_data.Add(parameters);
 		}
 
 	}

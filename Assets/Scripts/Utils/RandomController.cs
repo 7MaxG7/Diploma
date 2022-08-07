@@ -7,16 +7,16 @@ namespace Infrastructure {
 
 	class RandomController : IRandomController {
 		private readonly Random _random = new();
-		private readonly int seed;
+		private readonly int _seed;
 		
 		[Inject]
 		public RandomController() {
-			if (seed == 0) {
-				seed = _random.Next();
-				Debug.Log($"Random seed = {seed}");
+			if (_seed == 0) {
+				_seed = _random.Next();
+				Debug.Log($"Random seed = {_seed}");
 			}
 
-			_random = new Random(seed);
+			_random = new Random(_seed);
 		}
 
 		public int GetRandomExcludingMax(int max = int.MaxValue, int min = 0) {

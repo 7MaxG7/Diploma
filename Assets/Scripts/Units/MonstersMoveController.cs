@@ -15,7 +15,12 @@ namespace Infrastructure {
 		public MonstersMoveController(IControllersHolder controllersHolder) {
 			controllersHolder.AddController(this);
 		}
-		
+
+		public void Dispose() {
+			_enemies.Clear();
+			_target = null;
+		}
+
 		public void OnFixedUpdate(float deltaTime) {
 			if (_target == null)
 				return;

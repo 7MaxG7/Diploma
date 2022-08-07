@@ -1,4 +1,5 @@
 ﻿using Infrastructure;
+using Photon.Pun;
 using Units.Views;
 using UnityEngine;
 
@@ -11,20 +12,21 @@ namespace Units {
 		private MonsterView MonsterView => UnitView as MonsterView;
 		
 		
-		public MonsterUnit(GameObject playerGO, MonstersParams monstersParam, int poolIndex) : base(monstersParam.MoveSpeed, monstersParam.Hp, poolIndex) {
+		public MonsterUnit(GameObject monsterGO, MonstersParams monstersParam, int poolIndex) : base(monstersParam.MoveSpeed, monstersParam.Hp, poolIndex) {
 			Experience = new Experience(monstersParam.MonsterLevel, null);
 			_collisionDamage = monstersParam.Damage;
 			_killExperience = monstersParam.ExperienceOnKill;
-			var monsterView = playerGO.GetComponent<MonsterView>();
+			var monsterView = monsterGO.GetComponent<MonsterView>();
 			monsterView.OnTriggerEnter += DamageTriggerUnit;
 			monsterView.OnDamageTake += TakeDamage;
 			UnitView = monsterView;
 		}
 
 		public override void Dispose() {
-			base.Dispose();
-			UnitView.OnDamageTake -= TakeDamage;
+			MonsterView.OnDamageTake -= TakeDamage;
 			MonsterView.OnTriggerEnter -= DamageTriggerUnit;
+			PhotonNetwork.Destroy(UnitView.GameObject);
+			base.Dispose();
 		}
 
 		private void TakeDamage(int damage, IUnit damager) {

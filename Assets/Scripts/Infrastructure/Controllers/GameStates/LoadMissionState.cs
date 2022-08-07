@@ -34,7 +34,7 @@ namespace Infrastructure {
 		private readonly IPhotonObjectsSynchronizer _photonObjectsSynchronizer;
 		private readonly IWeaponsController _weaponsController;
 		private readonly ISkillsController _skillsController;
-		private readonly ISoundController _soundController;
+		private readonly IMissionResultController _missionResultController;
 		private readonly MissionConfig _missionConfig;
 
 
@@ -43,7 +43,7 @@ namespace Infrastructure {
 				, IPlayerMoveController playerMoveController, ICameraController cameraController, IMissionMapController missionMapController
 				, IMonstersSpawner monstersSpawner, IMonstersMoveController monstersMoveController, IUnitsPool unitsPool, IMissionUiController missionUiController
 				, IPhotonDataExchangeController photonDataExchangeController, IPhotonObjectsSynchronizer photonObjectsSynchronizer, IWeaponsController weaponsController
-				, ISkillsController skillsController, ISoundController soundController, MissionConfig missionConfig) {
+				, ISkillsController skillsController, IMissionResultController missionResultController, MissionConfig missionConfig) {
 			_sceneLoader = sceneLoader;
 			_permanentUiController = permanentUiController;
 			_mapWrapper = mapWrapper;
@@ -59,7 +59,7 @@ namespace Infrastructure {
 			_photonObjectsSynchronizer = photonObjectsSynchronizer;
 			_weaponsController = weaponsController;
 			_skillsController = skillsController;
-			_soundController = soundController;
+			_missionResultController = missionResultController;
 			_missionConfig = missionConfig;
 		}
 
@@ -72,6 +72,7 @@ namespace Infrastructure {
 				InitMapWrapper(out var groundItemSize);
 				InitUnits(groundItemSize, out var player);
 				InitUi(player);
+				_missionResultController.Init();
 				OnStateChange?.Invoke();
 			}
 
@@ -105,24 +106,24 @@ namespace Infrastructure {
 				_mapWrapper.Init(Vector2.zero, mapSize);
 			}
 
-			void InitUnits(Vector2 vector2, out IUnit player) {
-				player = PreparePlayer(vector2);
-				_cameraController.Follow(player.Transform, _missionConfig.CameraOffset);
-				_missionMapController.Init(player.Transform, vector2);
+			void InitUnits(Vector2 groundSize, out IUnit player) {
+				player = PreparePlayer(groundSize);
 				_monstersSpawner.Init();
 				_monstersMoveController.Init(player.Transform);
-				_weaponsController.Init(player, _soundController);
 				_weaponsController.StopShooting();
-				_skillsController.Init(player);
 			}
 
-			IUnit PreparePlayer(Vector2 groundItemSize) {
+			IUnit PreparePlayer(Vector2 groundSize) {
 				// ReSharper disable once PossibleLossOfFraction
-				var xPosition = ((PhotonNetwork.LocalPlayer.ActorNumber - 1) / 2 + .5f) * Constants.GROUND_ITEMS_AMOUNT_PER_PLAYER_ZONE_LENGTH * groundItemSize.x;
-				var yPosition = ((PhotonNetwork.LocalPlayer.ActorNumber - 1) % 2 + .5f) * Constants.GROUND_ITEMS_AMOUNT_PER_PLAYER_ZONE_LENGTH * groundItemSize.y;
+				var xPosition = ((PhotonNetwork.LocalPlayer.ActorNumber - 1) / 2 + .5f) * Constants.GROUND_ITEMS_AMOUNT_PER_PLAYER_ZONE_LENGTH * groundSize.x;
+				var yPosition = ((PhotonNetwork.LocalPlayer.ActorNumber - 1) % 2 + .5f) * Constants.GROUND_ITEMS_AMOUNT_PER_PLAYER_ZONE_LENGTH * groundSize.y;
 
 				var player = _unitsFactory.CreatePlayer(new Vector2(xPosition, yPosition));
 				_playerMoveController.Init(player);
+				_cameraController.Follow(player.Transform, _missionConfig.CameraOffset);
+				_missionMapController.Init(player.Transform, groundSize);
+				_weaponsController.Init(player);
+				_skillsController.Init(player);
 				return player;
 			}
 

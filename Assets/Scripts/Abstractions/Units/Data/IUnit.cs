@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Units {
 
-	internal interface IUnit : IPoolObject {
+	internal interface IUnit : IPoolObject, IDisposable {
 		event Action<IUnit> OnDied;
 		
 		float MoveSpeed { get; }

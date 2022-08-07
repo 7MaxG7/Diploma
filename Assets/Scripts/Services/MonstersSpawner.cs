@@ -7,14 +7,16 @@ using Zenject;
 
 namespace Services {
 
-	class MonstersSpawner : IMonstersSpawner {
+	internal class MonstersSpawner : IMonstersSpawner {
 		private const float SPAWN_FROM_SCREEN_OFFSET = 2;
-		private readonly IMonstersMoveController _monstersMoveController;
-		private readonly MonstersConfig _monstersConfig;
+		private MonstersConfig _monstersConfig;
 		private bool _spawnIsOn;
-		private readonly IRandomController _random;
-		private readonly ICameraController _cameraController;
+		private IMonstersMoveController _monstersMoveController;
+		private IRandomController _random;
+		private ICameraController _cameraController;
+		private IUnitsPool _unitsPool;
 		private int _spawnerLevel;
+		private Camera _mainCamera;
 		
 		private float _leftSpawnPosition;
 		private float _rightSpawnPosition;
@@ -22,8 +24,6 @@ namespace Services {
 		private float _topSpawnPosition;
 		
 		private float _spawnWaveTimer;
-		private Camera _mainCamera;
-		private readonly IUnitsPool _unitsPool;
 
 
 		[Inject]
@@ -37,6 +37,16 @@ namespace Services {
 			_spawnerLevel = 1;
 			
 			controllersHolder.AddController(this);
+		}
+
+		public void Dispose() {
+			StopSpawn();
+			_monstersMoveController = null;
+			_random = null;
+			_cameraController = null;
+			_unitsPool = null;
+			_monstersConfig = null;
+			_mainCamera = null;
 		}
 
 		public void OnUpdate(float deltaTime) {

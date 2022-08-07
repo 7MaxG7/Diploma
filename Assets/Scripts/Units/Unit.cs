@@ -11,7 +11,7 @@ namespace Units {
 		public event Action<IUnit> OnDied;
 		
 		public float MoveSpeed { get; }
-		public Health Health { get; }
+		public Health Health { get; set; }
 		public Experience Experience { get; protected set; }
 		public UnitView UnitView { get; protected set; }
 		
@@ -32,6 +32,8 @@ namespace Units {
 
 		public virtual void Dispose() {
 			Health.OnDied -= KillView;
+			Health = null;
+			Experience = null;
 		}
 
 		public void Respawn(Vector2 spawnPosition) {

@@ -28,6 +28,7 @@ namespace UI {
 			foreach (var skillItem in _skillItems) {
 				skillItem.Button.onClick.RemoveAllListeners();
 			}
+			_skillItems.Clear();
 			_skillsPanel.CanvasGroup.DOKill();
 		}
 

@@ -1,6 +1,9 @@
-﻿namespace Services {
+﻿using System;
 
-	internal interface IPhotonObjectsSynchronizer {
+
+namespace Services {
+
+	internal interface IPhotonObjectsSynchronizer : IDisposable {
 		void Init(IPhotonDataExchangeController photonDataExchangers, IUnitsPool unitsPool);
 	}
 

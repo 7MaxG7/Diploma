@@ -17,6 +17,11 @@ namespace Infrastructure {
 			controllersHolder.AddController(this);
 		}
 
+		public void Dispose() {
+			_target = null;
+			_mainCamera = null;
+		}
+
 		public void OnLateUpdate(float deltaTime) {
 			if (_target == null || _mainCamera == null) {
 				CameraIsPositioned = false;

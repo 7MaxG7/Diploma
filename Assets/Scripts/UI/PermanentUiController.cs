@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Threading.Tasks;
+using DG.Tweening;
 using UI;
 using UnityEngine;
 using Utils;
@@ -13,11 +14,14 @@ namespace Infrastructure {
 	internal class PermanentUiController : IPermanentUiController, IDisposable {
 
 		public event Action OnCurtainShown;
+		public event  Action OnLeaveGameClicked;
+		public event  Action OnResultPanelClosed;
 		public bool IsActivating => _loadingCurtainIsActivating;
 		public bool IsActive => _loadingCurtainIsActive;
 		
 		private readonly IPermanentUiView _permanentUiView;
 		private readonly ISoundController _soundController;
+		private readonly UiConfig _uiConfig;
 		private ICoroutineRunner _coroutineRunner;
 		private bool _loadingCurtainIsActivating;
 		private bool _loadingCurtainIsDeactivating;
@@ -26,15 +30,18 @@ namespace Infrastructure {
 
 
 		[Inject]
-		public PermanentUiController(IPermanentUiView permanentUiView, ISoundController soundController) {
+		public PermanentUiController(IPermanentUiView permanentUiView, ISoundController soundController, UiConfig uiConfig) {
 			_permanentUiView = permanentUiView;
 			_soundController = soundController;
+			_uiConfig = uiConfig;
 		}
 		
 		public void Dispose() {
 			_permanentUiView.SettingsPanel.MusicVolumeSlider.onValueChanged.RemoveAllListeners();
 			_permanentUiView.SettingsPanel.SoundVolumeSlider.onValueChanged.RemoveAllListeners();
+			_permanentUiView.SettingsPanel.LeaveGameButton.onClick.RemoveAllListeners();
 			_permanentUiView.SettingsPanel.CloseButton.onClick.RemoveAllListeners();
+			_permanentUiView.ResultPanel.ClosePanelButton.onClick.RemoveAllListeners();
 		}
 
 		public void Init(ICoroutineRunner coroutineRunner) {
@@ -48,8 +55,11 @@ namespace Infrastructure {
 				_permanentUiView.SettingsPanel.SoundVolumeSlider.value = _soundController.SoundVolume;
 				_permanentUiView.SettingsPanel.MusicVolumeSlider.onValueChanged.AddListener(volume => _soundController.MusicVolume = volume);
 				_permanentUiView.SettingsPanel.SoundVolumeSlider.onValueChanged.AddListener(volume => _soundController.SoundVolume = volume);
+				_permanentUiView.SettingsPanel.LeaveGameButton.onClick.AddListener(LeaveGame);
 				_permanentUiView.SettingsPanel.CloseButton.onClick.AddListener(HideSettingsPanel);
 				_permanentUiView.SettingsPanel.gameObject.SetActive(false);
+				_permanentUiView.ResultPanel.ClosePanelButton.onClick.AddListener(HideMissionResult);
+				_permanentUiView.ResultPanel.gameObject.SetActive(false);
 			}
 		}
 
@@ -78,14 +88,42 @@ namespace Infrastructure {
 
 		public void ShowSettingsPanel(bool missionPanelIsActive = false) {
 			_permanentUiView.MissionSettingsPanel.SetActive(missionPanelIsActive);
+			_permanentUiView.SettingsPanel.CanvasGroup.DOKill();
 			_permanentUiView.SettingsPanel.gameObject.SetActive(true);
+			_permanentUiView.SettingsPanel.CanvasGroup.DOFade(1, _uiConfig.CanvasFadeAnimationDuration);
+		}
+
+		public void ShowMissionResult() {
+			_permanentUiView.ResultPanel.gameObject.SetActive(true);
+			_permanentUiView.ResultPanel.CanvasGroup.alpha = 0;
+			_permanentUiView.ResultPanel.CanvasGroup.DOFade(1, _uiConfig.CanvasFadeAnimationDuration);
+		}
+
+		public void HideMissionResult() {
+			OnCurtainShown += HideResultPanel;
+			ShowLoadingCurtain();
+
+
+			void HideResultPanel() {
+				OnCurtainShown -= HideResultPanel;
+				_permanentUiView.ResultPanel.CanvasGroup.DOKill();
+				_permanentUiView.ResultPanel.gameObject.SetActive(false);
+				OnResultPanelClosed?.Invoke();
+			}
+		}
+
+		private void LeaveGame() {
+			HideSettingsPanel();
+			OnLeaveGameClicked?.Invoke();
 		}
 
 		private void HideSettingsPanel() {
-			_permanentUiView.SettingsPanel.gameObject.SetActive(false);
 			PlayerPrefs.SetFloat(TextConstants.MUSIC_VOLUME_PREFS_KEY, _permanentUiView.SettingsPanel.MusicVolumeSlider.value);
 			PlayerPrefs.SetFloat(TextConstants.SOUND_VOLUME_PREFS_KEY, _permanentUiView.SettingsPanel.SoundVolumeSlider.value);
 			PlayerPrefs.Save();
+			_permanentUiView.SettingsPanel.CanvasGroup.DOKill();
+			_permanentUiView.SettingsPanel.CanvasGroup.DOFade(0, _uiConfig.CanvasFadeAnimationDuration)
+					.OnComplete(() => _permanentUiView.SettingsPanel.gameObject.SetActive(false));
 		}
 
 		private IEnumerator ShowLoadingCurtainCoroutine() {
