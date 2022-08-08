@@ -27,6 +27,7 @@ namespace Infrastructure {
 			_unitsKills.Clear();
 			_player.OnDied -= LooseGame;
 			_player = null;
+			PhotonNetwork.RemoveCallbackTarget(this);
 		}
 
 #region IInRoomCallbacksMethods
@@ -49,6 +50,7 @@ namespace Infrastructure {
 			_player = player;
 			_player.OnDied += LooseGame;
 			_permanentUiController.OnLeaveGameClicked += LeaveGame;
+			PhotonNetwork.AddCallbackTarget(this);
 		}
 
 		public void CountDead(DamageInfo damageInfo) {

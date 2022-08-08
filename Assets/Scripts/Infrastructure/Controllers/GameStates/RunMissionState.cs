@@ -26,7 +26,7 @@ namespace Infrastructure {
 		public void Enter() {
 			_soundController.PlayRandomMissionMusic();
 			_monstersSpawner.StartSpawn();
-			// _weaponsController.AddWeapon(WeaponType.SmallOrb);
+			_weaponsController.AddWeapon(WeaponType.SmallOrb);
 			_weaponsController.StartShooting();
 			_missionResultController.OnGameLeft += SwitchState;
 		}
