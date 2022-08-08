@@ -14,8 +14,7 @@ namespace Infrastructure {
 		void ShowLoadingCurtain(bool animationIsOn = true, bool isForced = false);
 		void HideLoadingCurtain(bool animationIsOn = true, bool isForced = false);
 		void ShowSettingsPanel(bool missionPanelIsActive = false);
-		void ShowMissionResult();
-		void HideMissionResult();
+		void ShowMissionResult(MissionEndInfo missionEndInfo);
 	}
 
 }

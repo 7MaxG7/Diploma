@@ -1,5 +1,6 @@
 ﻿using Enums;
 using Infrastructure;
+using JetBrains.Annotations;
 using Units;
 using UnityEngine;
 using Zenject;
@@ -9,14 +10,15 @@ namespace Services {
 
 	internal class MonstersSpawner : IMonstersSpawner {
 		private const float SPAWN_FROM_SCREEN_OFFSET = 2;
-		private MonstersConfig _monstersConfig;
-		private bool _spawnIsOn;
-		private IMonstersMoveController _monstersMoveController;
-		private IRandomController _random;
-		private ICameraController _cameraController;
-		private IUnitsPool _unitsPool;
+		
+		private readonly MonstersConfig _monstersConfig;
+		private readonly IMonstersMoveController _monstersMoveController;
+		private readonly IRandomController _random;
+		private readonly ICameraController _cameraController;
+		private readonly IUnitsPool _unitsPool;
 		private int _spawnerLevel;
 		private Camera _mainCamera;
+		private bool _spawnIsOn;
 		
 		private float _leftSpawnPosition;
 		private float _rightSpawnPosition;
@@ -41,11 +43,6 @@ namespace Services {
 
 		public void Dispose() {
 			StopSpawn();
-			_monstersMoveController = null;
-			_random = null;
-			_cameraController = null;
-			_unitsPool = null;
-			_monstersConfig = null;
 			_mainCamera = null;
 		}
 

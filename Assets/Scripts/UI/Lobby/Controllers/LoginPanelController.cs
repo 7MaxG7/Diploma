@@ -9,7 +9,7 @@ using Utils;
 
 namespace Infrastructure {
 
-	internal class LoginPanelController : IDisposer, IDisposable {
+	internal class LoginPanelController : IDisposable {
 		private const int SUCCESSFUL_STATUS_DELAY = 500;
 		private const int LOADING_UPDATE_DELAY = 250;
 
@@ -31,10 +31,6 @@ namespace Infrastructure {
 		}
 
 		public void Dispose() {
-			OnDispose();
-		}
-
-		public void OnDispose() {
 			_loginPanelView.CanvasGroup.DOKill();
 			_loginPanelView.ConfirmButton.onClick.RemoveAllListeners();
 			_loginPanelView.ClosePanelButton.onClick.RemoveAllListeners();

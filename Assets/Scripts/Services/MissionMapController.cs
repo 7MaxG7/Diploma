@@ -34,8 +34,11 @@ namespace Infrastructure {
 		}
 
 		public void Dispose() {
-			_playerTransform = null;
+			foreach (var groundItem in GroundItems) {
+				Object.Destroy(groundItem.gameObject);
+			}
 			GroundItems = null;
+			_playerTransform = null;
 		}
 		
 		public void Init(Transform playerTransform, Vector2 groundItemSize) {

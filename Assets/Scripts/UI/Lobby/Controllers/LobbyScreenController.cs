@@ -12,7 +12,7 @@ using Utils;
 namespace Infrastructure {
 
 	internal class LobbyScreenController : IConnectionCallbacks, ILobbyCallbacks, IMatchmakingCallbacks, IInRoomCallbacks, ILobbyStatusDisplayer
-			, IDisposer, IDisposable {
+			, IDisposable {
 		private const int LOADING_UPDATE_DELAY = 250;
 
 		private string _userName;
@@ -32,7 +32,9 @@ namespace Infrastructure {
 		}
 
 		public void Dispose() {
-			OnDispose();
+			_lobbyPanelController.Dispose();
+			_roomPanelController.Dispose();
+			DOTween.KillAll();
 			PhotonNetwork.RemoveCallbackTarget(this);
 			DOTween.Clear();
 		}
@@ -49,12 +51,6 @@ namespace Infrastructure {
 				PhotonNetwork.AddCallbackTarget(this);
 				PhotonNetwork.AutomaticallySyncScene = true;
 			}
-		}
-
-		public void OnDispose() {
-			_lobbyPanelController.Dispose();
-			_roomPanelController.Dispose();
-			DOTween.KillAll();
 		}
 		
 #region IConnectionCallbacks

@@ -93,13 +93,16 @@ namespace Infrastructure {
 			_permanentUiView.SettingsPanel.CanvasGroup.DOFade(1, _uiConfig.CanvasFadeAnimationDuration);
 		}
 
-		public void ShowMissionResult() {
+		public void ShowMissionResult(MissionEndInfo missionEndInfo) {
 			_permanentUiView.ResultPanel.gameObject.SetActive(true);
+			_permanentUiView.ResultPanel.ResultLableText.text = missionEndInfo.IsWinner ? _uiConfig.WinResultText : _uiConfig.LooseResultText;
+			_permanentUiView.ResultPanel.ResultLableText.color = missionEndInfo.IsWinner ? _uiConfig.WinResultColor : _uiConfig.LooseResultColor;
+			_permanentUiView.ResultPanel.KillsAmount.text = missionEndInfo.KillsAmount.ToString();
 			_permanentUiView.ResultPanel.CanvasGroup.alpha = 0;
 			_permanentUiView.ResultPanel.CanvasGroup.DOFade(1, _uiConfig.CanvasFadeAnimationDuration);
 		}
 
-		public void HideMissionResult() {
+		private void HideMissionResult() {
 			OnCurtainShown += HideResultPanel;
 			ShowLoadingCurtain();
 

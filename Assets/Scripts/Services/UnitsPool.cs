@@ -12,19 +12,22 @@ namespace Services {
 	internal class UnitsPool : ObjectsPool<IUnit>, IUnitsPool {
 		private readonly IUnitsFactory _unitsFactory;
 		private readonly IHandleDamageController _handleDamageController;
+		private readonly IMissionResultController _missionResultController;
 		public List<IUnit> ActiveMonsters => _spawnedObjects;
 
 		
 		[Inject]
-		public UnitsPool(IUnitsFactory unitsFactory, IHandleDamageController handleDamageController) {
+		public UnitsPool(IUnitsFactory unitsFactory, IHandleDamageController handleDamageController, IMissionResultController missionResultController) {
 			_unitsFactory = unitsFactory;
 			_handleDamageController = handleDamageController;
+			_missionResultController = missionResultController;
 		}
 
 		public void Dispose() {
 			foreach (var unit in _objects.Values.SelectMany(obj => obj)) {
-				unit.OnDied -= ReturnObject;
-				unit.OnDied -= _handleDamageController.StopPeriodicalDamageForUnit;
+				unit.OnDied -= ReturnUnit;
+				unit.OnDied -= StopUnitPeriodicalDamage;
+				unit.OnDied -= _missionResultController.CountDead;
 				unit.Dispose();
 			}
 			foreach (var objList in _objects.Values) {
@@ -32,8 +35,9 @@ namespace Services {
 			}
 			_objects.Clear();
 			foreach (var unit in ActiveMonsters) {
-				unit.OnDied -= ReturnObject;
-				unit.OnDied -= _handleDamageController.StopPeriodicalDamageForUnit;
+				unit.OnDied -= ReturnUnit;
+				unit.OnDied -= StopUnitPeriodicalDamage;
+				unit.OnDied -= _missionResultController.CountDead;
 				unit.Dispose();
 			}
 			ActiveMonsters.Clear();
@@ -46,9 +50,18 @@ namespace Services {
 		protected override IUnit SpawnSpecifiedObject(Vector2 spawnPosition, object[] parameters) {
 			var currentMonsterLevel = (int)parameters[0];
 			var unit = _unitsFactory.CreateMonster(currentMonsterLevel, spawnPosition);
-			unit.OnDied += ReturnObject;
-			unit.OnDied += _handleDamageController.StopPeriodicalDamageForUnit;
+			unit.OnDied += ReturnUnit;
+			unit.OnDied += StopUnitPeriodicalDamage;
+			unit.OnDied += _missionResultController.CountDead;
 			return unit;
+		}
+
+		private void ReturnUnit(DamageInfo damageInfo) {
+			ReturnObject(damageInfo.DamageTaker);
+		}
+
+		private void StopUnitPeriodicalDamage(DamageInfo damageInfo) {
+			_handleDamageController.StopPeriodicalDamageForUnit(damageInfo.DamageTaker);
 		}
 	}
 

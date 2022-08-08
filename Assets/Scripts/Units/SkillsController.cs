@@ -10,13 +10,13 @@ using Zenject;
 namespace Infrastructure {
 
 	internal class SkillsController : ISkillsController {
-		private int ChoosingSkillsAmount { get; }
-		private IWeaponsController _weaponsController;
-		private IRandomController _randomController;
-		private IMissionUiController _missionUiController;
-		private IMonstersSpawner _monstersSpawner;
-		private IUnitsPool _unitsPool;
+		private readonly IWeaponsController _weaponsController;
+		private readonly IRandomController _randomController;
+		private readonly IMissionUiController _missionUiController;
+		private readonly IMonstersSpawner _monstersSpawner;
+		private readonly IUnitsPool _unitsPool;
 		private readonly WeaponsConfig _weaponsConfig;
+		private int ChoosingSkillsAmount { get; }
 		private IUnit _player;
 
 		[Inject]
@@ -35,11 +35,6 @@ namespace Infrastructure {
 			_player.Experience.OnLevelUp -= PrepareSkillsForUpgrade;
 			_missionUiController.OnSkillChoose -= AddOrUpgradeSkill;
 			_player = null;
-			_weaponsController = null;
-			_randomController = null;
-			_missionUiController = null;
-			_monstersSpawner = null;
-			_unitsPool = null;
 		}
 
 		public void Init(IUnit player) {

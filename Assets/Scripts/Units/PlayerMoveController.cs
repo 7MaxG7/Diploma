@@ -13,9 +13,9 @@ namespace Controllers {
 		public IUnit Player { get; private set; }
 
 		private readonly IInputService _inputService;
-		private IMapWrapper _mapWrapper;
-		private IUnitsPool _unitsPool;
-		private IMissionMapController _missionMapController;
+		private readonly IMapWrapper _mapWrapper;
+		private readonly IUnitsPool _unitsPool;
+		private readonly IMissionMapController _missionMapController;
 		private Vector2 _moveDiredtion;
 		private Camera _camera;
 
@@ -32,9 +32,6 @@ namespace Controllers {
 
 		public void Dispose() {
 			_camera = null;
-			_mapWrapper = null;
-			_unitsPool = null;
-			_missionMapController = null;
 			Player = null;
 		}
 

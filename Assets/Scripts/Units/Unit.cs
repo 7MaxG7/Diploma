@@ -7,13 +7,13 @@ using UnityEngine;
 
 namespace Units {
 
-	internal abstract class Unit : IUnit, IDisposable {
-		public event Action<IUnit> OnDied;
+	internal abstract class Unit : IUnit {
+		public event Action<DamageInfo> OnDied;
 		
-		public float MoveSpeed { get; }
-		public Health Health { get; set; }
+		public Health Health { get; private set; }
 		public Experience Experience { get; protected set; }
 		public UnitView UnitView { get; protected set; }
+		public float MoveSpeed { get; }
 		
 		public Rigidbody2D Rigidbody => UnitView.RigidBody;
 		public GameObject GameObject => UnitView.GameObject;
@@ -53,11 +53,12 @@ namespace Units {
 		}
 
 		public void KillUnit() {
-			Health.Kill();
+			// TODO. Проверить, почему при последнем дамаге игрока здесь вылазит нулл
+			Health.Kill(this);
 		}
 
-		protected virtual void KillView() {
-			OnDied?.Invoke(this);
+		protected virtual void KillView(DamageInfo damageInfo) {
+			OnDied?.Invoke(damageInfo);
 		}
 
 	}

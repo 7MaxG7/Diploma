@@ -27,15 +27,15 @@ namespace Units {
 		}
 
 		private void TakeDamage(int damage, IUnit damager) {
-			Health.TakeDamage(damage);
+			Health.TakeDamage(new DamageInfo(damage, damager, this));
 		}
 
 		public void RecieveExperience(int exp) {
 			Experience.AddExp(exp);
 		}
 
-		protected override void KillView() {
-			base.KillView();
+		protected override void KillView(DamageInfo damageInfo) {
+			base.KillView(damageInfo);
 			// TODO. Сделать исчезновение и у нас, и у врагов
 			GameObject.SetActive(false);
 		}

@@ -9,14 +9,14 @@ using Zenject;
 namespace Infrastructure {
 
 	internal class WeaponsController : IWeaponsController {
-		private IAmmosPool _ammosPool;
+		private readonly IAmmosPool _ammosPool;
 		private readonly WeaponsConfig _weaponsConfig;
-		private IUnit _player;
 		private readonly List<IWeapon> _activeWeapons;
-		private List<IUnit> _monsters;
-		private bool _isShooting;
-		private ISoundController _soundController;
+		private readonly List<IUnit> _monsters;
+		private readonly ISoundController _soundController;
 		public List<WeaponType> UpgradableWeaponTypes { get; private set; }
+		private IUnit _player;
+		private bool _isShooting;
 
 
 		[Inject]
@@ -36,10 +36,7 @@ namespace Infrastructure {
 				weapon.OnShooted -= _soundController.PlayWeaponShootSound;
 			}
 			_activeWeapons.Clear();
-			_soundController = null;
 			_player = null;
-			_monsters = null;
-			_ammosPool = null;
 		}
 
 		public void OnUpdate(float deltaTime) {

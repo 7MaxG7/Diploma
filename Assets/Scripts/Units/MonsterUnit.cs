@@ -30,7 +30,8 @@ namespace Units {
 		}
 
 		private void TakeDamage(int damage, IUnit damager) {
-			Health.TakeDamage(damage);
+			var damageInfo = new DamageInfo(damage, damager, this);
+			Health.TakeDamage(damageInfo);
 			if (IsDead && damager is IExperienceReciever experienceReciever)
 				experienceReciever.RecieveExperience(_killExperience);
 		}
@@ -40,8 +41,8 @@ namespace Units {
 				if (damageTaker is MonsterView)
 					return;
 				
-				damageTaker.TakeDamage(_collisionDamage, this);
 				KillUnit();
+				damageTaker.TakeDamage(_collisionDamage, this);
 			}
 		}
 	}

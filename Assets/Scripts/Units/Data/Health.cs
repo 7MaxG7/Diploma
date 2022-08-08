@@ -8,7 +8,7 @@ namespace Units {
 	internal class Health {
 		public event Action<int> OnMaxHpChange;
 		public event Action<int> OnCurrentHpChange;
-		public event Action OnDied;
+		public event Action<DamageInfo> OnDied;
 
 		public int CurrentHp {
 			get => _currentHp;
@@ -41,14 +41,14 @@ namespace Units {
 			CurrentHp = hp;
 		}
 
-		public void TakeDamage(int damage) {
-			CurrentHp -= Math.Min(damage, CurrentHp);
+		public void TakeDamage(DamageInfo damageInfo) {
+			CurrentHp -= Math.Min(damageInfo.Damage, CurrentHp);
 			if (CurrentHp <= 0)
-				OnDied?.Invoke();
+				OnDied?.Invoke(damageInfo);
 		}
 
-		public void Kill() {
-			TakeDamage(CurrentHp);
+		public void Kill(IUnit damageTaker) {
+			TakeDamage(new DamageInfo(CurrentHp, null, damageTaker));
 		}
 
 		public void Restore() {

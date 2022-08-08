@@ -2,30 +2,32 @@
 using System.Linq;
 using Enums;
 using Photon.Pun;
+using Zenject;
 
 
 namespace Services {
 
 	internal class PhotonObjectsSynchronizer : IPhotonObjectsSynchronizer {
 		private readonly List<PhotonView> _otherPlayersObjects = new();
-		private IPhotonDataExchangeController _photonDataExchangeController;
-		private IUnitsPool _unitsPool;
+		private readonly IPhotonDataExchangeController _photonDataExchangeController;
+		private readonly IUnitsPool _unitsPool;
 
 
+		[Inject]
+		public PhotonObjectsSynchronizer(IPhotonDataExchangeController photonDataExchangeController, IUnitsPool unitsPool) {
+			_photonDataExchangeController = photonDataExchangeController;
+			_unitsPool = unitsPool;
+		}
+		
 		public void Dispose() {
 			_unitsPool.OnObjectInstantiated -= SendInstantiationData;
 			_unitsPool.OnObjectActivationToggle -= SendActivationToggleData;
 			_photonDataExchangeController.OnInstantiationDataRecieved -= Register;
 			_photonDataExchangeController.OnActivationDataRecieved -= SetActive;
-			_unitsPool = null;
-			_photonDataExchangeController = null;
 			_otherPlayersObjects.Clear();
 		}
 
-		public void Init(IPhotonDataExchangeController photonDataExchangeController, IUnitsPool unitsPool) {
-			_photonDataExchangeController = photonDataExchangeController;
-			_unitsPool = unitsPool;
-			
+		public void Init() {
 			_unitsPool.OnObjectInstantiated += SendInstantiationData;
 			_unitsPool.OnObjectActivationToggle += SendActivationToggleData;
 			_photonDataExchangeController.OnInstantiationDataRecieved += Register;

@@ -7,7 +7,7 @@ using UnityEngine;
 namespace Units {
 
 	internal interface IUnit : IPoolObject, IDisposable {
-		event Action<IUnit> OnDied;
+		event Action<DamageInfo> OnDied;
 		
 		float MoveSpeed { get; }
 		bool IsDead { get; }
@@ -17,7 +17,6 @@ namespace Units {
 		UnitView UnitView { get; }
 
 		bool CheckOwnView(IDamagableView damageTaker);
-
 		void KillUnit();
 	}
 

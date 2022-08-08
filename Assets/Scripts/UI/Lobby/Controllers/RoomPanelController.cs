@@ -29,10 +29,6 @@ namespace Infrastructure {
 		}
 
 		public void Dispose() {
-			OnDispose();
-		}
-
-		private void OnDispose() {
 			RoomPanelView.StartGameButton.onClick.RemoveAllListeners();
 			RoomPanelView.ClosePanelButton.onClick.RemoveAllListeners();
 			DOTween.KillAll();

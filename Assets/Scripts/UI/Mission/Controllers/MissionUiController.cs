@@ -1,5 +1,4 @@
 ﻿using System;
-using DG.Tweening;
 using Infrastructure;
 using Units;
 using UnityEngine;
@@ -14,11 +13,11 @@ namespace UI {
 		public event Action<WeaponType> OnSkillChoose;
 		private event Action OnUpdateCallback;
 
+		private readonly IPermanentUiController _permanentUiController;
 		private readonly UiConfig _uiConfig;
 		private PlayerUiController _playerUiController;
 		private SkillsUiController _skillsUiController;
 		private MissionUiView _missionUiView;
-		private IPermanentUiController _permanentUiController;
 		private bool _isInited;
 
 
@@ -38,7 +37,6 @@ namespace UI {
 			_playerUiController = null;
 			_missionUiView.SettingsButton.onClick.RemoveAllListeners();
 			Object.Destroy(_missionUiView.gameObject);
-			_permanentUiController = null;
 		}
 
 		public void OnUpdate(float deltaTime) {

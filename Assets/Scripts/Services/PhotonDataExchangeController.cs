@@ -22,7 +22,7 @@ namespace Services {
 				othersPhotonDataExchanger.OnDataReading -= RecieveData;
 			}
 			_othersPhotonDataExchangers.Clear();
-			Object.Destroy(_minePhotonDataExchanger);
+			PhotonNetwork.Destroy(_minePhotonDataExchanger.gameObject);
 		}
 
 		public void Init(PhotonDataExchanger minePhotonDataExchanger, List<PhotonDataExchanger> othersPhotonDataExchangers) {

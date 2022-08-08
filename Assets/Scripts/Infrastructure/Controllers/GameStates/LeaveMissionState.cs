@@ -66,7 +66,6 @@ namespace Infrastructure {
 			_photonDataExchangeController.Dispose();
 			_ammosPool.Dispose();
 			_unitsPool.Dispose();
-			_controllersHolder.ClearControllers();
 			PhotonNetwork.Disconnect();
 		}
 

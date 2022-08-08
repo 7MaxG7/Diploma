@@ -28,7 +28,6 @@ namespace Infrastructure {
 		private readonly IUnitsFactory _unitsFactory;
 		private readonly IMonstersSpawner _monstersSpawner;
 		private readonly IMonstersMoveController _monstersMoveController;
-		private readonly IUnitsPool _unitsPool;
 		private readonly IMissionUiController _missionUiController;
 		private readonly IPhotonDataExchangeController _photonDataExchangeController;
 		private readonly IPhotonObjectsSynchronizer _photonObjectsSynchronizer;
@@ -41,7 +40,7 @@ namespace Infrastructure {
 		[Inject]
 		public LoadMissionState(ISceneLoader sceneLoader, IPermanentUiController permanentUiController, IMapWrapper mapWrapper, IUnitsFactory unitsFactory
 				, IPlayerMoveController playerMoveController, ICameraController cameraController, IMissionMapController missionMapController
-				, IMonstersSpawner monstersSpawner, IMonstersMoveController monstersMoveController, IUnitsPool unitsPool, IMissionUiController missionUiController
+				, IMonstersSpawner monstersSpawner, IMonstersMoveController monstersMoveController, IMissionUiController missionUiController
 				, IPhotonDataExchangeController photonDataExchangeController, IPhotonObjectsSynchronizer photonObjectsSynchronizer, IWeaponsController weaponsController
 				, ISkillsController skillsController, IMissionResultController missionResultController, MissionConfig missionConfig) {
 			_sceneLoader = sceneLoader;
@@ -53,7 +52,6 @@ namespace Infrastructure {
 			_missionMapController = missionMapController;
 			_monstersSpawner = monstersSpawner;
 			_monstersMoveController = monstersMoveController;
-			_unitsPool = unitsPool;
 			_missionUiController = missionUiController;
 			_photonDataExchangeController = photonDataExchangeController;
 			_photonObjectsSynchronizer = photonObjectsSynchronizer;
@@ -72,7 +70,6 @@ namespace Infrastructure {
 				InitMapWrapper(out var groundItemSize);
 				InitUnits(groundItemSize, out var player);
 				InitUi(player);
-				_missionResultController.Init();
 				OnStateChange?.Invoke();
 			}
 
@@ -81,7 +78,7 @@ namespace Infrastructure {
 						.GetComponent<PhotonDataExchanger>();
 				var othersPhotonDataExchangers = await FindSynchronizers(minePhotonDataExchanger);
 				_photonDataExchangeController.Init(minePhotonDataExchanger, othersPhotonDataExchangers);
-				_photonObjectsSynchronizer.Init(_photonDataExchangeController, _unitsPool);
+				_photonObjectsSynchronizer.Init();
 			}
 
 			async Task<List<PhotonDataExchanger>> FindSynchronizers(PhotonDataExchanger minePhotonDataExchanger) {
@@ -124,6 +121,7 @@ namespace Infrastructure {
 				_missionMapController.Init(player.Transform, groundSize);
 				_weaponsController.Init(player);
 				_skillsController.Init(player);
+				_missionResultController.Init(player);
 				return player;
 			}
 

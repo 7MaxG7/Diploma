@@ -17,3 +17,7 @@ MonoBehaviour:
   _canvasFadeAnimationDuration: 0.5
   _skillUiItemPrefab: {fileID: 7329006160628604031, guid: b34bc457af516824388803ea60f6a5f1, type: 3}
   _skillChooserActivationDelay: 0.5
+  _winResultText: You win!
+  _winResultColor: {r: 0, g: 0.78431374, b: 0, a: 1}
+  _looseResultText: Game over
+  _looseResultColor: {r: 0.78431374, g: 0, b: 0, a: 1}

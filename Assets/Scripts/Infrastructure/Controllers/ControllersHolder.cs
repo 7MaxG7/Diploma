@@ -3,7 +3,7 @@
 
 namespace Infrastructure {
 
-	internal class ControllersHolder : /*IAwaker, IStarter,*/ IControllersHolder {
+	internal class ControllersHolder : IControllersHolder {
 		private readonly List<IUpdater> _updaters = new();
 		private readonly List<ILateUpdater> _lateUpdaters = new();
 		private readonly List<IFixedUpdater> _fixedUpdaters = new();
@@ -42,12 +42,6 @@ namespace Infrastructure {
 		public void OnFixedUpdate(float deltaTime) {
 			foreach (var fixedUpdater in _fixedUpdaters) {
 				fixedUpdater.OnFixedUpdate(deltaTime);
-			}
-		}
-
-		public void OnDispose() {
-			foreach (var disposer in _disposers) {
-				disposer.OnDispose();
 			}
 		}
 	}

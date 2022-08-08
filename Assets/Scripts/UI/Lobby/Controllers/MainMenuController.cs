@@ -9,7 +9,7 @@ using Zenject;
 
 namespace Infrastructure {
 
-	internal class MainMenuController : IMainMenuController, IDisposer {
+	internal class MainMenuController : IMainMenuController {
 		
 		private string _userName;
 		private MainMenuView _mainMenuView;
@@ -26,10 +26,6 @@ namespace Infrastructure {
 		}
 
 		public void Dispose() {
-			OnDispose();
-		}
-
-		public void OnDispose() {
 			_mainMenuView.LoginPanelButton.onClick.RemoveAllListeners();
 			_mainMenuView.PlayButton.onClick.RemoveAllListeners();
 			_mainMenuView.SettingsButton.onClick.RemoveAllListeners();
@@ -128,7 +124,7 @@ namespace Infrastructure {
 		}
 
 		private void QuitGame() {
-			OnDispose();
+			Dispose();
 			PhotonNetwork.Disconnect();
 			Application.Quit();
 		}

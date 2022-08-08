@@ -22,6 +22,11 @@ namespace Infrastructure {
 			};
 		}
 
+		public void Dispose() {
+			_currentState = null;
+			_states.Clear();
+		}
+
 		public IGameState GetState(Type stateType) {
 			return _states[stateType];
 		}

@@ -10,8 +10,8 @@ using Object = UnityEngine.Object;
 namespace Infrastructure {
 
 	internal class LobbyPanelController : IDisposable {
-		
-		public LobbyPanelView LobbyPanelView { get; }
+
+		private LobbyPanelView LobbyPanelView { get; }
 
 		private readonly MainMenuConfig _mainMenuConfig;
 		private readonly ILobbyStatusDisplayer _lobbyStatusDisplayer;
@@ -35,10 +35,6 @@ namespace Infrastructure {
 		}
 
 		public void Dispose() {
-			OnDispose();
-		}
-
-		public void OnDispose() {
 			LobbyPanelView.CreatePrivateRoomButton.onClick.RemoveAllListeners();
 			LobbyPanelView.JoinPrivateRoomButton.onClick.RemoveAllListeners();
 			LobbyPanelView.CreateNewRoomButton.onClick.RemoveAllListeners();
