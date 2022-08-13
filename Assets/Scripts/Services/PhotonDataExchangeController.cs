@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Enums;
 using Photon.Pun;
+using Units;
 using Object = UnityEngine.Object;
 
 
@@ -10,7 +11,8 @@ namespace Services {
 	internal class PhotonDataExchangeController : IPhotonDataExchangeController {
 		public event Action<int, bool> OnActivationDataRecieved;
 		public event Action<int> OnInstantiationDataRecieved;
-		
+		public event Action<int, int> OnDamagePlayerDataRecieved;
+
 		private readonly List<List<object>> _data = new();
 		private PhotonDataExchanger _minePhotonDataExchanger;
 		private List<PhotonDataExchanger> _othersPhotonDataExchangers;
@@ -56,6 +58,11 @@ namespace Services {
 						var photonViewId = (int)stream.ReceiveNext();
 						var isActive = (bool)stream.ReceiveNext();
 						OnActivationDataRecieved?.Invoke(photonViewId, isActive);
+						break;
+					case PhotonExchangerDataType.DamagingEnemyHero:
+						var playerphotonViewId = (int)stream.ReceiveNext();
+						var damage = (int)stream.ReceiveNext();
+						OnDamagePlayerDataRecieved?.Invoke(playerphotonViewId, damage);
 						break;
 					default:
 						throw new ArgumentOutOfRangeException();

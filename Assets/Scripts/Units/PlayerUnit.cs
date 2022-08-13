@@ -13,14 +13,11 @@ namespace Units {
 			Experience.OnLevelUp += Health.AddLevelUpHealth;
 			var playerView = playerGO.GetComponent<PlayerView>();
 			playerView.OnDamageTake += TakeDamage;
-			playerView.OnRecieveExperience += RecieveExperience;
 			UnitView = playerView;
 		}
 
 		public override void Dispose() {
 			UnitView.OnDamageTake -= TakeDamage;
-			if (UnitView is PlayerView playerView)
-				playerView.OnRecieveExperience -= RecieveExperience;
 			Experience.OnLevelUp -= Health.AddLevelUpHealth;
 			PhotonNetwork.Destroy(UnitView.GameObject);
 			base.Dispose();

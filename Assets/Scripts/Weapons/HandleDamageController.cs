@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using Services;
 using Units;
 using Zenject;
 
@@ -7,6 +9,8 @@ using Zenject;
 namespace Infrastructure {
 
 	internal class HandleDamageController : IHandleDamageController {
+		public event Action<PhotonDamageInfo> OnDamageEnemyPlayer;
+		
 		private List<ComingDamage> _comingDamages = new();
 
 
@@ -27,6 +31,9 @@ namespace Infrastructure {
 				comingDamage.ReduceDelay(deltaTime);
 				if (comingDamage.IsReady) {
 					comingDamage.DamageTaker.TakeDamage(comingDamage.Damage, comingDamage.Damager);
+					if (comingDamage.DamageTaker is PlayerView enemyPlayer && enemyPlayer != comingDamage.Damager.UnitView) {
+						OnDamageEnemyPlayer?.Invoke(new PhotonDamageInfo(enemyPlayer.PhotonView.ViewID, comingDamage.Damage));
+					}
 					damagesToRemove.Add(comingDamage);
 				}
 			}
@@ -37,6 +44,9 @@ namespace Infrastructure {
 
 		public void DealPermanentDamage(IDamagableView damageTaker, int damage, IUnit owner) {
 			damageTaker.TakeDamage(damage, owner);
+			if (damageTaker is PlayerView enemyPlayer && enemyPlayer != owner.UnitView) {
+				OnDamageEnemyPlayer?.Invoke(new PhotonDamageInfo(enemyPlayer.PhotonView.ViewID, damage));
+			}
 		}
 
 		public void DealPeriodicalDamage(IDamagableView damageTaker, int[] damages, float damageTicksCooldown, IUnit damager) {

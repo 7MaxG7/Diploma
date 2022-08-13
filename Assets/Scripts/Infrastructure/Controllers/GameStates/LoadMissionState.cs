@@ -66,30 +66,11 @@ namespace Infrastructure {
 
 
 			async void PrepareSceneAsync() {
-				await InitPhotonDataControllersAsync();
 				InitMapWrapper(out var groundItemSize);
-				InitUnits(groundItemSize, out var player);
+				var player = await InitUnits(groundItemSize);
+				await InitPhotonDataControllersAsync(player);
 				InitUi(player);
 				OnStateChange?.Invoke();
-			}
-
-			async Task InitPhotonDataControllersAsync() {
-				var minePhotonDataExchanger = PhotonNetwork.Instantiate(_missionConfig.PhotonDataSynchronizerPath, Vector3.zero, Quaternion.identity)
-						.GetComponent<PhotonDataExchanger>();
-				var othersPhotonDataExchangers = await FindSynchronizers(minePhotonDataExchanger);
-				_photonDataExchangeController.Init(minePhotonDataExchanger, othersPhotonDataExchangers);
-				_photonObjectsSynchronizer.Init();
-			}
-
-			async Task<List<PhotonDataExchanger>> FindSynchronizers(PhotonDataExchanger minePhotonDataExchanger) {
-				var photonDataExchangers = new PhotonDataExchanger[] { };
-				while (photonDataExchangers.Length != PhotonNetwork.CurrentRoom.PlayerCount) {
-					photonDataExchangers = Object.FindObjectsOfType<PhotonDataExchanger>();
-					await Task.Yield();
-				}
-				var photonDataExchangersList = photonDataExchangers.ToList();
-				photonDataExchangersList.Remove(minePhotonDataExchanger);
-				return photonDataExchangersList;
 			}
 
 			void InitMapWrapper(out Vector2 groundItemSize) {
@@ -103,26 +84,60 @@ namespace Infrastructure {
 				_mapWrapper.Init(Vector2.zero, mapSize);
 			}
 
-			void InitUnits(Vector2 groundSize, out IUnit player) {
-				player = PreparePlayer(groundSize);
+			async Task<IUnit> InitUnits(Vector2 groundSize) {
+				var player = await PreparePlayer(groundSize);
 				_monstersSpawner.Init();
 				_monstersMoveController.Init(player.Transform);
 				_weaponsController.StopShooting();
+				return player;
 			}
 
-			IUnit PreparePlayer(Vector2 groundSize) {
+			async Task<IUnit> PreparePlayer(Vector2 groundSize) {
 				// ReSharper disable once PossibleLossOfFraction
 				var xPosition = ((PhotonNetwork.LocalPlayer.ActorNumber - 1) / 2 + .5f) * Constants.GROUND_ITEMS_AMOUNT_PER_PLAYER_ZONE_LENGTH * groundSize.x;
 				var yPosition = ((PhotonNetwork.LocalPlayer.ActorNumber - 1) % 2 + .5f) * Constants.GROUND_ITEMS_AMOUNT_PER_PLAYER_ZONE_LENGTH * groundSize.y;
 
 				var player = _unitsFactory.CreatePlayer(new Vector2(xPosition, yPosition));
+				var enemyPlayers = await FindEnemyPlayersAsync(player);
 				_playerMoveController.Init(player);
 				_cameraController.Follow(player.Transform, _missionConfig.CameraOffset);
 				_missionMapController.Init(player.Transform, groundSize);
-				_weaponsController.Init(player);
+				_weaponsController.Init(player, enemyPlayers);
 				_skillsController.Init(player);
 				_missionResultController.Init(player);
 				return player;
+			}
+
+			async Task<List<PlayerView>> FindEnemyPlayersAsync(IUnit player) {
+				var enemyPlayers = new PlayerView[] { };
+				while (enemyPlayers.Length != PhotonNetwork.CurrentRoom.PlayerCount) {
+					enemyPlayers = Object.FindObjectsOfType<PlayerView>();
+					await Task.Yield();
+				}
+				var enemyPlayersList = enemyPlayers.ToList();
+				var playerUnit = player.UnitView as PlayerView;
+				if (playerUnit != null)
+					enemyPlayersList.Remove(playerUnit);
+				return enemyPlayersList;
+			}
+
+			async Task InitPhotonDataControllersAsync(IUnit player) {
+				var minePhotonDataExchanger = PhotonNetwork.Instantiate(_missionConfig.PhotonDataSynchronizerPath, Vector3.zero, Quaternion.identity)
+						.GetComponent<PhotonDataExchanger>();
+				var othersPhotonDataExchangers = await FindSynchronizers(minePhotonDataExchanger);
+				_photonDataExchangeController.Init(minePhotonDataExchanger, othersPhotonDataExchangers);
+				_photonObjectsSynchronizer.Init(player.UnitView as PlayerView);
+			}
+
+			async Task<List<PhotonDataExchanger>> FindSynchronizers(PhotonDataExchanger minePhotonDataExchanger) {
+				var photonDataExchangers = new PhotonDataExchanger[] { };
+				while (photonDataExchangers.Length != PhotonNetwork.CurrentRoom.PlayerCount) {
+					photonDataExchangers = Object.FindObjectsOfType<PhotonDataExchanger>();
+					await Task.Yield();
+				}
+				var photonDataExchangersList = photonDataExchangers.ToList();
+				photonDataExchangersList.Remove(minePhotonDataExchanger);
+				return photonDataExchangersList;
 			}
 
 			void InitUi(IUnit player) {

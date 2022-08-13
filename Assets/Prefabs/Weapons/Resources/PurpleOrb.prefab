@@ -10,10 +10,11 @@ GameObject:
   m_Component:
   - component: {fileID: 6087784927683409263}
   - component: {fileID: 8133493592845382287}
+  - component: {fileID: 7459075975693450771}
   - component: {fileID: 5950261252846829057}
   - component: {fileID: 1016112340865420556}
   - component: {fileID: 5088788148381792503}
-  - component: {fileID: 7459075975693450771}
+  - component: {fileID: -3923509219101388569}
   m_Layer: 0
   m_Name: PurpleOrb
   m_TagString: Untagged
@@ -52,6 +53,29 @@ MonoBehaviour:
   _transform: {fileID: 6087784927683409263}
   _photonView: {fileID: 7459075975693450771}
   _rigidBody: {fileID: 1016112340865420556}
+--- !u!114 &7459075975693450771
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8732773248364632700}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 0
+  ObservedComponents:
+  - {fileID: -3923509219101388569}
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!212 &5950261252846829057
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -141,7 +165,7 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.08
---- !u!114 &7459075975693450771
+--- !u!114 &-3923509219101388569
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -150,16 +174,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 8732773248364632700}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ObservedComponentsFoldoutOpen: 1
-  Group: 0
-  prefixField: -1
-  Synchronization: 3
-  OwnershipTransfer: 0
-  observableSearch: 2
-  ObservedComponents: []
-  sceneViewId: 0
-  InstantiationId: 0
-  isRuntimeInstantiated: 0
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 1
+  m_SynchronizeScale: 0
+  m_UseLocal: 1

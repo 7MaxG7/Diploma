@@ -143,6 +143,7 @@ namespace Infrastructure {
 
 		public void OnPlayerLeftRoom(Player otherPlayer) {
 			_roomPanelController.RemovePlayer(otherPlayer);
+			_roomPanelController.UpdateButtons();
 		}
 
 		public void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged) { }

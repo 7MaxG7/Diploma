@@ -11,6 +11,7 @@ namespace Infrastructure {
 
 	internal class MissionResultController : IMissionResultController, IInRoomCallbacks {
 		public event Action OnGameLeft;
+		public event Action OnPlayerLeftRoomEvent;
 
 		private readonly IPermanentUiController _permanentUiController;
 		private readonly Dictionary<IUnit, int> _unitsKills = new();
@@ -32,6 +33,7 @@ namespace Infrastructure {
 
 #region IInRoomCallbacksMethods
 		public void OnPlayerLeftRoom(Player otherPlayer) {
+			OnPlayerLeftRoomEvent?.Invoke();
 			if (PhotonNetwork.CurrentRoom.PlayerCount == 1) {
 				ShowVictoryResult();
 			}

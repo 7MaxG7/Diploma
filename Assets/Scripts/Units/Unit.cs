@@ -53,7 +53,6 @@ namespace Units {
 		}
 
 		public void KillUnit() {
-			// TODO. Проверить, почему при последнем дамаге игрока здесь вылазит нулл
 			Health.Kill(this);
 		}
 

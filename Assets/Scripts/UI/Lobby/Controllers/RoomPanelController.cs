@@ -38,10 +38,14 @@ namespace Infrastructure {
 			ClearPanel();
 			ToggleBlockingUi(true);
 			RoomPanelView.gameObject.SetActive(true);
-			RoomPanelView.StartGameButton.gameObject.SetActive(PhotonNetwork.IsMasterClient);
+			UpdateButtons();
 			RoomPanelView.RoomPanelHeader.text = roomName;
 			RoomPanelView.CanvasGroup.alpha = 0;
 			return RoomPanelView.CanvasGroup.DOFade(1, Constants.LOBBY_PANEL_FADING_DURATION);
+		}
+
+		public void UpdateButtons() {
+			RoomPanelView.StartGameButton.gameObject.SetActive(PhotonNetwork.IsMasterClient);
 		}
 
 		public Tween HidePanel() {

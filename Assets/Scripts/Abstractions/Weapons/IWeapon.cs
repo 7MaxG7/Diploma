@@ -1,5 +1,6 @@
 ﻿using System;
 using Units;
+using UnityEngine;
 
 
 namespace Infrastructure {
@@ -11,7 +12,7 @@ namespace Infrastructure {
 		int Level { get; }
 
 		void ReduceCooldown(float deltaTime);
-		void Shoot(IUnit target);
+		void Shoot(Vector3 targetPosition);
 		void Upgrade(WeaponLevelUpgradeParam upgradeParam);
 
 		event Action<WeaponType> OnShooted;

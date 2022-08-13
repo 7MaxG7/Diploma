@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Enums;
+using Infrastructure;
 using Photon.Pun;
+using Units;
 using Zenject;
 
 
@@ -11,27 +13,42 @@ namespace Services {
 		private readonly List<PhotonView> _otherPlayersObjects = new();
 		private readonly IPhotonDataExchangeController _photonDataExchangeController;
 		private readonly IUnitsPool _unitsPool;
+		private readonly IAmmosPool _ammosPool;
+		private readonly IHandleDamageController _handleDamageController;
+		private PlayerView _playerView;
 
 
 		[Inject]
-		public PhotonObjectsSynchronizer(IPhotonDataExchangeController photonDataExchangeController, IUnitsPool unitsPool) {
+		public PhotonObjectsSynchronizer(IPhotonDataExchangeController photonDataExchangeController, IUnitsPool unitsPool, IAmmosPool ammosPool
+				, IHandleDamageController handleDamageController) {
 			_photonDataExchangeController = photonDataExchangeController;
 			_unitsPool = unitsPool;
+			_ammosPool = ammosPool;
+			_handleDamageController = handleDamageController;
 		}
 		
 		public void Dispose() {
 			_unitsPool.OnObjectInstantiated -= SendInstantiationData;
 			_unitsPool.OnObjectActivationToggle -= SendActivationToggleData;
+			_ammosPool.OnObjectInstantiated -= SendInstantiationData;
+			_ammosPool.OnObjectActivationToggle -= SendActivationToggleData;
+			_handleDamageController.OnDamageEnemyPlayer -= SendDamagingEnemyHeroData;
 			_photonDataExchangeController.OnInstantiationDataRecieved -= Register;
 			_photonDataExchangeController.OnActivationDataRecieved -= SetActive;
+			_photonDataExchangeController.OnDamagePlayerDataRecieved -= DamagePlayer;
 			_otherPlayersObjects.Clear();
 		}
 
-		public void Init() {
+		public void Init(PlayerView playerView) {
+			_playerView = playerView;
 			_unitsPool.OnObjectInstantiated += SendInstantiationData;
 			_unitsPool.OnObjectActivationToggle += SendActivationToggleData;
+			_ammosPool.OnObjectInstantiated += SendInstantiationData;
+			_ammosPool.OnObjectActivationToggle += SendActivationToggleData;
+			_handleDamageController.OnDamageEnemyPlayer += SendDamagingEnemyHeroData;
 			_photonDataExchangeController.OnInstantiationDataRecieved += Register;
 			_photonDataExchangeController.OnActivationDataRecieved += SetActive;
+			_photonDataExchangeController.OnDamagePlayerDataRecieved += DamagePlayer;
 		}
 
 		private void SendInstantiationData(int photonViewId) {
@@ -40,6 +57,11 @@ namespace Services {
 
 		private void SendActivationToggleData(int photonViewId, bool isActivated) {
 			_photonDataExchangeController.PrepareDataForSending(PhotonExchangerDataType.ObjectActivation, photonViewId, isActivated);
+		}
+
+		private void SendDamagingEnemyHeroData(PhotonDamageInfo photonDamageInfo) {
+			_photonDataExchangeController.PrepareDataForSending(PhotonExchangerDataType.DamagingEnemyHero, photonDamageInfo.PhotonViewID
+					, photonDamageInfo.Damage);
 		}
 
 		private void Register(int photonViewId) {
@@ -57,6 +79,11 @@ namespace Services {
 				photonView.gameObject.SetActive(isActive);
 		}
 
+		private void DamagePlayer(int playerPhotonId, int damage) {
+			if (_playerView.PhotonView.ViewID == playerPhotonId) {
+				_playerView.TakeDamage(damage, null);
+			}
+		}
 	}
 
 }

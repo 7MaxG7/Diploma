@@ -215,7 +215,6 @@ namespace Infrastructure {
 				_isLoading = false;
 				_loginPanelView.StatusLableText.color = Color.green;
 				_loginPanelView.StatusLableText.text = TextConstants.LOGIN_SUCCESS_STATUS_TEXT;
-				Debug.Log($"Login success: {_username}");
 				await Task.Delay(SUCCESSFUL_STATUS_DELAY);
 				OnUserLoginSuccess?.Invoke(_username);
 				HidePanel();

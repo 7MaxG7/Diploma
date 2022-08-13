@@ -42,12 +42,12 @@ namespace Infrastructure {
 			_cooldownTimer -= Math.Min(deltaTime, _cooldownTimer);
 		}
 
-		public void Shoot(IUnit target) {
+		public void Shoot(Vector3 targetPosition) {
 			_cooldownTimer += _cooldown;
 			var ownerPosition = _owner.Transform.position;
 			var ammo = _ammosPool.SpawnObject(ownerPosition, Type);
 			ammo.Init(_owner, _damage, _damageTickCooldown, _isPiercing);
-			var destination = target.Transform.position - ownerPosition;
+			var destination = targetPosition - ownerPosition;
 			ammo.RigidBody.AddForce(destination * _ammoSpeed, ForceMode2D.Impulse);
 			OnShooted?.Invoke(Type);
 		}
