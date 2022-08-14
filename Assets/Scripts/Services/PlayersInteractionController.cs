@@ -17,7 +17,7 @@ namespace Services {
 		private readonly IMonstersSpawner _monstersSpawner;
 		private readonly IMissionResultController _missionResultController;
 
-		private List<PlayerView> EnemyPlayerViews { get; set; }
+		private List<PlayerView> EnemyPlayerViews { get; set; } = new();
 		private readonly float _maxPlayersFightSqrMagnitude;
 		private IUnit _player;
 		private bool _isInited;
@@ -66,6 +66,9 @@ namespace Services {
 		}
 
 		public void Init(IUnit player, List<PlayerView> enemyPlayerViews) {
+			if (enemyPlayerViews.Count == 0)
+				return;
+			
 			_player = player;
 			EnemyPlayerViews = enemyPlayerViews;
 			_missionResultController.OnPlayerLeftRoomEvent += RefindEnemyPlayerViews;
