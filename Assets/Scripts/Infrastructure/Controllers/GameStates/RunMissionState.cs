@@ -33,7 +33,7 @@ namespace Infrastructure {
 
 		public void Exit() {
 			_missionResultController.OnGameLeft -= SwitchState;
-			_monstersSpawner.StopSpawn();
+			_monstersSpawner.KillMonstersAndStopSpawn();
 			_weaponsController.StopShooting();
 			_soundController.StopAll();
 		}

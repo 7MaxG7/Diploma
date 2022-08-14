@@ -1,4 +1,5 @@
 ﻿using System;
+using Abstractions;
 using Controllers;
 using Photon.Pun;
 using Services;
@@ -23,7 +24,7 @@ namespace Infrastructure {
 		private readonly IUnitsPool _unitsPool;
 		private readonly IAmmosPool _ammosPool;
 		private readonly IPermanentUiController _permanentUiController;
-		private readonly IControllersHolder _controllersHolder;
+		private readonly IPlayersInteractionController _playersInteractionController;
 		public event Action OnStateChange;
 
 		
@@ -32,11 +33,13 @@ namespace Infrastructure {
 				, ICameraController cameraController, IMissionMapController missionMapController, IPlayerMoveController playerMoveController
 				, IMonstersSpawner monstersSpawner, IMonstersMoveController monstersMoveController, IWeaponsController weaponsController
 				, ISkillsController skillsController, IMissionUiController missionUiController, IMissionResultController missionResultController
-				, IUnitsPool unitsPool, IAmmosPool ammosPool, IPermanentUiController permanentUiController, IControllersHolder controllersHolder) {
+				, IUnitsPool unitsPool, IAmmosPool ammosPool, IPermanentUiController permanentUiController
+				, IPlayersInteractionController playersInteractionController) {
 			_photonObjectsSynchronizer = photonObjectsSynchronizer;
 			_photonDataExchangeController = photonDataExchangeController;
 			_cameraController = cameraController;
 			_missionMapController = missionMapController;
+			_playersInteractionController = playersInteractionController;
 			_playerMoveController = playerMoveController;
 			_monstersSpawner = monstersSpawner;
 			_monstersMoveController = monstersMoveController;
@@ -47,7 +50,6 @@ namespace Infrastructure {
 			_unitsPool = unitsPool;
 			_ammosPool = ammosPool;
 			_permanentUiController = permanentUiController;
-			_controllersHolder = controllersHolder;
 		}
 
 		public void Enter() {
@@ -60,6 +62,7 @@ namespace Infrastructure {
 			_monstersSpawner.Dispose();
 			_missionMapController.Dispose();
 			_cameraController.Dispose();
+			_playersInteractionController.Dispose();
 			_playerMoveController.Player.Dispose();
 			_playerMoveController.Dispose();
 			_photonObjectsSynchronizer.Dispose();

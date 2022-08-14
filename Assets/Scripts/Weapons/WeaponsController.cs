@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Abstractions;
 using Services;
 using Units;
-using Units.Views;
 using UnityEngine;
 using Zenject;
 
@@ -11,24 +11,23 @@ namespace Infrastructure {
 
 	internal class WeaponsController : IWeaponsController {
 		private readonly IAmmosPool _ammosPool;
+		private readonly IPlayersInteractionController _playersInteractionController;
 		private readonly WeaponsConfig _weaponsConfig;
-		private readonly IMissionResultController _missionResultController;
 		private readonly List<IWeapon> _activeWeapons;
 		private readonly List<IUnit> _monsters;
 		private readonly ISoundController _soundController;
 		public List<WeaponType> UpgradableWeaponTypes { get; private set; }
 		private IUnit _player;
 		private bool _isShooting;
-		private List<PlayerView> _enemyPlayersViews;
 
 
 		[Inject]
-		public WeaponsController(IUnitsPool unitsPool, IAmmosPool ammosPool, ISoundController soundController, WeaponsConfig weaponsConfig
-				, IMissionResultController missionResultController, IControllersHolder controllersHolder) {
+		public WeaponsController(IUnitsPool unitsPool, IAmmosPool ammosPool, IPlayersInteractionController playersInteractionController
+				, ISoundController soundController, WeaponsConfig weaponsConfig, IControllersHolder controllersHolder) {
 			_ammosPool = ammosPool;
+			_playersInteractionController = playersInteractionController;
 			_soundController = soundController;
 			_weaponsConfig = weaponsConfig;
-			_missionResultController = missionResultController;
 			_activeWeapons = new List<IWeapon>(weaponsConfig.WeaponsAmount);
 			_monsters = unitsPool.ActiveMonsters;
 			controllersHolder.AddController(this);
@@ -40,7 +39,6 @@ namespace Infrastructure {
 				weapon.OnShooted -= _soundController.PlayWeaponShootSound;
 			}
 			_activeWeapons.Clear();
-			_missionResultController.OnPlayerLeftRoomEvent -= RefindEnemyPlayerViews;
 			_player = null;
 		}
 
@@ -59,18 +57,16 @@ namespace Infrastructure {
 
 			Vector3? targetPosition = null;
 			var minSqrMagnitude = float.MaxValue;
-			foreach (var monster in _monsters.Where(unit => !unit.IsDead)) {
-				var currentSqrMagnitude = Vector3.SqrMagnitude(_player.Transform.position - monster.Transform.position);
-				if (currentSqrMagnitude < minSqrMagnitude) {
-					targetPosition = monster.Transform.position;
-					minSqrMagnitude = currentSqrMagnitude;
-				}
-			}
-			foreach (var enemyPlayerView in _enemyPlayersViews.Where(unit => unit != null)) {
-				var currentSqrMagnitude = Vector3.SqrMagnitude(_player.Transform.position - enemyPlayerView.Transform.position);
-				if (currentSqrMagnitude < minSqrMagnitude) {
-					targetPosition = enemyPlayerView.Transform.position;
-					minSqrMagnitude = currentSqrMagnitude;
+			if (_playersInteractionController.IsPlayersFight) {
+				targetPosition = _playersInteractionController.ClosestFightingEnemyPlayer.Transform.position;
+				minSqrMagnitude = _playersInteractionController.ClosestFightingEnemyPlayerSqrMagnitude;
+			} else {
+				foreach (var monster in _monsters.Where(unit => !unit.IsDead)) {
+					var currentSqrMagnitude = Vector3.SqrMagnitude(_player.Transform.position - monster.Transform.position);
+					if (currentSqrMagnitude < minSqrMagnitude) {
+						targetPosition = monster.Transform.position;
+						minSqrMagnitude = currentSqrMagnitude;
+					}
 				}
 			}
 			if (!targetPosition.HasValue)
@@ -82,18 +78,9 @@ namespace Infrastructure {
 			}
 		}
 
-		public void Init(IUnit player, List<PlayerView> enemyPlayerViews) {
+		public void Init(IUnit player) {
 			_player = player;
-			_enemyPlayersViews = enemyPlayerViews;
 			UpgradableWeaponTypes = _weaponsConfig.GetAllWeaponTypes().ToList();
-			_missionResultController.OnPlayerLeftRoomEvent += RefindEnemyPlayerViews;
-		}
-
-		private void RefindEnemyPlayerViews() {
-			_enemyPlayersViews = Object.FindObjectsOfType<PlayerView>().ToList();
-			var playerView = _player.UnitView as PlayerView;
-			if (playerView != null)
-				_enemyPlayersViews.Remove(playerView);
 		}
 
 		public void StartShooting() {

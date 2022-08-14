@@ -11,9 +11,9 @@ namespace Infrastructure.Zenject {
 		public override void InstallBindings() {
 			var permanentUiView = Container.InstantiatePrefabForComponent<IPermanentUiView>(_permanentUiPref);
 
+			Container.Bind<IPermanentUiView>().FromInstance(permanentUiView).AsSingle();
 			Container.Bind<IGame>().To<Game>().AsSingle();
 			Container.Bind<ISceneLoader>().To<SceneLoader>().AsSingle();
-			Container.Bind<IPermanentUiView>().FromInstance(permanentUiView).AsSingle();
 			Container.Bind<IPermanentUiController>().To<PermanentUiController>().AsSingle();
 			Container.Bind<IRandomController>().To<RandomController>().AsSingle();
 			Container.Bind<ISoundController>().To<SoundController>().AsSingle();

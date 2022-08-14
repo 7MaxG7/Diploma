@@ -9,11 +9,13 @@ namespace Infrastructure {
 		[SerializeField] private int _baseChoosingSkillsAmount;
 		[SerializeField] private Transform _groundItemPref;
 		[SerializeField] private string _photonDataSynchronizerPath;
+		[Tooltip("Max distance for players fight logic")][SerializeField] private float _playersFightDistance;
 
 		public int BaseChoosingSkillsAmount => _baseChoosingSkillsAmount;
 		public Transform GroundItemPref => _groundItemPref;
 		public string PhotonDataSynchronizerPath => _photonDataSynchronizerPath;
 		public Vector3 CameraOffset => _cameraOffset;
+		public float PlayersFightDistance => _playersFightDistance;
 	}
 
 }

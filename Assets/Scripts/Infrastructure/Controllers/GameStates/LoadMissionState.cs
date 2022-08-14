@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Abstractions;
 using Controllers;
 using Photon.Pun;
 using Services;
@@ -34,19 +35,22 @@ namespace Infrastructure {
 		private readonly IWeaponsController _weaponsController;
 		private readonly ISkillsController _skillsController;
 		private readonly IMissionResultController _missionResultController;
+		private readonly IPlayersInteractionController _playersInteractionController;
 		private readonly MissionConfig _missionConfig;
 
 
 		[Inject]
-		public LoadMissionState(ISceneLoader sceneLoader, IPermanentUiController permanentUiController, IMapWrapper mapWrapper, IUnitsFactory unitsFactory
-				, IPlayerMoveController playerMoveController, ICameraController cameraController, IMissionMapController missionMapController
-				, IMonstersSpawner monstersSpawner, IMonstersMoveController monstersMoveController, IMissionUiController missionUiController
-				, IPhotonDataExchangeController photonDataExchangeController, IPhotonObjectsSynchronizer photonObjectsSynchronizer, IWeaponsController weaponsController
-				, ISkillsController skillsController, IMissionResultController missionResultController, MissionConfig missionConfig) {
+		public LoadMissionState(ISceneLoader sceneLoader, IPermanentUiController permanentUiController, IMapWrapper mapWrapper
+				, IUnitsFactory unitsFactory, IPlayerMoveController playerMoveController, ICameraController cameraController
+				, IMissionMapController missionMapController, IMonstersSpawner monstersSpawner, IMonstersMoveController monstersMoveController
+				, IMissionUiController missionUiController, IPhotonDataExchangeController photonDataExchangeController
+				, IPhotonObjectsSynchronizer photonObjectsSynchronizer, IWeaponsController weaponsController, ISkillsController skillsController
+				, IMissionResultController missionResultController, IPlayersInteractionController playersInteractionController, MissionConfig missionConfig) {
 			_sceneLoader = sceneLoader;
 			_permanentUiController = permanentUiController;
 			_mapWrapper = mapWrapper;
 			_unitsFactory = unitsFactory;
+			_playersInteractionController = playersInteractionController;
 			_playerMoveController = playerMoveController;
 			_cameraController = cameraController;
 			_missionMapController = missionMapController;
@@ -99,10 +103,11 @@ namespace Infrastructure {
 
 				var player = _unitsFactory.CreatePlayer(new Vector2(xPosition, yPosition));
 				var enemyPlayers = await FindEnemyPlayersAsync(player);
+				_playersInteractionController.Init(player, enemyPlayers);
 				_playerMoveController.Init(player);
 				_cameraController.Follow(player.Transform, _missionConfig.CameraOffset);
 				_missionMapController.Init(player.Transform, groundSize);
-				_weaponsController.Init(player, enemyPlayers);
+				_weaponsController.Init(player);
 				_skillsController.Init(player);
 				_missionResultController.Init(player);
 				return player;

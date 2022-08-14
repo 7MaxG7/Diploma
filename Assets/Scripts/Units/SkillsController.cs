@@ -14,19 +14,18 @@ namespace Infrastructure {
 		private readonly IRandomController _randomController;
 		private readonly IMissionUiController _missionUiController;
 		private readonly IMonstersSpawner _monstersSpawner;
-		private readonly IUnitsPool _unitsPool;
 		private readonly WeaponsConfig _weaponsConfig;
 		private int ChoosingSkillsAmount { get; }
 		private IUnit _player;
+		private bool _spawnerIsTurnedOffHere;
 
 		[Inject]
 		public SkillsController(IWeaponsController weaponsController, IRandomController randomController, IMissionUiController missionUiController
-				, IMonstersSpawner monstersSpawner, IUnitsPool unitsPool, WeaponsConfig weaponsConfig, MissionConfig missionConfig) {
+				, IMonstersSpawner monstersSpawner, WeaponsConfig weaponsConfig, MissionConfig missionConfig) {
 			_weaponsController = weaponsController;
 			_randomController = randomController;
 			_missionUiController = missionUiController;
 			_monstersSpawner = monstersSpawner;
-			_unitsPool = unitsPool;
 			_weaponsConfig = weaponsConfig;
 			ChoosingSkillsAmount = missionConfig.BaseChoosingSkillsAmount;
 		}
@@ -59,12 +58,13 @@ namespace Infrastructure {
 				SetupSkillInfo(choosingSkills[i]);
 			}
 
-			for (var i = _unitsPool.ActiveMonsters.Count - 1; i >= 0; i--) {
-				_unitsPool.ActiveMonsters[i].KillUnit();
-			}
 			if (choosingSkills.Length > 0) {
 				_missionUiController.ShowSkillsChoose(choosingSkills);
-				_monstersSpawner.StopSpawn();
+				if (_monstersSpawner.SpawnIsOn) {
+					_monstersSpawner.KillMonstersAndStopSpawn();
+					_spawnerIsTurnedOffHere = true;
+				} 
+				_monstersSpawner.KillMonstersAndStopSpawn();
 			}
 		}
 
@@ -80,8 +80,10 @@ namespace Infrastructure {
 
 		private void AddOrUpgradeSkill(WeaponType weaponType) {
 			_weaponsController.AddOrUpgradeWeapon(weaponType);
-			
-			_monstersSpawner.StartSpawn();
+			if (_spawnerIsTurnedOffHere) {
+				_monstersSpawner.StartSpawn();
+				_spawnerIsTurnedOffHere = false;
+			}
 		}
 	}
 

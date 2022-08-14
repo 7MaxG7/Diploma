@@ -1,4 +1,5 @@
-﻿using Controllers;
+﻿using Abstractions;
+using Controllers;
 using Services;
 using UI;
 using UnityEngine;
@@ -28,6 +29,7 @@ namespace Infrastructure.Zenject {
 			Container.Bind<IHandleDamageController>().To<HandleDamageController>().AsSingle();
 			Container.Bind<ISkillsController>().To<SkillsController>().AsSingle();
 			Container.Bind<IMissionResultController>().To<MissionResultController>().AsSingle();
+			Container.Bind<IPlayersInteractionController>().To<PlayersInteractionController>().AsSingle();
 
 			Container.Bind<IControllersHolder>().To<ControllersHolder>().AsSingle();
 		}

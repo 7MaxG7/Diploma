@@ -1,6 +1,5 @@
 ﻿using Enums;
 using Infrastructure;
-using JetBrains.Annotations;
 using Units;
 using UnityEngine;
 using Zenject;
@@ -11,6 +10,8 @@ namespace Services {
 	internal class MonstersSpawner : IMonstersSpawner {
 		private const float SPAWN_FROM_SCREEN_OFFSET = 2;
 		
+		public bool SpawnIsOn { get; private set; }
+		
 		private readonly MonstersConfig _monstersConfig;
 		private readonly IMonstersMoveController _monstersMoveController;
 		private readonly IRandomController _random;
@@ -18,8 +19,7 @@ namespace Services {
 		private readonly IUnitsPool _unitsPool;
 		private int _spawnerLevel;
 		private Camera _mainCamera;
-		private bool _spawnIsOn;
-		
+
 		private float _leftSpawnPosition;
 		private float _rightSpawnPosition;
 		private float _bottomSpawnPosition;
@@ -42,7 +42,7 @@ namespace Services {
 		}
 
 		public void Dispose() {
-			StopSpawn();
+			KillMonstersAndStopSpawn();
 			_mainCamera = null;
 		}
 
@@ -52,7 +52,7 @@ namespace Services {
 				return;
 			}
 			
-			if (!_spawnIsOn || !_cameraController.CameraIsPositioned)
+			if (!SpawnIsOn || !_cameraController.CameraIsPositioned)
 				return;
 
 			var monstersAmount = _random.GetRandomIncludingMax(_monstersConfig.GetMaxMonstersAmount(_spawnerLevel));
@@ -69,11 +69,14 @@ namespace Services {
 		}
 
 		public void StartSpawn() {
-			_spawnIsOn = true;
+			SpawnIsOn = true;
 		}
 
-		public void StopSpawn() {
-			_spawnIsOn = false;
+		public void KillMonstersAndStopSpawn() {
+			SpawnIsOn = false;
+			for (var i = _unitsPool.ActiveMonsters.Count - 1; i >= 0; i--) {
+				_unitsPool.ActiveMonsters[i].KillUnit();
+			}
 		}
 
 		private IUnit SpawnMonster() {
