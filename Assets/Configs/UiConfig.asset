@@ -21,3 +21,4 @@ MonoBehaviour:
   _winResultColor: {r: 0, g: 0.78431374, b: 0, a: 1}
   _looseResultText: Game over
   _looseResultColor: {r: 0.78431374, g: 0, b: 0, a: 1}
+  _arrowPointerFadingFrameDelta: 0.02

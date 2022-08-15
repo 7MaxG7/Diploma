@@ -10,17 +10,18 @@ using Zenject;
 namespace Services {
 
 	internal class PlayersInteractionController : IPlayersInteractionController {
-		public bool IsPlayersFight => ClosestFightingEnemyPlayer != null;
+		public bool IsPlayersFight { get; private set; }
 		public PlayerView ClosestFightingEnemyPlayer { get; private set; } 
 		public float ClosestFightingEnemyPlayerSqrMagnitude { get; private set; }
+		public bool? IsMultiplayerGame { get; private set; }
 
 		private readonly IMonstersSpawner _monstersSpawner;
 		private readonly IMissionResultController _missionResultController;
+		private readonly IControllersHolder _controllersHolder;
 
 		private List<PlayerView> EnemyPlayerViews { get; set; } = new();
 		private readonly float _maxPlayersFightSqrMagnitude;
 		private IUnit _player;
-		private bool _isInited;
 		private bool _spawnerIsTurnedOffHere;
 
 
@@ -29,31 +30,33 @@ namespace Services {
 				, MissionConfig missionConfig, IControllersHolder controllersHolder) {
 			_monstersSpawner = monstersSpawner;
 			_missionResultController = missionResultController;
+			_controllersHolder = controllersHolder;
 			_maxPlayersFightSqrMagnitude = missionConfig.PlayersFightDistance * missionConfig.PlayersFightDistance;
 
-			controllersHolder.AddController(this);
 		}
 
 		public void Dispose() {
-			_isInited = false;
+			IsMultiplayerGame = null;
 			_missionResultController.OnPlayerLeftRoomEvent -= RefindEnemyPlayerViews;
 			_player = null;
+			_controllersHolder.RemoveController(this);
 			EnemyPlayerViews.Clear();
 		}
 
 		public void OnUpdate(float deltaTime) {
-			if (!_isInited)
+			if (!IsMultiplayerGame.HasValue || !IsMultiplayerGame.Value)
 				return;
 			
 			ClosestFightingEnemyPlayer = null;
 			ClosestFightingEnemyPlayerSqrMagnitude = float.MaxValue;
 			foreach (var enemyPlayerView in EnemyPlayerViews.Where(view => view != null)) {
 				var enemyPlayerSqrDistance = Vector3.SqrMagnitude(enemyPlayerView.Transform.position - _player.Transform.position);
-				if (enemyPlayerSqrDistance <= _maxPlayersFightSqrMagnitude && enemyPlayerSqrDistance < ClosestFightingEnemyPlayerSqrMagnitude) {
+				if (enemyPlayerSqrDistance < ClosestFightingEnemyPlayerSqrMagnitude) {
 					ClosestFightingEnemyPlayer = enemyPlayerView;
 					ClosestFightingEnemyPlayerSqrMagnitude = enemyPlayerSqrDistance;
 				}
 			}
+			IsPlayersFight = ClosestFightingEnemyPlayerSqrMagnitude <= _maxPlayersFightSqrMagnitude;
 			
 			if (!IsPlayersFight && _spawnerIsTurnedOffHere) {
 				_monstersSpawner.StartSpawn();
@@ -66,15 +69,18 @@ namespace Services {
 		}
 
 		public void Init(IUnit player, List<PlayerView> enemyPlayerViews) {
-			if (enemyPlayerViews.Count == 0)
+			if (enemyPlayerViews.Count == 0) {
+				IsMultiplayerGame = false;
 				return;
+			}
 			
 			_player = player;
 			EnemyPlayerViews = enemyPlayerViews;
 			_missionResultController.OnPlayerLeftRoomEvent += RefindEnemyPlayerViews;
-			_isInited = true;
+			IsMultiplayerGame = true;
+			_controllersHolder.AddController(this);
 		}
-	
+		
 		private void RefindEnemyPlayerViews() {
 			EnemyPlayerViews = Object.FindObjectsOfType<PlayerView>().ToList();
 			var playerView = _player.UnitView as PlayerView;

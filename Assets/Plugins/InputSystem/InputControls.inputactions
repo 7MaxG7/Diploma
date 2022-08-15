@@ -13,6 +13,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "CompassButton",
+                    "type": "Button",
+                    "id": "05a1323a-04a0-401e-8cf5-cfe5ab692adb",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -70,6 +79,17 @@
                     "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "5b4f22b7-2b13-4051-98a1-1d15dd65a273",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CompassButton",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }

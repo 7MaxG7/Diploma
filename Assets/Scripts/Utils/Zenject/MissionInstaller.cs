@@ -1,4 +1,5 @@
 ﻿using Abstractions;
+using Abstractions.Services;
 using Controllers;
 using Services;
 using UI;
@@ -30,6 +31,7 @@ namespace Infrastructure.Zenject {
 			Container.Bind<ISkillsController>().To<SkillsController>().AsSingle();
 			Container.Bind<IMissionResultController>().To<MissionResultController>().AsSingle();
 			Container.Bind<IPlayersInteractionController>().To<PlayersInteractionController>().AsSingle();
+			Container.Bind<ICompassController>().To<CompassController>().AsSingle();
 
 			Container.Bind<IControllersHolder>().To<ControllersHolder>().AsSingle();
 		}

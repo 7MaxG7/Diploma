@@ -31,6 +31,10 @@ namespace Infrastructure {
 		private void FixedUpdate() {
 			_game.Controllers?.OnFixedUpdate(Time.fixedDeltaTime);
 		}
+
+		private void OnDestroy() {
+			_game.Controllers.ClearControllers();
+		}
 	}
 
 }

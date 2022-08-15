@@ -7,25 +7,6 @@ namespace Infrastructure {
 		private readonly List<IUpdater> _updaters = new();
 		private readonly List<ILateUpdater> _lateUpdaters = new();
 		private readonly List<IFixedUpdater> _fixedUpdaters = new();
-		private readonly List<IDisposer> _disposers = new();
-
-		public void AddController(IController controller) {
-			if (controller is IUpdater updater)
-				_updaters.Add(updater);
-			if (controller is ILateUpdater lateUpdater)
-				_lateUpdaters.Add(lateUpdater);
-			if (controller is IFixedUpdater fixedUpdater)
-				_fixedUpdaters.Add(fixedUpdater);
-			if (controller is IDisposer disposer)
-				_disposers.Add(disposer);
-		}
-
-		public void ClearControllers() {
-			_updaters.Clear();
-			_lateUpdaters.Clear();
-			_fixedUpdaters.Clear();
-			_disposers.Clear();
-		}
 
 		public void OnUpdate(float deltaTime) {
 			foreach (var updater in _updaters) {
@@ -44,6 +25,31 @@ namespace Infrastructure {
 				fixedUpdater.OnFixedUpdate(deltaTime);
 			}
 		}
+
+		public void AddController(IController controller) {
+			if (controller is IUpdater updater)
+				_updaters.Add(updater);
+			if (controller is ILateUpdater lateUpdater)
+				_lateUpdaters.Add(lateUpdater);
+			if (controller is IFixedUpdater fixedUpdater)
+				_fixedUpdaters.Add(fixedUpdater);
+		}
+
+		public void RemoveController(IController controller) {
+			if (controller is IUpdater updater)
+				_updaters.Remove(updater);
+			if (controller is ILateUpdater lateUpdater)
+				_lateUpdaters.Remove(lateUpdater);
+			if (controller is IFixedUpdater fixedUpdater)
+				_fixedUpdaters.Remove(fixedUpdater);
+		}
+
+		public void ClearControllers() {
+			_updaters.Clear();
+			_lateUpdaters.Clear();
+			_fixedUpdaters.Clear();
+		}
+
 	}
 
 }

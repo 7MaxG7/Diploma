@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Abstractions;
+using Abstractions.Services;
 using Controllers;
 using Photon.Pun;
 using Services;
@@ -36,6 +37,7 @@ namespace Infrastructure {
 		private readonly ISkillsController _skillsController;
 		private readonly IMissionResultController _missionResultController;
 		private readonly IPlayersInteractionController _playersInteractionController;
+		private readonly ICompassController _compassController;
 		private readonly MissionConfig _missionConfig;
 
 
@@ -45,12 +47,14 @@ namespace Infrastructure {
 				, IMissionMapController missionMapController, IMonstersSpawner monstersSpawner, IMonstersMoveController monstersMoveController
 				, IMissionUiController missionUiController, IPhotonDataExchangeController photonDataExchangeController
 				, IPhotonObjectsSynchronizer photonObjectsSynchronizer, IWeaponsController weaponsController, ISkillsController skillsController
-				, IMissionResultController missionResultController, IPlayersInteractionController playersInteractionController, MissionConfig missionConfig) {
+				, IMissionResultController missionResultController, IPlayersInteractionController playersInteractionController
+				, ICompassController compassController, MissionConfig missionConfig) {
 			_sceneLoader = sceneLoader;
 			_permanentUiController = permanentUiController;
 			_mapWrapper = mapWrapper;
 			_unitsFactory = unitsFactory;
 			_playersInteractionController = playersInteractionController;
+			_compassController = compassController;
 			_playerMoveController = playerMoveController;
 			_cameraController = cameraController;
 			_missionMapController = missionMapController;
@@ -105,6 +109,7 @@ namespace Infrastructure {
 				var enemyPlayers = await FindEnemyPlayersAsync(player);
 				_playersInteractionController.Init(player, enemyPlayers);
 				_playerMoveController.Init(player);
+				_compassController.Init(player);
 				_cameraController.Follow(player.Transform, _missionConfig.CameraOffset);
 				_missionMapController.Init(player.Transform, groundSize);
 				_weaponsController.Init(player);

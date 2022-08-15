@@ -1,6 +1,7 @@
 ﻿using System;
 using Infrastructure;
 using Units;
+using UnityEngine;
 
 
 namespace UI {
@@ -10,6 +11,8 @@ namespace UI {
 
 		void Init(IUnit player);
 		void ShowSkillsChoose(ActualSkillInfo[] skills);
+		void ShowCompass(Vector3 closestEnemyPlayerDestination);
+		void HideCompass(Vector3 closestEnemyPlayerDestination);
 	}
 
 }

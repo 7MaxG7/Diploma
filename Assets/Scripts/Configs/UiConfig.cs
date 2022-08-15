@@ -18,6 +18,7 @@ namespace Infrastructure {
 		[SerializeField] private Color _winResultColor;
 		[SerializeField] private string _looseResultText;
 		[SerializeField] private Color _looseResultColor;
+		[SerializeField] private float _arrowPointerFadingFrameDelta;
 
 		public MissionUiView MissionUiView => _missionUiView;
 		public int HpBarAnimationDurationInFrames => _hpBarAnimationDurationInFrames;
@@ -28,6 +29,7 @@ namespace Infrastructure {
 		public Color WinResultColor => _winResultColor;
 		public string LooseResultText => _looseResultText;
 		public Color LooseResultColor => _looseResultColor;
+		public float ArrowPointerFadingFrameDelta => _arrowPointerFadingFrameDelta;
 	}
 
 }

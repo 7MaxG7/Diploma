@@ -29,6 +29,7 @@ namespace UI {
 		}
 
 		public void Dispose() {
+			_isInited = false;
 			OnUpdateCallback -= _playerUiController.UpdateSmoothers;
 			_skillsUiController.OnSkillChoose -= UpgradeSkill;
 			_skillsUiController.Dispose();
@@ -59,11 +60,39 @@ namespace UI {
 			
 			_missionUiView.SettingsButton.onClick.AddListener(ShowSettings);
 			
+			_missionUiView.CompassPointerCanvasGroup.alpha = 0;
+			_missionUiView.CompassPointerCanvasGroup.gameObject.SetActive(false);
+				
 			_isInited = true;
 		}
 
 		public void ShowSkillsChoose(ActualSkillInfo[] skills) {
 			_skillsUiController.ShowSkillsChoose(skills);
+		}
+
+		public void ShowCompass(Vector3 closestEnemyPlayerDestination) {
+			if (!_isInited)
+				return;
+			
+			_missionUiView.CompassPointerCanvasGroup.gameObject.SetActive(true);
+			if (_missionUiView.CompassPointerCanvasGroup.alpha < 1)
+				_missionUiView.CompassPointerCanvasGroup.alpha += _uiConfig.ArrowPointerFadingFrameDelta;
+			_missionUiView.CompassPointerCanvasGroup.transform.up = closestEnemyPlayerDestination;
+		}
+
+		public void HideCompass(Vector3 closestEnemyPlayerDestination) {
+			if (!_isInited)
+				return;
+			
+			if (!_missionUiView.CompassPointerCanvasGroup.gameObject.activeSelf)
+				return;
+			
+			if (_missionUiView.CompassPointerCanvasGroup.alpha > 0) {
+				_missionUiView.CompassPointerCanvasGroup.alpha -= _uiConfig.ArrowPointerFadingFrameDelta;
+				_missionUiView.CompassPointerCanvasGroup.transform.up = closestEnemyPlayerDestination;
+			}
+			else
+				_missionUiView.CompassPointerCanvasGroup.gameObject.SetActive(false);
 		}
 
 		private void UpgradeSkill(WeaponType weaponType) {

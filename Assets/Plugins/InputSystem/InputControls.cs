@@ -35,6 +35,15 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""CompassButton"",
+                    ""type"": ""Button"",
+                    ""id"": ""05a1323a-04a0-401e-8cf5-cfe5ab692adb"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -92,6 +101,17 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                     ""action"": ""Move"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5b4f22b7-2b13-4051-98a1-1d15dd65a273"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CompassButton"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -101,6 +121,7 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         // Mission
         m_Mission = asset.FindActionMap("Mission", throwIfNotFound: true);
         m_Mission_Move = m_Mission.FindAction("Move", throwIfNotFound: true);
+        m_Mission_CompassButton = m_Mission.FindAction("CompassButton", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -161,11 +182,13 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
     private readonly InputActionMap m_Mission;
     private IMissionActions m_MissionActionsCallbackInterface;
     private readonly InputAction m_Mission_Move;
+    private readonly InputAction m_Mission_CompassButton;
     public struct MissionActions
     {
         private @InputControls m_Wrapper;
         public MissionActions(@InputControls wrapper) { m_Wrapper = wrapper; }
         public InputAction @Move => m_Wrapper.m_Mission_Move;
+        public InputAction @CompassButton => m_Wrapper.m_Mission_CompassButton;
         public InputActionMap Get() { return m_Wrapper.m_Mission; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -178,6 +201,9 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                 @Move.started -= m_Wrapper.m_MissionActionsCallbackInterface.OnMove;
                 @Move.performed -= m_Wrapper.m_MissionActionsCallbackInterface.OnMove;
                 @Move.canceled -= m_Wrapper.m_MissionActionsCallbackInterface.OnMove;
+                @CompassButton.started -= m_Wrapper.m_MissionActionsCallbackInterface.OnCompassButton;
+                @CompassButton.performed -= m_Wrapper.m_MissionActionsCallbackInterface.OnCompassButton;
+                @CompassButton.canceled -= m_Wrapper.m_MissionActionsCallbackInterface.OnCompassButton;
             }
             m_Wrapper.m_MissionActionsCallbackInterface = instance;
             if (instance != null)
@@ -185,6 +211,9 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                 @Move.started += instance.OnMove;
                 @Move.performed += instance.OnMove;
                 @Move.canceled += instance.OnMove;
+                @CompassButton.started += instance.OnCompassButton;
+                @CompassButton.performed += instance.OnCompassButton;
+                @CompassButton.canceled += instance.OnCompassButton;
             }
         }
     }
@@ -192,5 +221,6 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
     public interface IMissionActions
     {
         void OnMove(InputAction.CallbackContext context);
+        void OnCompassButton(InputAction.CallbackContext context);
     }
 }

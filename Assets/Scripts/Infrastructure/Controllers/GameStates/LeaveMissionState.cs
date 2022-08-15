@@ -1,5 +1,6 @@
 ﻿using System;
 using Abstractions;
+using Abstractions.Services;
 using Controllers;
 using Photon.Pun;
 using Services;
@@ -25,6 +26,7 @@ namespace Infrastructure {
 		private readonly IAmmosPool _ammosPool;
 		private readonly IPermanentUiController _permanentUiController;
 		private readonly IPlayersInteractionController _playersInteractionController;
+		private readonly ICompassController _compassController;
 		public event Action OnStateChange;
 
 		
@@ -34,12 +36,13 @@ namespace Infrastructure {
 				, IMonstersSpawner monstersSpawner, IMonstersMoveController monstersMoveController, IWeaponsController weaponsController
 				, ISkillsController skillsController, IMissionUiController missionUiController, IMissionResultController missionResultController
 				, IUnitsPool unitsPool, IAmmosPool ammosPool, IPermanentUiController permanentUiController
-				, IPlayersInteractionController playersInteractionController) {
+				, IPlayersInteractionController playersInteractionController, ICompassController compassController) {
 			_photonObjectsSynchronizer = photonObjectsSynchronizer;
 			_photonDataExchangeController = photonDataExchangeController;
 			_cameraController = cameraController;
 			_missionMapController = missionMapController;
 			_playersInteractionController = playersInteractionController;
+			_compassController = compassController;
 			_playerMoveController = playerMoveController;
 			_monstersSpawner = monstersSpawner;
 			_monstersMoveController = monstersMoveController;
@@ -63,6 +66,7 @@ namespace Infrastructure {
 			_missionMapController.Dispose();
 			_cameraController.Dispose();
 			_playersInteractionController.Dispose();
+			_compassController.Dispose();
 			_playerMoveController.Player.Dispose();
 			_playerMoveController.Dispose();
 			_photonObjectsSynchronizer.Dispose();

@@ -12,6 +12,7 @@ namespace Abstractions {
 		bool IsPlayersFight { get; }
 		PlayerView ClosestFightingEnemyPlayer { get; }
 		float ClosestFightingEnemyPlayerSqrMagnitude { get; }
+		bool? IsMultiplayerGame { get; }
 	}
 
 }
