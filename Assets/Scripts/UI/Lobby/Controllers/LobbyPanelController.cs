@@ -124,6 +124,7 @@ namespace Infrastructure {
 				return;
 			
 			_lobbyStatusDisplayer.IsLoading = true;
+			ToggleBlockingUi(true);
 			_lobbyStatusDisplayer.ShowLoadingStatusAsync();
 			var roomOptions = new RoomOptions { IsVisible = false };
 			PhotonNetwork.CreateRoom(LobbyPanelView.PrivateRoomNameInputText.text, roomOptions);
@@ -135,22 +136,26 @@ namespace Infrastructure {
 				return;
 
 			_lobbyStatusDisplayer.IsLoading = true;
+			ToggleBlockingUi(true);
 			_lobbyStatusDisplayer.ShowLoadingStatusAsync();
 			PhotonNetwork.CreateRoom(roomName, new RoomOptions());
 		}
 
 		private void JoinPrivateRoom() {
+			ToggleBlockingUi(true);
 			JoinRoom(LobbyPanelView.PrivateRoomNameInputText.text);
 		}
 
 		private void JoinRoom(string roomName) {
 			_lobbyStatusDisplayer.IsLoading = true;
+			ToggleBlockingUi(true);
 			_lobbyStatusDisplayer.ShowLoadingStatusAsync();
 			PhotonNetwork.JoinRoom(roomName);
 		}
 
 		private void JoinOrCreateRandomRoom() {
 			_lobbyStatusDisplayer.IsLoading = true;
+			ToggleBlockingUi(true);
 			_lobbyStatusDisplayer.ShowLoadingStatusAsync();
 			PhotonNetwork.JoinRandomOrCreateRoom();
 		}

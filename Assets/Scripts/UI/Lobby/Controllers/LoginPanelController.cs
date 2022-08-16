@@ -5,6 +5,7 @@ using PlayFab;
 using PlayFab.ClientModels;
 using UnityEngine;
 using Utils;
+// ReSharper disable InconsistentNaming
 
 
 namespace Infrastructure {

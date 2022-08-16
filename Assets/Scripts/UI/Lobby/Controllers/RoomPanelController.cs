@@ -79,6 +79,7 @@ namespace Infrastructure {
 		private void StartGame() {
 			PhotonNetwork.CurrentRoom.IsOpen = false;
 			PhotonNetwork.CurrentRoom.IsVisible = false;
+			ToggleBlockingUi(true);
 			ClearPanel();
 
 			_permanentUiController.OnCurtainShown += LoadMission;
