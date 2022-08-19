@@ -14,7 +14,7 @@ namespace Infrastructure {
 		private const int SUCCESSFUL_STATUS_DELAY = 500;
 		private const int LOADING_UPDATE_DELAY = 250;
 
-		public event Action<string> OnUserLoginSuccess;
+		public event Action<string, string> OnUserLoginSuccess;
 		
 		private readonly LoginPanelView _loginPanelView;
 		private bool _isNewAccount;
@@ -217,7 +217,7 @@ namespace Infrastructure {
 				_loginPanelView.StatusLableText.color = Color.green;
 				_loginPanelView.StatusLableText.text = TextConstants.LOGIN_SUCCESS_STATUS_TEXT;
 				await Task.Delay(SUCCESSFUL_STATUS_DELAY);
-				OnUserLoginSuccess?.Invoke(_username);
+				OnUserLoginSuccess?.Invoke(_username, loginPlayFabUserResult.PlayFabId);
 				HidePanel();
 			}
 

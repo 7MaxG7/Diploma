@@ -8,6 +8,7 @@ namespace Infrastructure {
 	internal class MainMenuView : MonoBehaviour, IMainMenuView {
 		[SerializeField] private GameObject _gameObject;
 		[SerializeField] private TMP_Text _headerLabel;
+		[SerializeField] private TMP_Text _scoreLable;
 		[SerializeField] private TMP_Text _loginButtonText;
 		[SerializeField] private Button _loginPanelButton;
 		[SerializeField] private Button _playButton;
@@ -31,6 +32,7 @@ namespace Infrastructure {
 		public LoginPanelView LoginPanelView => _loginPanelView;
 		public LobbyScreenView LobbyScreenView => _lobbyScreenView;
 		public CreditsView CreditsView => _creditsView;
+		public TMP_Text ScoreLable => _scoreLable;
 	}
 
 }

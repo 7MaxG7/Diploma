@@ -1,26 +1,35 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using DG.Tweening;
 using Photon.Pun;
 using PlayFab;
+using PlayFab.ClientModels;
 using UnityEngine;
 using Utils;
 using Zenject;
+using Object = UnityEngine.Object;
 
 
 namespace Infrastructure {
 
 	internal class MainMenuController : IMainMenuController {
+		public event Action<string> OnPlayfabLogin;
 		
 		private string _userName;
+		private string _playfabId;
 		private MainMenuView _mainMenuView;
 		private LoginPanelController _loginPanelController;
 		private LobbyScreenController _lobbyScreenController;
-		private readonly MainMenuConfig _mainMenuConfig;
 		private readonly IPermanentUiController _permanentUiController;
+		private readonly IMissionResultController _missionResultController;
+		private readonly MainMenuConfig _mainMenuConfig;
 
 
 		[Inject]
-		public MainMenuController(MainMenuConfig mainMenuConfig, IPermanentUiController permanentUiController) {
+		public MainMenuController(IMissionResultController missionResultController, MainMenuConfig mainMenuConfig
+				, IPermanentUiController permanentUiController) {
+			_missionResultController = missionResultController;
 			_mainMenuConfig = mainMenuConfig;
 			_permanentUiController = permanentUiController;
 		}
@@ -38,6 +47,7 @@ namespace Infrastructure {
 			Object.Destroy(_mainMenuView.GameObject);
 		}
 
+
 		public void SetupMainMenu() {
 			if (_mainMenuView == null) {
 				_mainMenuView = Object.Instantiate(_mainMenuConfig.MainMenuPref);
@@ -48,6 +58,7 @@ namespace Infrastructure {
 			InitLoginPanel();
 			InitLobbyPanel();
 			UpdateButtonsInteractivity();
+			SetupScoresLable();
 
 
 			void InitButtons() {
@@ -129,10 +140,42 @@ namespace Infrastructure {
 			Application.Quit();
 		}
 
-		private void SetUser(string userName) {
+		private void SetUser(string userName, string playfabId) {
+			OnPlayfabLogin?.Invoke(playfabId);
 			_userName = userName;
+			_playfabId = playfabId;
+			SetupScoresLable();
 			_lobbyScreenController.Init(_userName);
 			UpdateButtonsInteractivity();
+		}
+
+		private void SetupScoresLable() {
+			if (string.IsNullOrEmpty(_playfabId)) {
+				_mainMenuView.ScoreLable.gameObject.SetActive(false);
+				return;
+			}
+			
+			PlayFabClientAPI.GetUserData(new GetUserDataRequest {
+					PlayFabId = _playfabId,
+					Keys = new List<string> { TextConstants.WINS_AMOUNT_PLAYFAB_KEY, TextConstants.KILLS_AMOUNT_PLAYFAB_KEY }
+			}, result => {
+				if (result.Data != null) {
+					var winsScores = 0;
+					var killsScores = 0;
+					if (result.Data.ContainsKey(TextConstants.WINS_AMOUNT_PLAYFAB_KEY) 
+							&& int.TryParse(result.Data[TextConstants.WINS_AMOUNT_PLAYFAB_KEY].Value, out var winsAmount)) {
+						_missionResultController.SetWinsAmount(winsAmount);
+						winsScores = winsAmount * _mainMenuConfig.ScorePerWin;
+					}
+					if (result.Data.ContainsKey(TextConstants.KILLS_AMOUNT_PLAYFAB_KEY) 
+							&& int.TryParse(result.Data[TextConstants.KILLS_AMOUNT_PLAYFAB_KEY].Value, out var killsAmount)) {
+						_missionResultController.SetKillsAmount(killsAmount);
+						killsScores = killsAmount * _mainMenuConfig.ScorePerKill;
+					}
+					_mainMenuView.ScoreLable.text = string.Format(_mainMenuConfig.ScoreLableTemplate, winsScores + killsScores);
+					_mainMenuView.ScoreLable.gameObject.SetActive(winsScores > 0 || killsScores > 0);
+				}
+			}, errorCallback => Debug.LogWarning(errorCallback.ErrorMessage));		
 		}
 
 		private void UpdateButtonsInteractivity() {

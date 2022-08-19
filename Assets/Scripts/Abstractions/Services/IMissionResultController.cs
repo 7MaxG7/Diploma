@@ -9,7 +9,9 @@ namespace Infrastructure {
 		event Action OnPlayerLeftRoomEvent;
 
 		void Init(IUnit player);
-		void CountDead(DamageInfo damageInfo);
+		void CountKill(DamageInfo damageInfo);
+		void SetWinsAmount(int winsAmount);
+		void SetKillsAmount(int killsAmount);
 	}
 
 }

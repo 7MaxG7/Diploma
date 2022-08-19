@@ -27,7 +27,7 @@ namespace Services {
 			foreach (var unit in _objects.Values.SelectMany(obj => obj)) {
 				unit.OnDied -= ReturnUnit;
 				unit.OnDied -= StopUnitPeriodicalDamage;
-				unit.OnDied -= _missionResultController.CountDead;
+				unit.OnDied -= _missionResultController.CountKill;
 				unit.Dispose();
 			}
 			foreach (var objList in _objects.Values) {
@@ -37,7 +37,7 @@ namespace Services {
 			foreach (var unit in ActiveMonsters) {
 				unit.OnDied -= ReturnUnit;
 				unit.OnDied -= StopUnitPeriodicalDamage;
-				unit.OnDied -= _missionResultController.CountDead;
+				unit.OnDied -= _missionResultController.CountKill;
 				unit.Dispose();
 			}
 			ActiveMonsters.Clear();
@@ -52,7 +52,7 @@ namespace Services {
 			var unit = _unitsFactory.CreateMonster(currentMonsterLevel, spawnPosition);
 			unit.OnDied += ReturnUnit;
 			unit.OnDied += StopUnitPeriodicalDamage;
-			unit.OnDied += _missionResultController.CountDead;
+			unit.OnDied += _missionResultController.CountKill;
 			return unit;
 		}
 
