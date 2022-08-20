@@ -40,6 +40,9 @@ namespace Infrastructure {
 			return currentParam;
 		}
 
+		public int GetMaxSpawnerLevel() {
+			return _spawnParams.Max(param => param.SpawnerLevel);
+		}
 	}
 
 }

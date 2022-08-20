@@ -94,7 +94,7 @@ namespace Infrastructure {
 
 			async Task<IUnit> InitUnits(Vector2 groundSize) {
 				var player = await PreparePlayer(groundSize);
-				_monstersSpawner.Init();
+				_monstersSpawner.Init(player);
 				_monstersMoveController.Init(player.Transform);
 				_weaponsController.StopShooting();
 				return player;

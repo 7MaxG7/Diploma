@@ -175,7 +175,7 @@ namespace Infrastructure {
 					_mainMenuView.ScoreLable.text = string.Format(_mainMenuConfig.ScoreLableTemplate, winsScores + killsScores);
 					_mainMenuView.ScoreLable.gameObject.SetActive(winsScores > 0 || killsScores > 0);
 				}
-			}, errorCallback => Debug.LogWarning(errorCallback.ErrorMessage));		
+			}, errorCallback => Debug.LogWarning(errorCallback.ErrorMessage));
 		}
 
 		private void UpdateButtonsInteractivity() {

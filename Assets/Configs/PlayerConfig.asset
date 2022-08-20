@@ -15,6 +15,8 @@ MonoBehaviour:
   _playerPrefabPath: Player
   _baseMoveSpeed: 6
   _levelExpParameters:
+  - _level: 0
+    _targetExp: 0
   - _level: 2
     _targetExp: 100
   - _level: 3
@@ -33,6 +35,26 @@ MonoBehaviour:
     _targetExp: 10000
   - _level: 10
     _targetExp: 17500
+  - _level: 11
+    _targetExp: 30000
+  - _level: 12
+    _targetExp: 50000
+  - _level: 13
+    _targetExp: 75000
+  - _level: 14
+    _targetExp: 120000
+  - _level: 15
+    _targetExp: 200000
+  - _level: 16
+    _targetExp: 300000
+  - _level: 17
+    _targetExp: 380000
+  - _level: 18
+    _targetExp: 450000
+  - _level: 19
+    _targetExp: 500000
+  - _level: 20
+    _targetExp: 540000
   _levelHpParameters:
   - _level: 1
     _health: 250
@@ -54,3 +76,23 @@ MonoBehaviour:
     _health: 1100
   - _level: 10
     _health: 1300
+  - _level: 11
+    _health: 1500
+  - _level: 12
+    _health: 1800
+  - _level: 13
+    _health: 2200
+  - _level: 14
+    _health: 2500
+  - _level: 15
+    _health: 3850
+  - _level: 16
+    _health: 4250
+  - _level: 17
+    _health: 4700
+  - _level: 18
+    _health: 5200
+  - _level: 19
+    _health: 5800
+  - _level: 20
+    _health: 6500

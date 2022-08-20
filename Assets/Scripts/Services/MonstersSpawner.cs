@@ -17,7 +17,7 @@ namespace Services {
 		private readonly IRandomController _random;
 		private readonly ICameraController _cameraController;
 		private readonly IUnitsPool _unitsPool;
-		private int _spawnerLevel;
+		private readonly int _maxSpawnerLevel;
 		private Camera _mainCamera;
 
 		private float _leftSpawnPosition;
@@ -25,6 +25,7 @@ namespace Services {
 		private float _bottomSpawnPosition;
 		private float _topSpawnPosition;
 		
+		private int _spawnerLevel;
 		private float _spawnWaveTimer;
 
 
@@ -37,7 +38,8 @@ namespace Services {
 			_unitsPool = unitsPool;
 			_monstersConfig = monstersConfig;
 			_spawnerLevel = 1;
-			
+			_maxSpawnerLevel = _monstersConfig.GetMaxSpawnerLevel();
+
 			controllersHolder.AddController(this);
 		}
 
@@ -64,8 +66,16 @@ namespace Services {
 			_spawnWaveTimer = _monstersConfig.GetSpawnCooldown(_spawnerLevel);
 		}
 
-		public void Init() {
+		public void Init(IUnit player) {
 			_mainCamera = Camera.main;
+			player.Experience.OnLevelUp += IncreaseSpawnerLevel;
+		}
+
+		private void IncreaseSpawnerLevel(int _) {
+			if (_spawnerLevel >= _maxSpawnerLevel)
+				return;
+			
+			_spawnerLevel++;
 		}
 
 		public void StartSpawn() {

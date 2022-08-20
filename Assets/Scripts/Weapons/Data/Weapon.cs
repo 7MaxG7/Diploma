@@ -30,7 +30,8 @@ namespace Infrastructure {
 			Type = weaponBaseParam.WeaponType;
 			SqrRange = weaponBaseParam.Range * weaponBaseParam.Range;
 			_cooldown = weaponBaseParam.Cooldown;
-			_damage = weaponBaseParam.BaseTicksDamage;
+			_damage = new int[weaponBaseParam.BaseTicksDamage.Length];
+			Array.Copy(weaponBaseParam.BaseTicksDamage, _damage, weaponBaseParam.BaseTicksDamage.Length);
 			_damageTickCooldown = weaponBaseParam.DamageTicksCooldown;
 			_ammoSpeed = weaponBaseParam.AmmoSpeed;
 			_isPiercing = weaponBaseParam.IsPiercing;

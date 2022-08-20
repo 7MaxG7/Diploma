@@ -38,7 +38,7 @@ MonoBehaviour:
     _range: 3
     _cooldown: 5
     _ammoSpeed: 0
-    _baseTicksDamage: 05020000
+    _baseTicksDamage: c2010000
     _damageTicksCooldown: 0
     _isPiercing: 0
     _name: Mine

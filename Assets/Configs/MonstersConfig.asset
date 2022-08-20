@@ -14,9 +14,85 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _spawnParams:
   - SpawnerLevel: 1
-    SpawnCooldown: 2
+    SpawnCooldown: 3
     WaveMaxMonstersAmount: 1
     MaxMonsterLevel: 1
+  - SpawnerLevel: 2
+    SpawnCooldown: 2.5
+    WaveMaxMonstersAmount: 2
+    MaxMonsterLevel: 1
+  - SpawnerLevel: 3
+    SpawnCooldown: 2.5
+    WaveMaxMonstersAmount: 2
+    MaxMonsterLevel: 2
+  - SpawnerLevel: 4
+    SpawnCooldown: 2.5
+    WaveMaxMonstersAmount: 3
+    MaxMonsterLevel: 2
+  - SpawnerLevel: 5
+    SpawnCooldown: 2
+    WaveMaxMonstersAmount: 3
+    MaxMonsterLevel: 2
+  - SpawnerLevel: 6
+    SpawnCooldown: 2
+    WaveMaxMonstersAmount: 4
+    MaxMonsterLevel: 2
+  - SpawnerLevel: 7
+    SpawnCooldown: 2
+    WaveMaxMonstersAmount: 4
+    MaxMonsterLevel: 3
+  - SpawnerLevel: 8
+    SpawnCooldown: 1.75
+    WaveMaxMonstersAmount: 4
+    MaxMonsterLevel: 3
+  - SpawnerLevel: 9
+    SpawnCooldown: 1.75
+    WaveMaxMonstersAmount: 4
+    MaxMonsterLevel: 4
+  - SpawnerLevel: 10
+    SpawnCooldown: 1.75
+    WaveMaxMonstersAmount: 5
+    MaxMonsterLevel: 4
+  - SpawnerLevel: 11
+    SpawnCooldown: 1.5
+    WaveMaxMonstersAmount: 5
+    MaxMonsterLevel: 4
+  - SpawnerLevel: 12
+    SpawnCooldown: 1.5
+    WaveMaxMonstersAmount: 5
+    MaxMonsterLevel: 5
+  - SpawnerLevel: 13
+    SpawnCooldown: 1.4
+    WaveMaxMonstersAmount: 5
+    MaxMonsterLevel: 5
+  - SpawnerLevel: 14
+    SpawnCooldown: 1.4
+    WaveMaxMonstersAmount: 6
+    MaxMonsterLevel: 5
+  - SpawnerLevel: 15
+    SpawnCooldown: 1.3
+    WaveMaxMonstersAmount: 6
+    MaxMonsterLevel: 5
+  - SpawnerLevel: 16
+    SpawnCooldown: 1.3
+    WaveMaxMonstersAmount: 7
+    MaxMonsterLevel: 5
+  - SpawnerLevel: 17
+    SpawnCooldown: 1.2
+    WaveMaxMonstersAmount: 7
+    MaxMonsterLevel: 5
+  - SpawnerLevel: 18
+    SpawnCooldown: 1.2
+    WaveMaxMonstersAmount: 8
+    MaxMonsterLevel: 5
+  - SpawnerLevel: 19
+    SpawnCooldown: 1.2
+    WaveMaxMonstersAmount: 8
+    MaxMonsterLevel: 6
+  - SpawnerLevel: 20
+    SpawnCooldown: 1
+    WaveMaxMonstersAmount: 8
+    MaxMonsterLevel: 6
   _monstersParams:
   - MonsterLevel: 1
     PrefabPath: Monster01
@@ -24,3 +100,33 @@ MonoBehaviour:
     Hp: 100
     Damage: 50
     ExperienceOnKill: 50
+  - MonsterLevel: 2
+    PrefabPath: Monster02
+    MoveSpeed: 1
+    Hp: 250
+    Damage: 150
+    ExperienceOnKill: 100
+  - MonsterLevel: 3
+    PrefabPath: Monster03
+    MoveSpeed: 3
+    Hp: 230
+    Damage: 80
+    ExperienceOnKill: 75
+  - MonsterLevel: 4
+    PrefabPath: Monster04
+    MoveSpeed: 4
+    Hp: 250
+    Damage: 100
+    ExperienceOnKill: 150
+  - MonsterLevel: 5
+    PrefabPath: Monster05
+    MoveSpeed: 2
+    Hp: 500
+    Damage: 250
+    ExperienceOnKill: 250
+  - MonsterLevel: 6
+    PrefabPath: Monster06
+    MoveSpeed: 5
+    Hp: 200
+    Damage: 120
+    ExperienceOnKill: 400
