@@ -24,10 +24,6 @@ namespace Infrastructure {
 			OnTriggerEntered?.Invoke(other);
 		}
 
-		private void OnTriggerStay2D(Collider2D other) {
-			OnTriggerEntered?.Invoke(other);
-		}
-
 		private void OnBecameInvisible() {
 			OnBecomeInvisible?.Invoke();
 		}
