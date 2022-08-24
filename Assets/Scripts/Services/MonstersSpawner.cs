@@ -57,7 +57,9 @@ namespace Services {
 			if (!SpawnIsOn || !_cameraController.CameraIsPositioned)
 				return;
 
-			var monstersAmount = _random.GetRandomIncludingMax(_monstersConfig.GetMaxMonstersAmount(_spawnerLevel));
+			var monstersAmount = _unitsPool.ActiveMonsters.Count > 0
+					? _random.GetRandomIncludingMax(_monstersConfig.GetMaxMonstersAmount(_spawnerLevel)) 
+					: _random.GetRandomIncludingMax(_monstersConfig.GetMaxMonstersAmount(_spawnerLevel), 1);
 			for (var i = 0; i < monstersAmount; i++) {
 				var monster = SpawnMonster();
 				_monstersMoveController.RegisterMonster(monster);

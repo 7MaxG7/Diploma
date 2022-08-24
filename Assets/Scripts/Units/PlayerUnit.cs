@@ -7,7 +7,8 @@ namespace Units {
 
 	internal class PlayerUnit : Unit, IExperienceReciever {
 		
-		public PlayerUnit(GameObject playerGO, PlayerConfig playerConfig) : base(playerConfig.BaseMoveSpeed, playerConfig.LevelHpParameters[0].Health, -1) {
+		public PlayerUnit(GameObject playerGO, PlayerConfig playerConfig) 
+				: base(playerConfig.BaseMoveSpeed, playerConfig.LevelHpParameters[0].Health, -1) {
 			Experience = new Experience(playerConfig.LevelHpParameters[0].Level, playerConfig.LevelExpParameters);
 			Health.SetLevelUpHpParams(playerConfig.LevelHpParameters);
 			Experience.OnLevelUp += Health.AddLevelUpHealth;
@@ -33,7 +34,6 @@ namespace Units {
 
 		protected override void KillView(DamageInfo damageInfo) {
 			base.KillView(damageInfo);
-			// TODO. Сделать исчезновение и у нас, и у врагов
 			GameObject.SetActive(false);
 		}
 	}

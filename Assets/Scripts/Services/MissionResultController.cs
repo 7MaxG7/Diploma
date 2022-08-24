@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
@@ -18,6 +19,7 @@ namespace Infrastructure {
 		public event Action OnPlayerLeftRoomEvent;
 
 		private readonly IPermanentUiController _permanentUiController;
+		private readonly MissionConfig _missionConfig;
 		private readonly Dictionary<IUnit, int> _unitsKills = new();
 		private IUnit _player;
 		private int _currentWinsAmount;
@@ -25,8 +27,9 @@ namespace Infrastructure {
 
 
 		[Inject]
-		public MissionResultController(IPermanentUiController permanentUiController) {
+		public MissionResultController(IPermanentUiController permanentUiController, MissionConfig missionConfig) {
 			_permanentUiController = permanentUiController;
+			_missionConfig = missionConfig;
 		}
 
 		public void Dispose() {
@@ -47,7 +50,7 @@ namespace Infrastructure {
 						}, null
 						, errorCallback => Debug.LogWarning(errorCallback.GenerateErrorReport())
 				);
-				ShowVictoryResult();
+				ShowVictoryResultAsync();
 			}
 		}
 
@@ -93,7 +96,8 @@ namespace Infrastructure {
 			_currentKillsAmount = killsAmount;
 		}
 
-		private void LooseGame(DamageInfo info) {
+		private async void LooseGame(DamageInfo _) {
+			await Task.Delay(_missionConfig.EndMissionDelay);
 			LeaveGame();
 		}
 
@@ -103,7 +107,8 @@ namespace Infrastructure {
 			EndGame(missionEndInfo);
 		}
 
-		private void ShowVictoryResult() {
+		private async Task ShowVictoryResultAsync() {
+			await Task.Delay(500);
 			var unitKills = _unitsKills.ContainsKey(_player) ? _unitsKills[_player] : 0;
 			var missionEndInfo = new MissionEndInfo(true, unitKills);
 			EndGame(missionEndInfo);

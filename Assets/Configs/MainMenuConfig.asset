@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _creditsFadingDuration: 1
   _creditsScrollSpeed: 200
+  _rulesFadingDuration: 0.5
+  _rulesScrollSpeed: 200
   _mainMenuPref: {fileID: 574326454200508935, guid: fed727c716d14a94b9e771ce7833be89, type: 3}
   _lobbyCachedRoomItemPref: {fileID: 845097435725642758, guid: e4fc703c6ccdd304f8b911794085b2d5, type: 3}
   _roomCachedPlayerItemPref: {fileID: 7671765002071387023, guid: 194c68fab07b3ea42aa62810dec01ae5, type: 3}

@@ -61,7 +61,7 @@ namespace Units {
 			MaxHp += _additionalLevelHps[level];
 		}
 
-		public void SetLevelUpHpParams(PlayerConfig.LevelHealthParam[] levelHpParameters) {
+		public void SetLevelUpHpParams(LevelHealthParam[] levelHpParameters) {
 			_additionalLevelHps = new Dictionary<int, int>();
 			for (var i = 1; i < levelHpParameters.Length; i++) {
 				_additionalLevelHps.Add(levelHpParameters[i].Level, levelHpParameters[i].Health - levelHpParameters[i - 1].Health);

@@ -8,6 +8,9 @@ namespace Infrastructure {
 		[Header("Credits")]
 		[SerializeField] private float _creditsFadingDuration;
 		[SerializeField] private float _creditsScrollSpeed;
+		[Header("How to play")]
+		[SerializeField] private float _rulesFadingDuration;
+		[SerializeField] private float _rulesScrollSpeed;
 		[Header("Lobby")]
 		[SerializeField] private MainMenuView _mainMenuPref;
 		[SerializeField] private LobbyCachedRoomItemView _lobbyCachedRoomItemPref;
@@ -24,6 +27,8 @@ namespace Infrastructure {
 		public string ScoreLableTemplate => _scoreLableTemplate;
 		public int ScorePerWin => _scorePerWin;
 		public int ScorePerKill => _scorePerKill;
+		public float RulesFadingDuration => _rulesFadingDuration;
+		public float RulesScrollSpeed => _rulesScrollSpeed;
 	}
 
 }

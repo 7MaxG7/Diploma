@@ -8,7 +8,7 @@ namespace Infrastructure {
 	internal class MonstersConfig : ScriptableObject {
 		[SerializeField] private SpawnParams[] _spawnParams;
 		[SerializeField] private MonstersParams[] _monstersParams;
-
+		
 
 		public MonstersParams GetMonsterParams(int enemyLevel) {
 			var monsterParams = _monstersParams.FirstOrDefault(enemy => enemy.MonsterLevel == enemyLevel);

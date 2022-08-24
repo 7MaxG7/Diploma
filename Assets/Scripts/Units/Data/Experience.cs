@@ -40,7 +40,7 @@ namespace Units {
 		private readonly int _maxLevel;
 
 
-		public Experience(int level, PlayerConfig.LevelExperienceParam[] levelParameters) {
+		public Experience(int level, LevelExperienceParam[] levelParameters) {
 			if (levelParameters != null) {
 				_levelParameters = levelParameters.ToDictionary(item => item.Level, item => item.TargetExp);
 				_maxLevel = _levelParameters.Keys.Max();

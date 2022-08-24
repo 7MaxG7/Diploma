@@ -17,3 +17,4 @@ MonoBehaviour:
   _groundItemPref: {fileID: 920229161423859218, guid: 35f44deaf56af024e88d98317a1ceb84, type: 3}
   _photonDataSynchronizerPath: PhotonDataSynchronizer
   _playersFightDistance: 10
+  _endMissionDelay: 750

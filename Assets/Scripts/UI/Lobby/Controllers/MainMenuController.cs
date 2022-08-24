@@ -24,6 +24,7 @@ namespace Infrastructure {
 		private readonly IPermanentUiController _permanentUiController;
 		private readonly IMissionResultController _missionResultController;
 		private readonly MainMenuConfig _mainMenuConfig;
+		private bool _rulesPageIsMoving;
 
 
 		[Inject]
@@ -35,9 +36,15 @@ namespace Infrastructure {
 		}
 
 		public void Dispose() {
+			_mainMenuView.HowToPlayView.CanvasGroup.DOKill();
+			_mainMenuView.CreditsView.CanvasGroup.DOKill();
 			_mainMenuView.LoginPanelButton.onClick.RemoveAllListeners();
 			_mainMenuView.PlayButton.onClick.RemoveAllListeners();
 			_mainMenuView.SettingsButton.onClick.RemoveAllListeners();
+			_mainMenuView.HowToPlayButton.onClick.RemoveAllListeners();
+			_mainMenuView.HowToPlayView.PrevPageButton.onClick.RemoveAllListeners();
+			_mainMenuView.HowToPlayView.NextPageButton.onClick.RemoveAllListeners();
+			_mainMenuView.HowToPlayView.HideHowToPlayButton.onClick.RemoveAllListeners();
 			_mainMenuView.CreditsButton.onClick.RemoveAllListeners();
 			_mainMenuView.QuitGameButton.onClick.RemoveAllListeners();
 			_mainMenuView.CreditsView.CloseCreditsButton.onClick.RemoveAllListeners();
@@ -65,6 +72,10 @@ namespace Infrastructure {
 				_mainMenuView.LoginPanelButton.onClick.AddListener(OpenLoginPanel);
 				_mainMenuView.PlayButton.onClick.AddListener(OpenPlayPanel);
 				_mainMenuView.SettingsButton.onClick.AddListener(OpenSettingsPanel);
+				_mainMenuView.HowToPlayButton.onClick.AddListener(ShowHowToPlay);
+				_mainMenuView.HowToPlayView.PrevPageButton.onClick.AddListener(ShowPrevPage);
+				_mainMenuView.HowToPlayView.NextPageButton.onClick.AddListener(ShowNextPage);
+				_mainMenuView.HowToPlayView.HideHowToPlayButton.onClick.AddListener(HideHowToPlay);
 				_mainMenuView.CreditsButton.onClick.AddListener(ShowCredits);
 				_mainMenuView.QuitGameButton.onClick.AddListener(QuitGame);
 				_mainMenuView.CreditsView.CloseCreditsButton.onClick.AddListener(HideCredits);
@@ -96,6 +107,74 @@ namespace Infrastructure {
 			_permanentUiController.ShowSettingsPanel();
 		}
 
+		private void ShowHowToPlay() {
+			PrepareRules();
+			_mainMenuView.HowToPlayView.CanvasGroup.DOFade(1, _mainMenuConfig.RulesFadingDuration);
+			
+			
+			void PrepareRules() {
+				_mainMenuView.HowToPlayView.CanvasGroup.DOKill();
+				_mainMenuView.HowToPlayView.GameObject.SetActive(true);
+				_mainMenuView.HowToPlayView.CanvasGroup.alpha = 0;
+				_mainMenuView.HowToPlayView.RulesScroll.content.anchoredPosition = Vector2.zero;
+				UpdateRulesButtonsInteractivity();
+			}
+		}
+
+		private void ShowPrevPage() {
+			var nextContentXPosition = _mainMenuView.HowToPlayView.RulesScroll.content.anchoredPosition.x
+					+ (_mainMenuView.HowToPlayView.RulesScroll.viewport.rect.width + _mainMenuView.HowToPlayView.ContentHorizontalGroup.spacing);
+			_mainMenuView.HowToPlayView.StartCoroutine(MovePage(nextContentXPosition));
+		}
+
+		private void ShowNextPage() {
+			var nextContentXPosition = _mainMenuView.HowToPlayView.RulesScroll.content.anchoredPosition.x
+			        - (_mainMenuView.HowToPlayView.RulesScroll.viewport.rect.width + _mainMenuView.HowToPlayView.ContentHorizontalGroup.spacing);
+			_mainMenuView.HowToPlayView.StartCoroutine(MovePage(nextContentXPosition));
+		}
+
+		private void UpdateRulesButtonsInteractivity() {
+			_mainMenuView.HowToPlayView.NextPageButton.interactable = !_rulesPageIsMoving 
+					&& _mainMenuView.HowToPlayView.RulesScroll.content.anchoredPosition.x 
+							> -(_mainMenuView.HowToPlayView.RulesScroll.content.rect.width - _mainMenuView.HowToPlayView.RulesScroll.viewport.rect.width);
+			_mainMenuView.HowToPlayView.PrevPageButton.interactable = !_rulesPageIsMoving
+					&& _mainMenuView.HowToPlayView.RulesScroll.content.anchoredPosition.x < 0;
+			_mainMenuView.HowToPlayView.HideHowToPlayButton.interactable = !_rulesPageIsMoving;
+		}
+
+		private IEnumerator MovePage(float nextContentXPosition) {
+			_rulesPageIsMoving = true;
+			UpdateRulesButtonsInteractivity();
+			var deltaPosition = new Vector2(_mainMenuConfig.RulesScrollSpeed, 0);
+			var pageIsNext = false;
+			if (_mainMenuView.HowToPlayView.RulesScroll.content.anchoredPosition.x > nextContentXPosition) {
+				deltaPosition *= -1;
+				pageIsNext = true;
+			}
+
+			while (pageIsNext 
+					? _mainMenuView.HowToPlayView.RulesScroll.content.anchoredPosition.x > nextContentXPosition 
+					: _mainMenuView.HowToPlayView.RulesScroll.content.anchoredPosition.x < nextContentXPosition) {
+				_mainMenuView.HowToPlayView.RulesScroll.content.anchoredPosition += deltaPosition * Time.deltaTime;
+				deltaPosition *= 1.2f;
+				yield return new WaitForEndOfFrame();
+			}
+			
+			_mainMenuView.HowToPlayView.RulesScroll.content.anchoredPosition 
+					= new Vector2(nextContentXPosition, _mainMenuView.HowToPlayView.RulesScroll.content.anchoredPosition.y); 
+			_rulesPageIsMoving = false;
+			UpdateRulesButtonsInteractivity();
+		}
+
+		private void HideHowToPlay() {
+			_mainMenuView.HowToPlayView.CanvasGroup.DOKill();
+			_mainMenuView.HowToPlayView.StopAllCoroutines();
+			_mainMenuView.HowToPlayView.CanvasGroup.DOFade(0, _mainMenuConfig.RulesFadingDuration)
+					.OnComplete(() => {
+						_mainMenuView.HowToPlayView.GameObject.SetActive(false);
+					});
+		}
+		
 		private void ShowCredits() {
 			PrepareCredits();
 			_mainMenuView.CreditsView.CanvasGroup.DOFade(1, _mainMenuConfig.CreditsFadingDuration)

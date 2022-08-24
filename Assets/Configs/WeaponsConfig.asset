@@ -32,7 +32,7 @@ MonoBehaviour:
     _damageTicksCooldown: 1
     _isPiercing: 0
     _name: Acid orb
-    _description: Pew and bam-bam
+    _description: Deals periodic damage for 3 sec
   - weaponType: 3
     _ammoPrefabPath: YellowOrb
     _range: 3

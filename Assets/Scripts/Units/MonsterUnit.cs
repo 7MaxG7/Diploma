@@ -12,7 +12,8 @@ namespace Units {
 		private MonsterView MonsterView => UnitView as MonsterView;
 		
 		
-		public MonsterUnit(GameObject monsterGO, MonstersParams monstersParam, int poolIndex) : base(monstersParam.MoveSpeed, monstersParam.Hp, poolIndex) {
+		public MonsterUnit(GameObject monsterGO, MonstersParams monstersParam, int poolIndex) 
+				: base(monstersParam.MoveSpeed, monstersParam.Hp, poolIndex) {
 			Experience = new Experience(monstersParam.MonsterLevel, null);
 			_collisionDamage = monstersParam.Damage;
 			_killExperience = monstersParam.ExperienceOnKill;

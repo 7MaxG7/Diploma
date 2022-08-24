@@ -21,7 +21,7 @@ namespace Units {
 		public PhotonView PhotonView => UnitView.PhotonView;
 		public int PoolIndex { get; }
 		public bool IsDead => Health.CurrentHp <= 0;
-
+		
 
 		protected Unit(float moveSpeed, int hp, int poolIndex) {
 			PoolIndex = poolIndex;

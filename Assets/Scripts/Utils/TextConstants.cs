@@ -14,7 +14,7 @@
 		public const string MISSION_SCENE_NAME = "MissionScene";
 		
 		// Main menu
-		public const string MAIN_MENU_HEADER_TEXT = "Pump it!";
+		public const string MAIN_MENU_HEADER_TEXT = "Raise it!";
 		public const string LOGIN_TEXT = "Login";
 		public const string LOGIN_PANEL_CONFIRM_BUTTON_CREATE_ACCOUNT_TEXT = "Sign up";
 		public const string LOGIN_PANEL_CONFIRM_BUTTON_LOGIN_ACCOUNT_TEXT = "Sign in";
