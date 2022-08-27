@@ -37,7 +37,6 @@ namespace Services {
 			_cameraController = cameraController;
 			_unitsPool = unitsPool;
 			_monstersConfig = monstersConfig;
-			_spawnerLevel = 1;
 			_maxSpawnerLevel = _monstersConfig.GetMaxSpawnerLevel();
 
 			controllersHolder.AddController(this);
@@ -70,6 +69,7 @@ namespace Services {
 
 		public void Init(IUnit player) {
 			_mainCamera = Camera.main;
+			_spawnerLevel = 1;
 			player.Experience.OnLevelUp += IncreaseSpawnerLevel;
 		}
 
