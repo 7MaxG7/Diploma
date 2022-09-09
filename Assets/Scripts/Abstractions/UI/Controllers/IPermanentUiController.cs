@@ -8,12 +8,12 @@ namespace Infrastructure {
 		event  Action OnLeaveGameClicked;
 		event  Action OnResultPanelClosed;
 		bool IsActivating { get; }
-		bool IsActive { get; }
+		bool CurtainIsActive { get; }
 
 		void Init(ICoroutineRunner coroutineRunner);
-		void ShowLoadingCurtain(bool animationIsOn = true, bool isForced = false);
-		void HideLoadingCurtain(bool animationIsOn = true, bool isForced = false);
-		void ShowSettingsPanel(bool missionPanelIsActive = false);
+		void ShowLoadingCurtain(bool isAnimated = true);
+		void HideLoadingCurtain(bool animationIsOn = true, bool interruptCurrentAnimation = false);
+		void ShowSettingsPanel(bool missionSettingsSectionIsActive = false);
 		void ShowMissionResult(MissionEndInfo missionEndInfo);
 	}
 

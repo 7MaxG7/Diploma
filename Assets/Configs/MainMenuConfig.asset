@@ -16,9 +16,31 @@ MonoBehaviour:
   _creditsScrollSpeed: 200
   _rulesFadingDuration: 0.5
   _rulesScrollSpeed: 200
+  _confirmLoginAccountButtonText: Sign in
+  _confirmCreateAccountButtonText: Sign up
+  _loginPanelFadingDuration: 0.3
+  _ordinaryStatusTextColor: {r: 0, g: 1, b: 1, a: 1}
+  _errorStatusTextColor: {r: 1, g: 0, b: 0, a: 1}
+  _successStatusTextColor: {r: 0, g: 1, b: 0, a: 1}
+  _loadingStatusPrefixText: Loading
+  _loadingStatusSuffixSymbol: 46
+  _minStatusSuffixSymbolsAmount: 0
+  _maxStatusSuffixSymbolsAmount: 5
+  _registrationSuccessStatusText: Registration success
+  _registrationFailStatusText: Registration fail
+  _loginSuccessStatusText: Login success
+  _loginFailStatusText: Login fail
+  _statusLableSuffixUpdateDelay: 250
+  _successfulStatusDelay: 500
   _mainMenuPref: {fileID: 574326454200508935, guid: fed727c716d14a94b9e771ce7833be89, type: 3}
   _lobbyCachedRoomItemPref: {fileID: 845097435725642758, guid: e4fc703c6ccdd304f8b911794085b2d5, type: 3}
   _roomCachedPlayerItemPref: {fileID: 7671765002071387023, guid: 194c68fab07b3ea42aa62810dec01ae5, type: 3}
+  _mainMenuLableText: Raise it!
+  _loginButtonText: Login
   _scoreLableTemplate: 'Score: {0}'
   _scorePerWin: 50
   _scorePerKill: 1
+  _lobbyPanelFadingDuration: 0.3
+  _unlockedRoomLabelColor: {r: 1, g: 1, b: 1, a: 1}
+  _lockedRoomLabelColor: {r: 1, g: 1, b: 1, a: 0.5019608}
+  _roomNameTemplate: Room {0} {1}

@@ -7,8 +7,15 @@ namespace Infrastructure {
 	[CreateAssetMenu(menuName = "Configs/" + nameof(UiConfig), fileName = nameof(UiConfig), order = 5)]
 	internal class UiConfig : ScriptableObject {
 		[SerializeField] private MissionUiView _missionUiView;
-		[SerializeField] private int _hpBarAnimationDurationInFrames;
 		[SerializeField] private float _canvasFadeAnimationDuration;
+		[Header("Curtain")]
+		[SerializeField] private string _loadingStatusPrefixText;
+		[SerializeField] private char _loadingStatusSuffixSymbol;
+		[SerializeField] private int _minSuffixSymbolsAmount;
+		[SerializeField] private int _maxSuffixSymbolsAmount;
+		[Tooltip("Time in ms for adding symbol to status suffix")]
+		[SerializeField] private int _statusLableSuffixUpdateDelay;
+		[SerializeField] private float _curtainFadingAlfaPerFrameDelta;
 		[Header("Skills")]
 		[SerializeField] private SkillUiItemView _skillUiItemPrefab;
 		[Tooltip("Time after level up before choosing skills ui appears")]
@@ -19,6 +26,12 @@ namespace Infrastructure {
 		[SerializeField] private string _looseResultText;
 		[SerializeField] private Color _looseResultColor;
 		[SerializeField] private float _arrowPointerFadingFrameDelta;
+		[Header("Players ui")]
+		[SerializeField] private int _hpBarAnimationDurationInFrames;
+		[SerializeField] private string _healthBarTextTemplate;		// Must contain {0} for current hp and {1} for max hp
+		[SerializeField] private string _experienceBarLevelTextTemplate;	// Must contain {0} for current level
+		[SerializeField] private string _newWeaponLevelText;
+		[SerializeField] private string _upgradeWeaponLevelText;	// Must contain {0} for weapon nex level
 
 		public MissionUiView MissionUiView => _missionUiView;
 		public int HpBarAnimationDurationInFrames => _hpBarAnimationDurationInFrames;
@@ -30,6 +43,16 @@ namespace Infrastructure {
 		public string LooseResultText => _looseResultText;
 		public Color LooseResultColor => _looseResultColor;
 		public float ArrowPointerFadingFrameDelta => _arrowPointerFadingFrameDelta;
+		public string LoadingStatusPrefixText => _loadingStatusPrefixText;
+		public char LoadingStatusSuffixSymbol => _loadingStatusSuffixSymbol;
+		public int MinSuffixSymbolsAmount => _minSuffixSymbolsAmount;
+		public int MaxSuffixSymbolsAmount => _maxSuffixSymbolsAmount;
+		public float CurtainFadingAlfaPerFrameDelta => _curtainFadingAlfaPerFrameDelta;
+		public int StatusLableSuffixUpdateDelay => _statusLableSuffixUpdateDelay;
+		public string HealthBarTextTemplate => _healthBarTextTemplate;
+		public string ExperienceBarLevelTextTemplate => _experienceBarLevelTextTemplate;
+		public string NewWeaponLevelText => _newWeaponLevelText;
+		public string UpgradeWeaponLevelText => _upgradeWeaponLevelText;
 	}
 
 }

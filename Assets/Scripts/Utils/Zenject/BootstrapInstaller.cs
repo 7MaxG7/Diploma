@@ -16,7 +16,7 @@ namespace Infrastructure.Zenject {
 			Container.Bind<ISceneLoader>().To<SceneLoader>().AsSingle();
 			Container.Bind<IPermanentUiController>().To<PermanentUiController>().AsSingle();
 			Container.Bind<IRandomController>().To<RandomController>().AsSingle();
-			Container.Bind<ISoundController>().To<SoundController>().AsSingle();
+			Container.Bind<ISoundManager>().To<SoundManager>().AsSingle();
 		}
 	}
 

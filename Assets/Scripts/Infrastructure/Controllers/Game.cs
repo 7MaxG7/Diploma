@@ -11,13 +11,13 @@ namespace Infrastructure {
 		private IGameStateMachine _gameStateMachine;
 		private IPermanentUiController _permanentUiController;
 		private ISceneLoader _sceneLoader;
-		private ISoundController _soundController;
+		private ISoundManager _soundManager;
 
 
 		[Inject]
-		private void InjectDependencies(IControllersHolder controllers, IGameStateMachine gameStateMachine, ISoundController soundController
+		private void InjectDependencies(IControllersHolder controllers, IGameStateMachine gameStateMachine, ISoundManager soundManager
 				, IPermanentUiController permanentUiController, ISceneLoader sceneLoader) {
-			_soundController = soundController;
+			_soundManager = soundManager;
 			Controllers = controllers;
 			_gameStateMachine = gameStateMachine;
 			_permanentUiController = permanentUiController;
@@ -33,7 +33,7 @@ namespace Infrastructure {
 		}
 
 		public void Init(ICoroutineRunner coroutineRunner) {
-			_soundController.Init();
+			_soundManager.Init();
 			_permanentUiController.Init(coroutineRunner);
 			_sceneLoader.Init(coroutineRunner);
 			

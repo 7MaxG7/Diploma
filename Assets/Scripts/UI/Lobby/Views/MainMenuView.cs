@@ -1,12 +1,12 @@
-﻿using TMPro;
+﻿using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 
 namespace Infrastructure {
 
-	internal class MainMenuView : MonoBehaviour, IMainMenuView {
-		[SerializeField] private GameObject _gameObject;
+	internal class MainMenuView : MonoBehaviour {
 		[SerializeField] private TMP_Text _headerLabel;
 		[SerializeField] private TMP_Text _scoreLable;
 		[SerializeField] private TMP_Text _loginButtonText;
@@ -22,21 +22,58 @@ namespace Infrastructure {
 		[SerializeField] private CreditsView _creditsView;
 		[SerializeField] private HowToPlayView _howToPlayView;
 
-		public GameObject GameObject => _gameObject;
-		public TMP_Text HeaderLabel => _headerLabel;
-		public TMP_Text LoginButtonText => _loginButtonText;
-		public Button LoginPanelButton => _loginPanelButton;
-		public Button PlayButton => _playButton;
-		public Button SettingsButton => _settingsButton;
-		public Button HowToPlayButton => _howToPlayButton;
-		public Button CreditsButton => _creditsButton;
-		public Button QuitGameButton => _quitGameButton;
+		public event Action OnLoginClick;
+		public event  Action OnPlayClick;
+		public event Action OnSettingsClick;
+		public event Action OnHowToPlayClick;
+		public event Action OnCreditsClick;
+		public event Action OnQuitGameClick;
+
 		// Panels
 		public LoginPanelView LoginPanelView => _loginPanelView;
 		public LobbyScreenView LobbyScreenView => _lobbyScreenView;
 		public CreditsView CreditsView => _creditsView;
-		public TMP_Text ScoreLable => _scoreLable;
 		public HowToPlayView HowToPlayView => _howToPlayView;
+
+		private MainMenuConfig _mainMenuConfig;
+		
+		
+		public void Init(MainMenuConfig mainMenuConfig) {
+			_mainMenuConfig = mainMenuConfig;
+			gameObject.SetActive(true);
+			_headerLabel.text = _mainMenuConfig.MainMenuLableText;
+			_loginPanelButton.onClick.AddListener(() => OnLoginClick?.Invoke());
+			_playButton.onClick.AddListener(() => OnPlayClick?.Invoke());
+			_settingsButton.onClick.AddListener(() => OnSettingsClick?.Invoke());
+			_howToPlayButton.onClick.AddListener(() => OnHowToPlayClick?.Invoke());
+			_creditsButton.onClick.AddListener(() => OnCreditsClick?.Invoke());
+			_quitGameButton.onClick.AddListener(() => OnQuitGameClick?.Invoke());
+		}
+
+		public void Dispose() {
+			_loginPanelButton.onClick.RemoveAllListeners();
+			_playButton.onClick.RemoveAllListeners();
+			_settingsButton.onClick.RemoveAllListeners();
+			_howToPlayButton.onClick.RemoveAllListeners();
+			_creditsButton.onClick.RemoveAllListeners();
+			_quitGameButton.onClick.RemoveAllListeners();
+		}
+
+		public void UpdateLoginButtons(string userName) {
+			_loginButtonText.text = string.IsNullOrEmpty(userName) ? _mainMenuConfig.LoginButtonText : userName;
+			_loginPanelButton.interactable = string.IsNullOrEmpty(userName);
+			_playButton.interactable = !string.IsNullOrEmpty(userName);
+		}
+
+		public void SetScore(int? score) {
+			if (!score.HasValue) {
+				_scoreLable.gameObject.SetActive(false);
+				return;
+			}
+			
+			_scoreLable.text = string.Format(_mainMenuConfig.ScoreLableTemplate, score.Value);
+			_scoreLable.gameObject.SetActive(true);
+		}
 	}
 
 }

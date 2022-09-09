@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Abstractions.Services;
+using UnityEngine;
 using Utils;
 using Zenject;
 using Object = UnityEngine.Object;
@@ -20,6 +21,7 @@ namespace Infrastructure {
 
 		public Transform[] GroundItems { get; private set; }
 
+		private readonly IViewsFactory _viewsFactory;
 		private readonly MissionConfig _missionConfig;
 		private Transform _playerTransform;
 		private Vector2 _groundItemSize;
@@ -28,14 +30,15 @@ namespace Infrastructure {
 
 
 		[Inject]
-		public MissionMapController(IControllersHolder controllersHolder, MissionConfig missionConfig) {
+		public MissionMapController(IViewsFactory viewsFactory, IControllersHolder controllersHolder, MissionConfig missionConfig) {
 			controllersHolder.AddController(this);
+			_viewsFactory = viewsFactory;
 			_missionConfig = missionConfig;
 		}
 
 		public void Dispose() {
 			foreach (var groundItem in GroundItems) {
-				Object.Destroy(groundItem.gameObject);
+				_viewsFactory.DestroyView(groundItem.gameObject);
 			}
 			GroundItems = null;
 			_playerTransform = null;
@@ -44,7 +47,6 @@ namespace Infrastructure {
 		public void Init(Transform playerTransform, Vector2 groundItemSize) {
 			InitFields();
 			InstantiateGround();
-
 			
 			void InitFields() {
 				_playerTransform = playerTransform;
@@ -53,7 +55,7 @@ namespace Infrastructure {
 
 			void InstantiateGround() {
 				GroundItems = new Transform[HORIZONTAL_GROUND_ITEMS_AMOUNT * VERTICAL_GROUND_ITEMS_AMOUNT];
-				var groundParent = new GameObject(TextConstants.GROUND_ITEMS_PARENT_NAME).transform;
+				var groundParent = _viewsFactory.CreateGameObject(TextConstants.GROUND_ITEMS_PARENT_NAME).transform; 
 				for (var i = 0; i < HORIZONTAL_GROUND_ITEMS_AMOUNT; i++) {
 					for (var j = 0; j < VERTICAL_GROUND_ITEMS_AMOUNT; j++) {
 						var groundPosition = playerTransform.position + new Vector3(_groundItemSize.x * (i - 1), _groundItemSize.y * (j - 1));

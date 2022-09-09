@@ -1,7 +1,6 @@
-﻿namespace Infrastructure {
+﻿namespace Abstractions.UI.Controllers {
 
 	internal interface ILobbyStatusDisplayer {
-		bool IsLoading { get; set; }
 		void ShowLoadingStatusAsync();
 	}
 

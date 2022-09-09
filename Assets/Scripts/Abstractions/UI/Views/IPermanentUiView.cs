@@ -1,18 +1,25 @@
-﻿using TMPro;
+﻿using System;
+using Infrastructure;
 using UnityEngine;
 
 
 namespace UI {
 
 	internal interface IPermanentUiView {
-		GameObject GameObject { get; }
-		Canvas PermanentCanvas { get; }
-		CanvasGroup LoadingCurtainCanvasGroup { get; }
-		TMP_Text LoadingCurtainText { get; }
-		SettingsPanelView SettingsPanel { get; }
-		GameObject MissionSettingsPanel { get; }
-		ResultPanelView ResultPanel { get; }
+		event Action OnCurtainShown;
 		
+		GameObject GameObject { get; }
+		bool CurtainIsActive { get; }
+		bool CurtainIsActivating { get; }
+		SettingsPanelView SettingsPanel { get; }
+		ResultPanelView ResultPanel { get; }
+
+		void Init(ICoroutineRunner coroutineRunner, UiConfig uiConfig);
+		void ShowLoadingCurtain(bool isAnimated);
+		void HideLoadingCurtain(bool animationIsOn);
+		void ShowLoadingStatusLableAsync();
+		void StopLoadingCurtainAnimation();
+		void Dispose();
 	}
 
 }

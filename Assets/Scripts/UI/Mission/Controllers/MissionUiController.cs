@@ -1,10 +1,10 @@
 ﻿using System;
+using Abstractions.Services;
 using Infrastructure;
 using Units;
 using UnityEngine;
-using Utils;
 using Zenject;
-using Object = UnityEngine.Object;
+// using Object = UnityEngine.Object;
 
 
 namespace UI {
@@ -14,6 +14,7 @@ namespace UI {
 		private event Action OnUpdateCallback;
 
 		private readonly IPermanentUiController _permanentUiController;
+		private readonly IViewsFactory _viewsFactory;
 		private readonly UiConfig _uiConfig;
 		private PlayerUiController _playerUiController;
 		private SkillsUiController _skillsUiController;
@@ -22,8 +23,9 @@ namespace UI {
 
 
 		[Inject]
-		public MissionUiController(UiConfig uiConfig, IControllersHolder controllersHolder, IPermanentUiController permanentUiController) {
+		public MissionUiController(IViewsFactory viewsFactory, UiConfig uiConfig, IControllersHolder controllersHolder, IPermanentUiController permanentUiController) {
 			controllersHolder.AddController(this);
+			_viewsFactory = viewsFactory;
 			_uiConfig = uiConfig;
 			_permanentUiController = permanentUiController;
 		}
@@ -36,8 +38,9 @@ namespace UI {
 			_skillsUiController = null;
 			_playerUiController?.Dispose();
 			_playerUiController = null;
-			_missionUiView.SettingsButton.onClick.RemoveAllListeners();
-			Object.Destroy(_missionUiView.gameObject);
+			_missionUiView.OnSettingsClick -= ShowSettings;
+			_missionUiView.OnDispose();
+			_viewsFactory.DestroyView(_missionUiView.gameObject);
 		}
 
 		public void OnUpdate(float deltaTime) {
@@ -48,21 +51,18 @@ namespace UI {
 		}
 		
 		public void Init(IUnit player) {
-			var uiRoot = GameObject.Find(TextConstants.UI_ROOT_NAME) ?? new GameObject(TextConstants.UI_ROOT_NAME);
-			_missionUiView = Object.Instantiate(_uiConfig.MissionUiView, uiRoot.transform);
+			_missionUiView = _viewsFactory.CreateMissionUi();
 			_playerUiController = new PlayerUiController(_missionUiView.PlayerPanel, _uiConfig);
 			_playerUiController.Init(player);
 			OnUpdateCallback += _playerUiController.UpdateSmoothers;
 			
-			_missionUiView.SkillsPanel.CanvasGroup.alpha = 0;
 			_skillsUiController = new SkillsUiController(_missionUiView.SkillsPanel, _uiConfig);
+			_skillsUiController.Init();
 			_skillsUiController.OnSkillChoose += UpgradeSkill;
 			
-			_missionUiView.SettingsButton.onClick.AddListener(ShowSettings);
+			_missionUiView.Init(_uiConfig);
+			_missionUiView.OnSettingsClick += ShowSettings;
 			
-			_missionUiView.CompassPointerCanvasGroup.alpha = 0;
-			_missionUiView.CompassPointerCanvasGroup.gameObject.SetActive(false);
-				
 			_isInited = true;
 		}
 
@@ -73,26 +73,15 @@ namespace UI {
 		public void ShowCompass(Vector3 closestEnemyPlayerDestination) {
 			if (!_isInited)
 				return;
-			
-			_missionUiView.CompassPointerCanvasGroup.gameObject.SetActive(true);
-			if (_missionUiView.CompassPointerCanvasGroup.alpha < 1)
-				_missionUiView.CompassPointerCanvasGroup.alpha += _uiConfig.ArrowPointerFadingFrameDelta;
-			_missionUiView.CompassPointerCanvasGroup.transform.up = closestEnemyPlayerDestination;
+
+			_missionUiView.ShowCompass(closestEnemyPlayerDestination);
 		}
 
 		public void HideCompass(Vector3 closestEnemyPlayerDestination) {
 			if (!_isInited)
 				return;
-			
-			if (!_missionUiView.CompassPointerCanvasGroup.gameObject.activeSelf)
-				return;
-			
-			if (_missionUiView.CompassPointerCanvasGroup.alpha > 0) {
-				_missionUiView.CompassPointerCanvasGroup.alpha -= _uiConfig.ArrowPointerFadingFrameDelta;
-				_missionUiView.CompassPointerCanvasGroup.transform.up = closestEnemyPlayerDestination;
-			}
-			else
-				_missionUiView.CompassPointerCanvasGroup.gameObject.SetActive(false);
+
+			_missionUiView.HideCompass(closestEnemyPlayerDestination);
 		}
 
 		private void UpgradeSkill(WeaponType weaponType) {
@@ -100,7 +89,7 @@ namespace UI {
 		}
 
 		private void ShowSettings() {
-			_permanentUiController.ShowSettingsPanel(missionPanelIsActive: true);
+			_permanentUiController.ShowSettingsPanel(missionSettingsSectionIsActive: true);
 		}
 	}
 

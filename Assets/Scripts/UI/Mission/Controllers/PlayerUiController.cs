@@ -9,6 +9,7 @@ namespace UI {
 	internal class PlayerUiController : IDisposable {
 		private IUnit _player;
 		private readonly PlayerPanelView _playerPanel;
+		private readonly UiConfig _uiConfig;
 		private Smoother _currentHealthSmoother;
 		private Smoother _maxHealthSmoother;
 		private Smoother _expSmoother;
@@ -22,6 +23,7 @@ namespace UI {
 
 		public PlayerUiController(PlayerPanelView playerPanel, UiConfig uiConfig) {
 			_playerPanel = playerPanel;
+			_uiConfig = uiConfig;
 			_currentHealthSmoother = new Smoother(uiConfig.HpBarAnimationDurationInFrames);
 			_maxHealthSmoother = new Smoother(uiConfig.HpBarAnimationDurationInFrames);
 			_expSmoother = new Smoother(uiConfig.HpBarAnimationDurationInFrames);
@@ -42,6 +44,7 @@ namespace UI {
 
 		public void Init(IUnit player) {
 			_player = player;
+			_playerPanel.Init(_uiConfig);
 			
 			UpdateCurrentHealth(_player.Health.CurrentHp);
 			_currentHealthSmoother.OnValueUpdateCallback += UpdateCurrentHealth;
@@ -54,7 +57,7 @@ namespace UI {
 			_maxHealthSmoother.SetStartValue(_player.Health.MaxHp);
 
 			_currentLevel = _player.Experience.CurrentLevel;
-			_playerPanel.LevelText.text = _player.Experience.CurrentLevel.ToString();
+			_playerPanel.UpdateLevel(_currentLevel);
 			_currentLevelMaxExp = _player.Experience.GetExpTarget();
 			UpdateCurrentExperience(_player.Experience.CurrentExp);
 			_expSmoother.OnValueUpdateCallback += UpdateCurrentExperience;
@@ -78,17 +81,12 @@ namespace UI {
 
 		private void UpdateCurrentHealth(float hp) {
 			_currentHp = hp;
-			UpdateHealth(_currentHp, _maxHp);
+			_playerPanel.UpdateHealth(_currentHp, _maxHp);
 		}
 
 		private void UpdateMaxHealth(float maxHp) {
 			_maxHp = maxHp;
-			UpdateHealth(_currentHp, _maxHp);
-		}
-
-		private void UpdateHealth(float hp, float maxHp) {
-			_playerPanel.HealthSlider.value = hp / maxHp;
-			_playerPanel.HealthText.text = string.Format(TextConstants.HEALTH_BAR_TEXT_TEMPLATE, (int)hp, (int)maxHp);
+			_playerPanel.UpdateHealth(_currentHp, _maxHp);
 		}
 
 		private void UpdateCurrentExperienceSmoothly(int xp) {
@@ -98,13 +96,13 @@ namespace UI {
 		private void UpdateCurrentExperience(float xp) {
 			if (xp >= _currentLevelMaxExp) {
 				_currentLevelMinExp = _currentLevelMaxExp;
-				_playerPanel.LevelText.text = string.Format(TextConstants.EXPERIENCE_BAR_LEVEL_TEXT_TEMPLATE, ++_currentLevel);
+				_playerPanel.UpdateLevel(++_currentLevel);
 				_currentLevelMaxExp = _player.Experience.GetExpTarget(_currentLevel + 1);
 			}
 			if (xp < _player.Experience.MaxExp)
-				_playerPanel.ExpSlider.value = (xp - _currentLevelMinExp) / (_currentLevelMaxExp - _currentLevelMinExp);
+				_playerPanel.UpdateExperience((int)xp, _currentLevelMinExp, _currentLevelMaxExp);
 			else
-				_playerPanel.ExpSlider.value = 1f;
+				_playerPanel.UpdateExperience(_currentLevelMaxExp, _currentLevelMinExp, _currentLevelMaxExp);
 		}
 	}
 

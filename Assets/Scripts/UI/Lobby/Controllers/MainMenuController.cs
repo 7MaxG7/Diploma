@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using DG.Tweening;
+using Abstractions.Services;
 using Photon.Pun;
 using PlayFab;
 using PlayFab.ClientModels;
 using UnityEngine;
 using Utils;
 using Zenject;
-using Object = UnityEngine.Object;
 
 
 namespace Infrastructure {
@@ -21,68 +19,68 @@ namespace Infrastructure {
 		private MainMenuView _mainMenuView;
 		private LoginPanelController _loginPanelController;
 		private LobbyScreenController _lobbyScreenController;
-		private readonly IPermanentUiController _permanentUiController;
 		private readonly IMissionResultController _missionResultController;
+		private readonly IPermanentUiController _permanentUiController;
+		private readonly IViewsFactory _viewsFactory;
 		private readonly MainMenuConfig _mainMenuConfig;
 		private bool _rulesPageIsMoving;
 
 
 		[Inject]
-		public MainMenuController(IMissionResultController missionResultController, MainMenuConfig mainMenuConfig
-				, IPermanentUiController permanentUiController) {
+		public MainMenuController(IMissionResultController missionResultController, IPermanentUiController permanentUiController
+				, IViewsFactory viewsFactory, MainMenuConfig mainMenuConfig) {
 			_missionResultController = missionResultController;
-			_mainMenuConfig = mainMenuConfig;
+			_viewsFactory = viewsFactory;
 			_permanentUiController = permanentUiController;
+			_mainMenuConfig = mainMenuConfig;
 		}
 
 		public void Dispose() {
-			_mainMenuView.HowToPlayView.CanvasGroup.DOKill();
-			_mainMenuView.CreditsView.CanvasGroup.DOKill();
-			_mainMenuView.LoginPanelButton.onClick.RemoveAllListeners();
-			_mainMenuView.PlayButton.onClick.RemoveAllListeners();
-			_mainMenuView.SettingsButton.onClick.RemoveAllListeners();
-			_mainMenuView.HowToPlayButton.onClick.RemoveAllListeners();
-			_mainMenuView.HowToPlayView.PrevPageButton.onClick.RemoveAllListeners();
-			_mainMenuView.HowToPlayView.NextPageButton.onClick.RemoveAllListeners();
-			_mainMenuView.HowToPlayView.HideHowToPlayButton.onClick.RemoveAllListeners();
-			_mainMenuView.CreditsButton.onClick.RemoveAllListeners();
-			_mainMenuView.QuitGameButton.onClick.RemoveAllListeners();
-			_mainMenuView.CreditsView.CloseCreditsButton.onClick.RemoveAllListeners();
+			_mainMenuView.OnLoginClick -= _loginPanelController.ShowPanel;
+			_mainMenuView.OnPlayClick -= _lobbyScreenController.ShowScreen;
+			_mainMenuView.OnSettingsClick -= OpenSettingsPanel;
+			_mainMenuView.OnHowToPlayClick -= _mainMenuView.HowToPlayView.ShowRules;
+			_mainMenuView.HowToPlayView.OnPrevPageClick -= _mainMenuView.HowToPlayView.ShowPrevPage;
+			_mainMenuView.HowToPlayView.OnNextPageClick -= _mainMenuView.HowToPlayView.ShowNextPage;
+			_mainMenuView.HowToPlayView.OnHidePanelClick -= _mainMenuView.HowToPlayView.HideRules;
+			_mainMenuView.OnCreditsClick -= _mainMenuView.CreditsView.ShowCredits;
+			_mainMenuView.CreditsView.OnCloseCreditsClick -= _mainMenuView.CreditsView.HideCredits;
+			_mainMenuView.OnQuitGameClick -= QuitGame;
 			_loginPanelController.OnUserLoginSuccess -= SetUser;
 			_loginPanelController.Dispose();
 			_lobbyScreenController.Dispose();
-			Object.Destroy(_mainMenuView.GameObject);
+			_mainMenuView.HowToPlayView.Dispose();
+			_mainMenuView.CreditsView.Dispose();
+			_mainMenuView.Dispose();
 		}
 
 
 		public void SetupMainMenu() {
 			if (_mainMenuView == null) {
-				_mainMenuView = Object.Instantiate(_mainMenuConfig.MainMenuPref);
+				_mainMenuView = _viewsFactory.CreateMainMenu();
 			}
-			_mainMenuView.GameObject.SetActive(true);
-			_mainMenuView.HeaderLabel.text = TextConstants.MAIN_MENU_HEADER_TEXT;
-			InitButtons();
+			_mainMenuView.Init(_mainMenuConfig);
+			InitHowToPlay();
+			InitCredits();
 			InitLoginPanel();
 			InitLobbyPanel();
-			UpdateButtonsInteractivity();
+			InitButtons();
 			SetupScoresLable();
 
+			void InitHowToPlay() {
+				_mainMenuView.HowToPlayView.Init(_mainMenuConfig);
+				_mainMenuView.HowToPlayView.OnPrevPageClick += _mainMenuView.HowToPlayView.ShowPrevPage;
+				_mainMenuView.HowToPlayView.OnNextPageClick += _mainMenuView.HowToPlayView.ShowNextPage;
+				_mainMenuView.HowToPlayView.OnHidePanelClick += _mainMenuView.HowToPlayView.HideRules;
+			}
 
-			void InitButtons() {
-				_mainMenuView.LoginPanelButton.onClick.AddListener(OpenLoginPanel);
-				_mainMenuView.PlayButton.onClick.AddListener(OpenPlayPanel);
-				_mainMenuView.SettingsButton.onClick.AddListener(OpenSettingsPanel);
-				_mainMenuView.HowToPlayButton.onClick.AddListener(ShowHowToPlay);
-				_mainMenuView.HowToPlayView.PrevPageButton.onClick.AddListener(ShowPrevPage);
-				_mainMenuView.HowToPlayView.NextPageButton.onClick.AddListener(ShowNextPage);
-				_mainMenuView.HowToPlayView.HideHowToPlayButton.onClick.AddListener(HideHowToPlay);
-				_mainMenuView.CreditsButton.onClick.AddListener(ShowCredits);
-				_mainMenuView.QuitGameButton.onClick.AddListener(QuitGame);
-				_mainMenuView.CreditsView.CloseCreditsButton.onClick.AddListener(HideCredits);
+			void InitCredits() {
+				_mainMenuView.CreditsView.Init(_mainMenuConfig);
+				_mainMenuView.CreditsView.OnCloseCreditsClick += _mainMenuView.CreditsView.HideCredits;
 			}
 
 			void InitLoginPanel() {
-				_loginPanelController = new LoginPanelController(_mainMenuView.LoginPanelView);
+				_loginPanelController = new LoginPanelController(_mainMenuView.LoginPanelView, _mainMenuConfig);
 				_loginPanelController.Init();
 				_loginPanelController.OnUserLoginSuccess += SetUser;
 			}
@@ -93,124 +91,20 @@ namespace Infrastructure {
 					_lobbyScreenController.Init(_userName);
 				}
 			}
-		}
 
-		private void OpenLoginPanel() {
-			_loginPanelController.ShowPanel();
-		}
-
-		private void OpenPlayPanel() {
-			_lobbyScreenController.ShowScreen();
+			void InitButtons() {
+				_mainMenuView.OnLoginClick += _loginPanelController.ShowPanel;
+				_mainMenuView.OnPlayClick += _lobbyScreenController.ShowScreen;
+				_mainMenuView.OnSettingsClick += OpenSettingsPanel;
+				_mainMenuView.OnHowToPlayClick += _mainMenuView.HowToPlayView.ShowRules;
+				_mainMenuView.OnCreditsClick += _mainMenuView.CreditsView.ShowCredits;
+				_mainMenuView.OnQuitGameClick += QuitGame;
+				_mainMenuView.UpdateLoginButtons(_userName);
+			}
 		}
 
 		private void OpenSettingsPanel() {
 			_permanentUiController.ShowSettingsPanel();
-		}
-
-		private void ShowHowToPlay() {
-			PrepareRules();
-			_mainMenuView.HowToPlayView.CanvasGroup.DOFade(1, _mainMenuConfig.RulesFadingDuration);
-			
-			
-			void PrepareRules() {
-				_mainMenuView.HowToPlayView.CanvasGroup.DOKill();
-				_mainMenuView.HowToPlayView.GameObject.SetActive(true);
-				_mainMenuView.HowToPlayView.CanvasGroup.alpha = 0;
-				_mainMenuView.HowToPlayView.RulesScroll.content.anchoredPosition = Vector2.zero;
-				UpdateRulesButtonsInteractivity();
-			}
-		}
-
-		private void ShowPrevPage() {
-			var nextContentXPosition = _mainMenuView.HowToPlayView.RulesScroll.content.anchoredPosition.x
-					+ (_mainMenuView.HowToPlayView.RulesScroll.viewport.rect.width + _mainMenuView.HowToPlayView.ContentHorizontalGroup.spacing);
-			_mainMenuView.HowToPlayView.StartCoroutine(MovePage(nextContentXPosition));
-		}
-
-		private void ShowNextPage() {
-			var nextContentXPosition = _mainMenuView.HowToPlayView.RulesScroll.content.anchoredPosition.x
-			        - (_mainMenuView.HowToPlayView.RulesScroll.viewport.rect.width + _mainMenuView.HowToPlayView.ContentHorizontalGroup.spacing);
-			_mainMenuView.HowToPlayView.StartCoroutine(MovePage(nextContentXPosition));
-		}
-
-		private void UpdateRulesButtonsInteractivity() {
-			_mainMenuView.HowToPlayView.NextPageButton.interactable = !_rulesPageIsMoving 
-					&& _mainMenuView.HowToPlayView.RulesScroll.content.anchoredPosition.x 
-							> -(_mainMenuView.HowToPlayView.RulesScroll.content.rect.width - _mainMenuView.HowToPlayView.RulesScroll.viewport.rect.width);
-			_mainMenuView.HowToPlayView.PrevPageButton.interactable = !_rulesPageIsMoving
-					&& _mainMenuView.HowToPlayView.RulesScroll.content.anchoredPosition.x < 0;
-			_mainMenuView.HowToPlayView.HideHowToPlayButton.interactable = !_rulesPageIsMoving;
-		}
-
-		private IEnumerator MovePage(float nextContentXPosition) {
-			_rulesPageIsMoving = true;
-			UpdateRulesButtonsInteractivity();
-			var deltaPosition = new Vector2(_mainMenuConfig.RulesScrollSpeed, 0);
-			var pageIsNext = false;
-			if (_mainMenuView.HowToPlayView.RulesScroll.content.anchoredPosition.x > nextContentXPosition) {
-				deltaPosition *= -1;
-				pageIsNext = true;
-			}
-
-			while (pageIsNext 
-					? _mainMenuView.HowToPlayView.RulesScroll.content.anchoredPosition.x > nextContentXPosition 
-					: _mainMenuView.HowToPlayView.RulesScroll.content.anchoredPosition.x < nextContentXPosition) {
-				_mainMenuView.HowToPlayView.RulesScroll.content.anchoredPosition += deltaPosition * Time.deltaTime;
-				deltaPosition *= 1.2f;
-				yield return new WaitForEndOfFrame();
-			}
-			
-			_mainMenuView.HowToPlayView.RulesScroll.content.anchoredPosition 
-					= new Vector2(nextContentXPosition, _mainMenuView.HowToPlayView.RulesScroll.content.anchoredPosition.y); 
-			_rulesPageIsMoving = false;
-			UpdateRulesButtonsInteractivity();
-		}
-
-		private void HideHowToPlay() {
-			_mainMenuView.HowToPlayView.CanvasGroup.DOKill();
-			_mainMenuView.HowToPlayView.StopAllCoroutines();
-			_mainMenuView.HowToPlayView.CanvasGroup.DOFade(0, _mainMenuConfig.RulesFadingDuration)
-					.OnComplete(() => {
-						_mainMenuView.HowToPlayView.GameObject.SetActive(false);
-					});
-		}
-		
-		private void ShowCredits() {
-			PrepareCredits();
-			_mainMenuView.CreditsView.CanvasGroup.DOFade(1, _mainMenuConfig.CreditsFadingDuration)
-					.OnComplete(() => {
-						_mainMenuView.CreditsView.StartCoroutine(ScrollCredits());
-					});
-			
-
-			void PrepareCredits() {
-				_mainMenuView.CreditsView.GameObject.SetActive(true);
-				_mainMenuView.CreditsView.CanvasGroup.alpha = 0;
-				_mainMenuView.CreditsView.CreditsScroll.content.anchoredPosition = Vector2.zero;
-				_mainMenuView.CreditsView.CanvasGroup.interactable = true;
-			}
-
-			IEnumerator ScrollCredits() {
-				var endContentYPosition = _mainMenuView.CreditsView.CreditsScroll.content.rect.height -
-				                          _mainMenuView.CreditsView.CreditsScroll.viewport.rect.height;
-				var creditsScrollDelta = new Vector2(0, _mainMenuConfig.CreditsScrollSpeed);
-				while (_mainMenuView.CreditsView.CreditsScroll.content.anchoredPosition.y < endContentYPosition) {
-					_mainMenuView.CreditsView.CreditsScroll.content.anchoredPosition += creditsScrollDelta * Time.deltaTime;
-					yield return new WaitForEndOfFrame();
-				}
-
-				HideCredits();
-			}
-		}
-
-		private void HideCredits() {
-			_mainMenuView.CreditsView.CanvasGroup.interactable = false;
-			_mainMenuView.CreditsView.CanvasGroup.DOKill();
-			_mainMenuView.CreditsView.StopAllCoroutines();
-			_mainMenuView.CreditsView.CanvasGroup.DOFade(0, _mainMenuConfig.CreditsFadingDuration)
-					.OnComplete(() => {
-						_mainMenuView.CreditsView.GameObject.SetActive(false);
-					});
 		}
 
 		private void QuitGame() {
@@ -225,12 +119,12 @@ namespace Infrastructure {
 			_playfabId = playfabId;
 			SetupScoresLable();
 			_lobbyScreenController.Init(_userName);
-			UpdateButtonsInteractivity();
+			_mainMenuView.UpdateLoginButtons(_userName);
 		}
 
 		private void SetupScoresLable() {
 			if (string.IsNullOrEmpty(_playfabId)) {
-				_mainMenuView.ScoreLable.gameObject.SetActive(false);
+				_mainMenuView.SetScore(null);
 				return;
 			}
 			
@@ -251,18 +145,10 @@ namespace Infrastructure {
 						_missionResultController.SetKillsAmount(killsAmount);
 						killsScores = killsAmount * _mainMenuConfig.ScorePerKill;
 					}
-					_mainMenuView.ScoreLable.text = string.Format(_mainMenuConfig.ScoreLableTemplate, winsScores + killsScores);
-					_mainMenuView.ScoreLable.gameObject.SetActive(winsScores > 0 || killsScores > 0);
+					_mainMenuView.SetScore(winsScores + killsScores);
 				}
 			}, errorCallback => Debug.LogWarning(errorCallback.ErrorMessage));
 		}
-
-		private void UpdateButtonsInteractivity() {
-			_mainMenuView.LoginButtonText.text = string.IsNullOrEmpty(_userName) ? TextConstants.LOGIN_TEXT : _userName;
-			_mainMenuView.LoginPanelButton.interactable = string.IsNullOrEmpty(_userName);
-			_mainMenuView.PlayButton.interactable = !string.IsNullOrEmpty(_userName);
-		}
-
 	}
 
 }

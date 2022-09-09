@@ -1,87 +1,84 @@
 ﻿using System;
 using System.Collections.Generic;
-using DG.Tweening;
 using Photon.Pun;
 using Photon.Realtime;
 using Utils;
-using Object = UnityEngine.Object;
 
 
 namespace Infrastructure {
 
 	internal class RoomPanelController : IDisposable {
-		public RoomPanelView RoomPanelView { get; }
-
+		private readonly RoomPanelView _roomPanelView;
 		private readonly MainMenuConfig _mainMenuConfig;
-		private readonly Dictionary<Player, RoomPlayerItemView> _cachedPlayerItemViews = new();
 		private readonly IPermanentUiController _permanentUiController;
+		private readonly Dictionary<Player, RoomPlayerItemView> _cachedPlayerItemViews = new();
+		private readonly List<Player> _players = new();
 
 
 		public RoomPanelController(MainMenuConfig mainMenuConfig, RoomPanelView roomPanelView, IPermanentUiController permanentUiController) {
 			_mainMenuConfig = mainMenuConfig;
 			_permanentUiController = permanentUiController;
-			RoomPanelView = roomPanelView;
-		}
-
-		public void Init() {
-			RoomPanelView.StartGameButton.onClick.AddListener(StartGame);
-			RoomPanelView.ClosePanelButton.onClick.AddListener(LeaveRoom);
+			_roomPanelView = roomPanelView;
 		}
 
 		public void Dispose() {
-			RoomPanelView.StartGameButton.onClick.RemoveAllListeners();
-			RoomPanelView.ClosePanelButton.onClick.RemoveAllListeners();
-			DOTween.KillAll();
+			_roomPanelView.OnStartGameClick -= StartGame;
+			_roomPanelView.OnClosePanelClick -= LeaveRoom;
+			_roomPanelView.OnDispose();
 		}
 
-		public Tween ShowPanel(string roomName) {
-			ClearPanel();
-			ToggleBlockingUi(true);
-			RoomPanelView.gameObject.SetActive(true);
-			UpdateButtons();
-			RoomPanelView.RoomPanelHeader.text = roomName;
-			RoomPanelView.CanvasGroup.alpha = 0;
-			return RoomPanelView.CanvasGroup.DOFade(1, Constants.LOBBY_PANEL_FADING_DURATION);
+		public void Init() {
+			_roomPanelView.Init(_mainMenuConfig);
+			_roomPanelView.OnStartGameClick += StartGame;
+			_roomPanelView.OnClosePanelClick += LeaveRoom;
 		}
 
-		public void UpdateButtons() {
-			RoomPanelView.StartGameButton.gameObject.SetActive(PhotonNetwork.IsMasterClient);
+		public void ShowPanel(string roomName, Action onPanelShownCallback = null) {
+			_roomPanelView.Show(roomName, onPanelShownCallback);
+			UpdateMasterButtons();
+			
+			// ClearPanel();
+			// ToggleBlockingUi(true);
+			// _roomPanelView.gameObject.SetActive(true);
+			// _roomPanelView.RoomPanelHeader.text = roomName;
+			// _roomPanelView.CanvasGroup.alpha = 0;
+			// _roomPanelView.CanvasGroup.DOFade(1, Constants.LOBBY_PANEL_FADING_DURATION)
+			// 		.OnComplete(() => {
+			// 				onPanelShownCallback?.Invoke();
+			// 				ToggleBlockingUi(false);
+			// 		});
 		}
 
-		public Tween HidePanel() {
-			ToggleBlockingUi(true);
-			return RoomPanelView.CanvasGroup.DOFade(0, Constants.LOBBY_PANEL_FADING_DURATION);
+		private void UpdateMasterButtons() {
+			_roomPanelView.ToggleMasterButtons(PhotonNetwork.IsMasterClient);
+		}
+
+		public void HidePanel(Action onPanelHiddenCallback) {
+			_roomPanelView.Hide(onPanelHiddenCallback: onPanelHiddenCallback);
 		}
 
 		public void DeactivatePanel() {
-			ClearPanel();
-			RoomPanelView.gameObject.SetActive(false);
+			_roomPanelView.Hide(false);
 		}
 
 		public void AddPlayer(Player player) {
-			var playerItem = Object.Instantiate(_mainMenuConfig.RoomCachedPlayerItemPref, RoomPanelView.PlayersListContent);
-			playerItem.PlayerName.text = player.NickName;
-			_cachedPlayerItemViews.Add(player, playerItem);
-		}
-
-		public void RemovePlayer(Player player) {
-			if (_cachedPlayerItemViews.ContainsKey(player)) {
-				Object.Destroy(_cachedPlayerItemViews[player].gameObject);
-				_cachedPlayerItemViews.Remove(player);
+			if (!_players.Contains(player)) {
+				_roomPanelView.AddPlayerItem(player.NickName);
+				_players.Add(player);
 			}
 		}
 
-		public void ToggleBlockingUi(bool mustBlocked) {
-			RoomPanelView.StartGameButton.interactable = !mustBlocked;
-			RoomPanelView.ClosePanelButton.interactable = !mustBlocked;
+		public void RemovePlayer(Player player) {
+			if (_players.Remove(player)) {
+				_roomPanelView.RemovePlayerItem(player.NickName);
+			}
+			UpdateMasterButtons();
 		}
 
 		private void StartGame() {
 			PhotonNetwork.CurrentRoom.IsOpen = false;
 			PhotonNetwork.CurrentRoom.IsVisible = false;
-			ToggleBlockingUi(true);
-			ClearPanel();
-
+			_roomPanelView.BlockUi();
 			_permanentUiController.OnCurtainShown += LoadMission;
 			_permanentUiController.ShowLoadingCurtain();
 		}
@@ -92,15 +89,8 @@ namespace Infrastructure {
 		}
 
 		private void LeaveRoom() {
-			ToggleBlockingUi(true);
+			_roomPanelView.BlockUi();
 			PhotonNetwork.LeaveRoom();
-		}
-
-		private void ClearPanel() {
-			foreach (var playerItem in _cachedPlayerItemViews.Values) {
-				Object.Destroy(playerItem.gameObject);
-			}
-			_cachedPlayerItemViews.Clear();
 		}
 	}
 

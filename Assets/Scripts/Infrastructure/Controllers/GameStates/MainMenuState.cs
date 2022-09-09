@@ -11,21 +11,21 @@ namespace Infrastructure {
 		
 		private readonly IMainMenuController _mainMenuController;
 		private readonly IPermanentUiController _permanentUiController;
-		private readonly ISoundController _soundController;
+		private readonly ISoundManager _soundManager;
 		private readonly ISceneLoader _sceneLoader;
 
 
 		[Inject]
 		public MainMenuState(ISceneLoader sceneLoader, IMainMenuController mainMenuController, IPermanentUiController permanentUiController
-				, ISoundController soundController) {
+				, ISoundManager soundManager) {
 			_sceneLoader = sceneLoader;
 			_mainMenuController = mainMenuController;
 			_permanentUiController = permanentUiController;
-			_soundController = soundController;
+			_soundManager = soundManager;
 		}
 
 		public void Enter() {
-			_soundController.PlayRandomMenuMusic();
+			_soundManager.PlayRandomMenuMusic();
 			_sceneLoader.LoadScene(TextConstants.MAIN_MENU_SCENE_NAME, SetupMainMenu);
 		}
 
@@ -34,13 +34,13 @@ namespace Infrastructure {
 			SceneManager.sceneUnloaded += ShowCurtain;
 			SceneManager.sceneLoaded += SwitchState;
 			
-			_permanentUiController.HideLoadingCurtain();
+			_permanentUiController.HideLoadingCurtain(interruptCurrentAnimation: true);
 		}
 
 		private void ShowCurtain(Scene scene) {
 			SceneManager.sceneUnloaded -= ShowCurtain;
-			if (!_permanentUiController.IsActive)
-				_permanentUiController.ShowLoadingCurtain(animationIsOn: false, isForced: true);
+			if (!_permanentUiController.CurtainIsActive)
+				_permanentUiController.ShowLoadingCurtain(false);
 		}
 
 		private void SwitchState(Scene scene, LoadSceneMode sceneMode) {
@@ -49,7 +49,7 @@ namespace Infrastructure {
 		}
 
 		public void Exit() {
-			_soundController.StopAll();
+			_soundManager.StopAll();
 			if (!_permanentUiController.IsActivating)
 				_mainMenuController.Dispose();
 			else

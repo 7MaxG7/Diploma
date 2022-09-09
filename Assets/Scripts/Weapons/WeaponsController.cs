@@ -15,7 +15,7 @@ namespace Infrastructure {
 		private readonly WeaponsConfig _weaponsConfig;
 		private readonly List<IWeapon> _activeWeapons;
 		private readonly List<IUnit> _monsters;
-		private readonly ISoundController _soundController;
+		private readonly ISoundManager _soundManager;
 		public List<WeaponType> UpgradableWeaponTypes { get; private set; }
 		private IUnit _player;
 		private bool _isShooting;
@@ -23,10 +23,10 @@ namespace Infrastructure {
 
 		[Inject]
 		public WeaponsController(IUnitsPool unitsPool, IAmmosPool ammosPool, IPlayersInteractionController playersInteractionController
-				, ISoundController soundController, WeaponsConfig weaponsConfig, IControllersHolder controllersHolder) {
+				, ISoundManager soundManager, WeaponsConfig weaponsConfig, IControllersHolder controllersHolder) {
 			_ammosPool = ammosPool;
 			_playersInteractionController = playersInteractionController;
-			_soundController = soundController;
+			_soundManager = soundManager;
 			_weaponsConfig = weaponsConfig;
 			_activeWeapons = new List<IWeapon>(weaponsConfig.WeaponsAmount);
 			_monsters = unitsPool.ActiveMonsters;
@@ -36,7 +36,7 @@ namespace Infrastructure {
 		public void Dispose() {
 			StopShooting();
 			foreach (var weapon in _activeWeapons) {
-				weapon.OnShooted -= _soundController.PlayWeaponShootSound;
+				weapon.OnShooted -= _soundManager.PlayWeaponShootSound;
 			}
 			_activeWeapons.Clear();
 			_player = null;
@@ -113,7 +113,7 @@ namespace Infrastructure {
 				return;
 
 			var newWeapon = new Weapon(_player, _weaponsConfig.GetWeaponBaseParam(type), _ammosPool);
-			newWeapon.OnShooted += _soundController.PlayWeaponShootSound;
+			newWeapon.OnShooted += _soundManager.PlayWeaponShootSound;
 			_activeWeapons.Add(newWeapon);
 			UpdateUpgradableWeaponsList(newWeapon);
 		}

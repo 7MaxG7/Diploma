@@ -10,21 +10,21 @@ namespace Infrastructure {
 		
 		private readonly IMonstersSpawner _monstersSpawner;
 		private readonly IWeaponsController _weaponsController;
-		private readonly ISoundController _soundController;
+		private readonly ISoundManager _soundManager;
 		private readonly IMissionResultController _missionResultController;
 
 
 		[Inject]
-		public RunMissionState(IMonstersSpawner monstersSpawner, IWeaponsController weaponsController, ISoundController soundController
+		public RunMissionState(IMonstersSpawner monstersSpawner, IWeaponsController weaponsController, ISoundManager soundManager
 				, IMissionResultController missionResultController) {
 			_monstersSpawner = monstersSpawner;
 			_weaponsController = weaponsController;
-			_soundController = soundController;
+			_soundManager = soundManager;
 			_missionResultController = missionResultController;
 		}
 		
 		public void Enter() {
-			_soundController.PlayRandomMissionMusic();
+			_soundManager.PlayRandomMissionMusic();
 			_monstersSpawner.StartSpawn();
 			_weaponsController.AddWeapon(WeaponType.SmallOrb);
 			_weaponsController.StartShooting();
@@ -35,7 +35,7 @@ namespace Infrastructure {
 			_missionResultController.OnGameLeft -= SwitchState;
 			_monstersSpawner.KillMonstersAndStopSpawn();
 			_weaponsController.StopShooting();
-			_soundController.StopAll();
+			_soundManager.StopAll();
 		}
 
 		private void SwitchState() {

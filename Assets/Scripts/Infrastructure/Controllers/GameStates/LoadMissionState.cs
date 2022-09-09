@@ -156,7 +156,7 @@ namespace Infrastructure {
 		}
 
 		public void Exit() {
-			_permanentUiController.HideLoadingCurtain(isForced: true);
+			_permanentUiController.HideLoadingCurtain(interruptCurrentAnimation: true);
 		}
 	}
 

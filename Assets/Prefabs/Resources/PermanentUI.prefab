@@ -1342,6 +1342,7 @@ MonoBehaviour:
   _leaveGameButton: {fileID: 6582733886750356268}
   _musicVolumeSlider: {fileID: 668808575865869060}
   _soundVolumeSlider: {fileID: 7583427877344240156}
+  _missionSettingsSection: {fileID: 6488034450062295208}
 --- !u!225 &7433913734648682819
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -2590,11 +2591,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f908c5e8469f4df3a79a84684c32bab5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _permanentCanvas: {fileID: 6376709678690370532}
   _loadingCurtainCanvasGroup: {fileID: 6376709677692388108}
   _loadingCurtainText: {fileID: 6376709677511072009}
   _settingsPanel: {fileID: 467405786825467103}
-  _missionSettingsPanel: {fileID: 6488034450062295208}
   _resultPanel: {fileID: 4175862367889838051}
 --- !u!1 &6376709678690370531
 GameObject:

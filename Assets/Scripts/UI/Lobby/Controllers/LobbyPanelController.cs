@@ -1,172 +1,120 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using Abstractions.UI.Controllers;
 using DG.Tweening;
 using Photon.Pun;
 using Photon.Realtime;
-using Utils;
-using Object = UnityEngine.Object;
 
 
 namespace Infrastructure {
 
 	internal class LobbyPanelController : IDisposable {
-
-		private LobbyPanelView LobbyPanelView { get; }
-
+		private readonly LobbyPanelView _lobbyPanelView;
 		private readonly MainMenuConfig _mainMenuConfig;
 		private readonly ILobbyStatusDisplayer _lobbyStatusDisplayer;
-		private readonly Dictionary<string, LobbyCachedRoomItemView> _cachedRoomItemViews = new();
+		private readonly List<RoomInfo> _roomsList = new();
 		private bool _uiIsBlocked;
+		private IRoomEventsCallbacks _lobbyScreenController;
 
 
 		public LobbyPanelController(MainMenuConfig mainMenuConfig, LobbyPanelView lobbyPanelView, ILobbyStatusDisplayer lobbyStatusDisplayer) {
-			LobbyPanelView = lobbyPanelView;
+			_lobbyPanelView = lobbyPanelView;
 			_mainMenuConfig = mainMenuConfig;
 			_lobbyStatusDisplayer = lobbyStatusDisplayer;
 		}
 
-		public void Init() {
-			LobbyPanelView.CreatePrivateRoomButton.onClick.AddListener(CreatePrivateRoom);
-			LobbyPanelView.JoinPrivateRoomButton.onClick.AddListener(JoinPrivateRoom);
-			LobbyPanelView.CreateNewRoomButton.onClick.AddListener(CreateRoom);
-			LobbyPanelView.JoinRandomRoomButton.onClick.AddListener(JoinOrCreateRandomRoom);
-			LobbyPanelView.ClosePanelButton.onClick.AddListener(Disconnect);
-			LobbyPanelView.PrivateRoomNameInputText.onValueChanged.AddListener(UpdatePrivateRoomButtonsInteractivity);
-		}
-
 		public void Dispose() {
-			LobbyPanelView.CreatePrivateRoomButton.onClick.RemoveAllListeners();
-			LobbyPanelView.JoinPrivateRoomButton.onClick.RemoveAllListeners();
-			LobbyPanelView.CreateNewRoomButton.onClick.RemoveAllListeners();
-			LobbyPanelView.JoinRandomRoomButton.onClick.RemoveAllListeners();
-			LobbyPanelView.ClosePanelButton.onClick.RemoveAllListeners();
-			LobbyPanelView.PrivateRoomNameInputText.onValueChanged.RemoveAllListeners();
 			DOTween.KillAll();
+			_lobbyPanelView.Dispose();
+			_lobbyPanelView.OnCreatePrivateRoomClick -= CreatePrivateRoom;
+			_lobbyPanelView.OnJoinPrivateRoomClick -= JoinRoom;
+			_lobbyPanelView.OnCreateNewRoomClick -= CreateRoom;
+			_lobbyPanelView.OnJoinRandomRoomClick -= JoinOrCreateRandomRoom;
+			_lobbyPanelView.OnClosePanelClick -= Disconnect;
+			_lobbyPanelView.OnJoinRoomClick -= JoinRoom;
+			_lobbyScreenController.OnLobbyJoin -= _lobbyPanelView.UnblockUi;
+			_lobbyScreenController.OnRoomCreationFail -= _lobbyPanelView.UnblockUi;
+			_lobbyScreenController.OnRoomJoinFail -= _lobbyPanelView.UnblockUi;
+			_lobbyScreenController.OnRandomRoomJoinFail -= _lobbyPanelView.UnblockUi;
 		}
 
-		public Tween ShowPanel() {
-			ClearPanel();
-			ToggleBlockingUi(true);
-			LobbyPanelView.gameObject.SetActive(true);
-			LobbyPanelView.CanvasGroup.alpha = 0;
-			return LobbyPanelView.CanvasGroup.DOFade(1, Constants.LOBBY_PANEL_FADING_DURATION);
+		public void Init(IRoomEventsCallbacks lobbyScreenController) {
+			_lobbyScreenController = lobbyScreenController;
+			_lobbyPanelView.Init(_mainMenuConfig);
+			_lobbyPanelView.OnCreatePrivateRoomClick += CreatePrivateRoom;
+			_lobbyPanelView.OnJoinPrivateRoomClick += JoinRoom;
+			_lobbyPanelView.OnCreateNewRoomClick += CreateRoom;
+			_lobbyPanelView.OnJoinRandomRoomClick += JoinOrCreateRandomRoom;
+			_lobbyPanelView.OnClosePanelClick += Disconnect;
+			_lobbyPanelView.OnJoinRoomClick += JoinRoom;
+			_lobbyScreenController.OnLobbyJoin += _lobbyPanelView.UnblockUi;
+			_lobbyScreenController.OnRoomCreationFail += _lobbyPanelView.UnblockUi;
+			_lobbyScreenController.OnRoomJoinFail += _lobbyPanelView.UnblockUi;
+			_lobbyScreenController.OnRandomRoomJoinFail += _lobbyPanelView.UnblockUi;
 		}
 
-		public Tween HidePanel() {
-			ToggleBlockingUi(true);
-			return LobbyPanelView.CanvasGroup.DOFade(0, Constants.LOBBY_PANEL_FADING_DURATION);
+		public void ShowPanel(Action onPanelShownCallback = null) {
+			_lobbyPanelView.Show(onPanelShownCallback);
+		}
+
+		public void HidePanel(Action onPanelHiddenCallback = null) {
+			_lobbyPanelView.Hide(onPanelHiddenCallback: onPanelHiddenCallback);
 		}
 
 		public void DeactivatePanel() {
-			ClearPanel();
-			LobbyPanelView.gameObject.SetActive(false);
+			_lobbyPanelView.Hide(false);
 		}
 
-		public void ToggleBlockingUi(bool mustBlocked) {
-			_uiIsBlocked = mustBlocked;
-			if (mustBlocked) {
-				LobbyPanelView.CreatePrivateRoomButton.interactable = false;
-				LobbyPanelView.JoinPrivateRoomButton.interactable = false;
-			} else {
-				UpdatePrivateRoomButtonsInteractivity(LobbyPanelView.PrivateRoomNameInputText.text);
-			}
-			LobbyPanelView.CreateNewRoomButton.interactable = !mustBlocked;
-			LobbyPanelView.JoinRandomRoomButton.interactable = !mustBlocked;
-			LobbyPanelView.ClosePanelButton.interactable = !mustBlocked;
-
-			foreach (var roomItem in _cachedRoomItemViews.Values) {
-				roomItem.RoomButton.interactable = !mustBlocked;
-			}
-		}
-
-		public void UpdateCachedRoomList(List<RoomInfo> roomList) {
+		public void UpdateRoomsList(List<RoomInfo> roomList) {
 			foreach (var roomInfo in roomList) {
-				var roomName = roomInfo.Name;
 				if (roomInfo.RemovedFromList) {
-					if (_cachedRoomItemViews.ContainsKey(roomName)) {
-						Object.Destroy(_cachedRoomItemViews[roomName].gameObject);
-						_cachedRoomItemViews.Remove(roomName);
+					if (_roomsList.Remove(roomInfo)) {
+						_lobbyPanelView.RemoveRoom(roomInfo);
 					}
 				} else {
-					if (!_cachedRoomItemViews.ContainsKey(roomName)) {
-						var roomItem = Object.Instantiate(_mainMenuConfig.LobbyCachedRoomItemPref, LobbyPanelView.RoomsListContent);
-						roomItem.RoomName.text = roomName;
-						roomItem.RoomButton.onClick.AddListener(() => this.JoinRoom(roomName));
-						_cachedRoomItemViews[roomName] = roomItem;
+					if (!_roomsList.Contains(roomInfo)) {
+						_lobbyPanelView.AddRoom(roomInfo);
+						_roomsList.Add(roomInfo);
 					}
-					
-					var roomNameColor = _cachedRoomItemViews[roomName].RoomName.color;
-					roomNameColor.a = roomInfo.IsOpen ? Constants.UNLOCKED_ROOM_LABEL_TRANSPARENCY : Constants.LOCKED_ROOM_LABEL_TRANSPARENCY;
-					_cachedRoomItemViews[roomName].RoomName.color = roomNameColor;
 				}
 			}
 		}
 
-		public void ClearPanel() {
-			foreach (var roomItemView in _cachedRoomItemViews.Values) {
-				Object.Destroy(roomItemView.gameObject);
-			}
-			_cachedRoomItemViews.Clear();
-		}
-
-		private void UpdatePrivateRoomButtonsInteractivity(string privateRoomName) {
-			if (_uiIsBlocked)
-				return;
-
-			LobbyPanelView.CreatePrivateRoomButton.interactable = !string.IsNullOrEmpty(privateRoomName) && !_cachedRoomItemViews.ContainsKey(privateRoomName);
-			LobbyPanelView.JoinPrivateRoomButton.interactable = !string.IsNullOrEmpty(privateRoomName);
-		}
-
-#region LocalMethods
-		private void CreatePrivateRoom() {
-			var roomName = LobbyPanelView.PrivateRoomNameInputText.text;
-			if (_cachedRoomItemViews.ContainsKey(roomName))
-				return;
-			
-			_lobbyStatusDisplayer.IsLoading = true;
-			ToggleBlockingUi(true);
+		private void CreatePrivateRoom(string roomName) {
 			_lobbyStatusDisplayer.ShowLoadingStatusAsync();
 			var roomOptions = new RoomOptions { IsVisible = false };
-			PhotonNetwork.CreateRoom(LobbyPanelView.PrivateRoomNameInputText.text, roomOptions);
+			PhotonNetwork.CreateRoom(roomName, roomOptions);
 		}
 
 		private void CreateRoom() {
-			var roomName = string.Format(TextConstants.ROOM_NAME_TEMPLATE, PhotonNetwork.LocalPlayer.NickName, (int)PhotonNetwork.Time);
-			if (_cachedRoomItemViews.ContainsKey(roomName))
-				return;
-
-			_lobbyStatusDisplayer.IsLoading = true;
-			ToggleBlockingUi(true);
+			var roomName = string.Format(_mainMenuConfig.RoomNameTemplate, PhotonNetwork.LocalPlayer.NickName, (int)PhotonNetwork.Time);
+			var currentRoomsNames = _roomsList.Select(roomInfo => roomInfo.Name).ToArray();
+			if (currentRoomsNames.Contains(roomName)) {
+				var additionalIndex = 0;
+				while (currentRoomsNames.Contains($"{roomName} {additionalIndex}")) {
+					++additionalIndex;
+				}
+				roomName += $" {additionalIndex}";
+			}
 			_lobbyStatusDisplayer.ShowLoadingStatusAsync();
 			PhotonNetwork.CreateRoom(roomName, new RoomOptions());
 		}
 
-		private void JoinPrivateRoom() {
-			ToggleBlockingUi(true);
-			JoinRoom(LobbyPanelView.PrivateRoomNameInputText.text);
-		}
-
 		private void JoinRoom(string roomName) {
-			_lobbyStatusDisplayer.IsLoading = true;
-			ToggleBlockingUi(true);
 			_lobbyStatusDisplayer.ShowLoadingStatusAsync();
 			PhotonNetwork.JoinRoom(roomName);
 		}
 
 		private void JoinOrCreateRandomRoom() {
-			_lobbyStatusDisplayer.IsLoading = true;
-			ToggleBlockingUi(true);
 			_lobbyStatusDisplayer.ShowLoadingStatusAsync();
 			PhotonNetwork.JoinRandomOrCreateRoom();
 		}
 
 		private void Disconnect() {
-			ToggleBlockingUi(true);
-			_lobbyStatusDisplayer.IsLoading = true;
 			_lobbyStatusDisplayer.ShowLoadingStatusAsync();
 			PhotonNetwork.LeaveLobby();
 		}
-#endregion
 	}
 
 }
