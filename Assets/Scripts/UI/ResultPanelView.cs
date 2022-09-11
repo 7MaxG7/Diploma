@@ -8,14 +8,15 @@ using UnityEngine.UI;
 
 namespace UI {
 
-	internal class ResultPanelView : MonoBehaviour {
+	internal sealed class ResultPanelView : MonoBehaviour {
 		[SerializeField] private CanvasGroup _canvasGroup;
 		[SerializeField] private TMP_Text _resultLableText;
 		[SerializeField] private TMP_Text _killsAmount;
 		[SerializeField] private Button _closePanelButton;
-		private UiConfig _uiConfig;
 
 		public event Action OnCloseResultPanelClick;
+		
+		private UiConfig _uiConfig;
 		
 
 		public void Init(UiConfig uiConfig) {

@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using PlayFab;
 using PlayFab.ClientModels;
+using Services;
 using UnityEngine;
 using Utils;
 // ReSharper disable InconsistentNaming
@@ -9,9 +10,10 @@ using Utils;
 
 namespace Infrastructure {
 
-	internal class LoginPanelController : IDisposable {
+	internal sealed class LoginPanelController : IDisposable {
 		public event Action<string, string> OnUserLoginSuccess;
-		
+
+		private readonly IPlayfabManager _playfabManager;
 		private readonly LoginPanelView _loginPanelView;
 		private bool _isNewAccount;
 		private bool _isFading;
@@ -21,10 +23,11 @@ namespace Infrastructure {
 		private string _username;
 		private string _password;
 		private string _email;
-		private MainMenuConfig _mainMenuConfig;
+		private readonly MainMenuConfig _mainMenuConfig;
 
 
-		public LoginPanelController(LoginPanelView loginPanelView, MainMenuConfig mainMenuConfig) {
+		public LoginPanelController(IPlayfabManager playfabManager, LoginPanelView loginPanelView, MainMenuConfig mainMenuConfig) {
+			_playfabManager = playfabManager;
 			_loginPanelView = loginPanelView;
 			_mainMenuConfig = mainMenuConfig;
 		}
@@ -41,9 +44,7 @@ namespace Infrastructure {
 			_loginPanelView.OnLoginConfirmClick += ConfirmLogin;
 			_loginPanelView.OnHideLoginPanelClick += _loginPanelView.Hide;
 			_loginPanelView.OnLoginModeSwitched += ToggleLoginMode;
-			if (string.IsNullOrEmpty(PlayFabSettings.staticSettings.TitleId)) {
-				PlayFabSettings.staticSettings.TitleId = TextConstants.PLAYFAB_TITLE_ID;
-			}
+			_playfabManager.InitTitle(Constants.PLAYFAB_TITLE_ID);
 		}
 
 		public void ShowPanel() {
@@ -70,14 +71,10 @@ namespace Infrastructure {
 		private void CreateAccount() {
 			_loginPanelView.ToggleElementsInteractivity(false);
 			_loginPanelView.ShowLoadingStatusAsync();
-			PlayFabClientAPI.RegisterPlayFabUser(
-					new RegisterPlayFabUserRequest { Username = _username, Email = _email, Password = _password, RequireBothUsernameAndEmail = true }
-					, OnRegistrationSuccess
-					, OnRegistrationFailure
-			);
+			_playfabManager.RegisterUser(_username, _password, _email, OnRegistrationSuccess, OnRegistrationFailure);
 
 			
-			void OnRegistrationSuccess(RegisterPlayFabUserResult registerPlayFabUserResult) {
+			void OnRegistrationSuccess(RegisterPlayFabUserResult _) {
 				Debug.Log($"Registration success: {_username}");
 				LoginAccount(true);
 			}
@@ -94,13 +91,9 @@ namespace Infrastructure {
 				_loginPanelView.ToggleElementsInteractivity(false);
 				_loginPanelView.ShowLoadingStatusAsync();
 			}
-			PlayFabClientAPI.LoginWithPlayFab(
-					new LoginWithPlayFabRequest { Username = _username, Password = _password }
-					, OnLoginSuccessAsync
-					, OnLoginFailure
-			);
+			_playfabManager.LoginUser(_username, _password, OnLoginSuccessAsync, OnLoginFailure);
 
-
+			
 			async void OnLoginSuccessAsync(LoginResult loginPlayFabUserResult) {
 				_loginPanelView.ShowLoginSuccessStatus();
 				await Task.Delay(_mainMenuConfig.SuccessfulStatusDelay);

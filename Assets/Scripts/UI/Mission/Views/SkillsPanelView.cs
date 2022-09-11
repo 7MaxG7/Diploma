@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace UI {
 
-	internal class SkillsPanelView : MonoBehaviour {
+	internal sealed class SkillsPanelView : MonoBehaviour {
 		[SerializeField] private Transform _skillsUpgradeItemsContent;
 		[SerializeField] private CanvasGroup _canvasGroup;
 

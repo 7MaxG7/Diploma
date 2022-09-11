@@ -10,15 +10,12 @@ namespace Units {
 	internal abstract class Unit : IUnit {
 		public event Action<DamageInfo> OnDied;
 		
+		public abstract UnitView UnitView { get; }
+		public abstract Transform Transform { get; }
+		public abstract PhotonView PhotonView { get; }
 		public Health Health { get; private set; }
 		public Experience Experience { get; protected set; }
-		public UnitView UnitView { get; protected set; }
 		public float MoveSpeed { get; }
-		
-		public Rigidbody2D Rigidbody => UnitView.RigidBody;
-		public GameObject GameObject => UnitView.GameObject;
-		public Transform Transform => UnitView.Transform;
-		public PhotonView PhotonView => UnitView.PhotonView;
 		public int PoolIndex { get; }
 		public bool IsDead => Health.CurrentHp <= 0;
 		
@@ -38,7 +35,11 @@ namespace Units {
 
 		public void Respawn(Vector2 spawnPosition) {
 			Health.Restore();
-			Transform.position = spawnPosition;
+			UnitView.Locate(spawnPosition);
+		}
+
+		public void ToggleActivation(bool isActive) {
+			UnitView.ToggleActivation(isActive);
 		}
 
 		public bool CheckOwnView(IDamagableView damageTaker) {
@@ -48,8 +49,12 @@ namespace Units {
 			return false;
 		}
 
+		public void Move(Vector3 deltaPosition) {
+			UnitView.Move(deltaPosition);
+		}
+
 		public void StopObj() {
-			Rigidbody.velocity = Vector2.zero;
+			UnitView.StopMoving();
 		}
 
 		public void KillUnit() {

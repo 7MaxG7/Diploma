@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 namespace Infrastructure {
 
-	internal class MainMenuView : MonoBehaviour {
+	internal sealed class MainMenuView : MonoBehaviour {
 		[SerializeField] private TMP_Text _headerLabel;
 		[SerializeField] private TMP_Text _scoreLable;
 		[SerializeField] private TMP_Text _loginButtonText;
@@ -50,7 +50,7 @@ namespace Infrastructure {
 			_quitGameButton.onClick.AddListener(() => OnQuitGameClick?.Invoke());
 		}
 
-		public void Dispose() {
+		public void OnDispose() {
 			_loginPanelButton.onClick.RemoveAllListeners();
 			_playButton.onClick.RemoveAllListeners();
 			_settingsButton.onClick.RemoveAllListeners();

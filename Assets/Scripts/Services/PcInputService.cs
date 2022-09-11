@@ -3,7 +3,7 @@
 
 namespace Services {
 
-	public class PcInputService : InputService {
+	internal sealed class PcInputService : InputService {
 		public override Vector2 Axis => _axis;
 		public override bool CompassButtonIsPressed => _compassButtonIsPressed;
 

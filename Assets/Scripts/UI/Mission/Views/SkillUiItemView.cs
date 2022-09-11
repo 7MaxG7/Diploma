@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 namespace UI {
 
-	internal class SkillUiItemView : MonoBehaviour {
+	internal sealed class SkillUiItemView : MonoBehaviour {
 		[SerializeField] private Button _button;
 		[SerializeField] private TMP_Text _skillNameLable;
 		[SerializeField] private TMP_Text _skillLevelLable;

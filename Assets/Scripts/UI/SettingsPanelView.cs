@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 namespace UI {
 
-	internal class SettingsPanelView : MonoBehaviour {
+	internal sealed class SettingsPanelView : MonoBehaviour {
 		[SerializeField] private CanvasGroup _canvasGroup;
 		[SerializeField] private Button _closeButton;
 		[SerializeField] private Button _leaveGameButton;

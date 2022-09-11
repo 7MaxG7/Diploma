@@ -51,7 +51,7 @@ namespace Services {
 		}
 
 		private void TogglePoolObjectActivation(T obj, bool isActive) {
-			obj.GameObject.SetActive(isActive);
+			obj.ToggleActivation(isActive);
 			OnObjectActivationToggle?.Invoke(obj.PhotonView.ViewID, isActive);
 		}
 

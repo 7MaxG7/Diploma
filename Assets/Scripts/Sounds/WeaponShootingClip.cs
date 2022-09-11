@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Infrastructure {
 
 	[Serializable]
-	internal class WeaponShootingClip {
+	internal sealed class WeaponShootingClip {
 		[SerializeField] private WeaponType _weaponType;
 		[SerializeField] private AudioClip _audioClip;
 		

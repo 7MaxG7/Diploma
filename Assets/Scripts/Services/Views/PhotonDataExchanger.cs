@@ -4,7 +4,7 @@ using Photon.Pun;
 
 namespace Services {
 
-	internal class PhotonDataExchanger : MonoBehaviourPunCallbacks, IPunObservable {
+	internal sealed class PhotonDataExchanger : MonoBehaviourPunCallbacks, IPunObservable {
 		public event Action<PhotonStream> OnDataWriting;
 		public event Action<PhotonStream> OnDataReading;
 		

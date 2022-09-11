@@ -4,7 +4,7 @@
 namespace Infrastructure {
 
 	[Serializable]
-	internal class MonstersParams {
+	internal sealed class MonstersParams {
 		public int MonsterLevel;
 		public string PrefabPath;
 		public float MoveSpeed;

@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 namespace Infrastructure {
 
-	internal class RoomPanelView : MonoBehaviour {
+	internal sealed class RoomPanelView : MonoBehaviour {
 		[SerializeField] private CanvasGroup _canvasGroup;
 		[SerializeField] private Transform _playersListContent;
 		[SerializeField] private TMP_Text _roomPanelHeader;

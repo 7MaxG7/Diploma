@@ -9,22 +9,22 @@ using Zenject;
 
 namespace Services {
 
-	internal class PhotonObjectsSynchronizer : IPhotonObjectsSynchronizer {
-		private readonly List<PhotonView> _otherPlayersObjects = new();
+	internal sealed class PhotonObjectsSynchronizer : IPhotonObjectsSynchronizer {
 		private readonly IPhotonDataExchangeController _photonDataExchangeController;
 		private readonly IUnitsPool _unitsPool;
 		private readonly IAmmosPool _ammosPool;
-		private readonly IHandleDamageController _handleDamageController;
+		private readonly IHandleDamageManager _handleDamageManager;
 		private PlayerView _playerView;
+		private readonly List<PhotonView> _otherPlayersObjects = new();
 
 
 		[Inject]
 		public PhotonObjectsSynchronizer(IPhotonDataExchangeController photonDataExchangeController, IUnitsPool unitsPool, IAmmosPool ammosPool
-				, IHandleDamageController handleDamageController) {
+				, IHandleDamageManager handleDamageManager) {
 			_photonDataExchangeController = photonDataExchangeController;
 			_unitsPool = unitsPool;
 			_ammosPool = ammosPool;
-			_handleDamageController = handleDamageController;
+			_handleDamageManager = handleDamageManager;
 		}
 		
 		public void Dispose() {
@@ -32,7 +32,7 @@ namespace Services {
 			_unitsPool.OnObjectActivationToggle -= SendActivationToggleData;
 			_ammosPool.OnObjectInstantiated -= SendInstantiationData;
 			_ammosPool.OnObjectActivationToggle -= SendActivationToggleData;
-			_handleDamageController.OnDamageEnemyPlayer -= SendDamagingEnemyHeroData;
+			_handleDamageManager.OnDamageEnemyPlayer -= SendDamagingEnemyHeroData;
 			_photonDataExchangeController.OnInstantiationDataRecieved -= Register;
 			_photonDataExchangeController.OnActivationDataRecieved -= SetActive;
 			_photonDataExchangeController.OnDamagePlayerDataRecieved -= DamagePlayer;
@@ -45,7 +45,7 @@ namespace Services {
 			_unitsPool.OnObjectActivationToggle += SendActivationToggleData;
 			_ammosPool.OnObjectInstantiated += SendInstantiationData;
 			_ammosPool.OnObjectActivationToggle += SendActivationToggleData;
-			_handleDamageController.OnDamageEnemyPlayer += SendDamagingEnemyHeroData;
+			_handleDamageManager.OnDamageEnemyPlayer += SendDamagingEnemyHeroData;
 			_photonDataExchangeController.OnInstantiationDataRecieved += Register;
 			_photonDataExchangeController.OnActivationDataRecieved += SetActive;
 			_photonDataExchangeController.OnDamagePlayerDataRecieved += DamagePlayer;

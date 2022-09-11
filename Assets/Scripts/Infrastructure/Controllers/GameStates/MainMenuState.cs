@@ -6,27 +6,27 @@ using Zenject;
 
 namespace Infrastructure {
 
-	internal class MainMenuState : IMainMenuState {
+	internal sealed class MainMenuState : IMainMenuState {
 		public event Action OnStateChange;
 		
 		private readonly IMainMenuController _mainMenuController;
 		private readonly IPermanentUiController _permanentUiController;
-		private readonly ISoundManager _soundManager;
+		private readonly ISoundController _soundController;
 		private readonly ISceneLoader _sceneLoader;
 
 
 		[Inject]
 		public MainMenuState(ISceneLoader sceneLoader, IMainMenuController mainMenuController, IPermanentUiController permanentUiController
-				, ISoundManager soundManager) {
+				, ISoundController soundController) {
 			_sceneLoader = sceneLoader;
 			_mainMenuController = mainMenuController;
 			_permanentUiController = permanentUiController;
-			_soundManager = soundManager;
+			_soundController = soundController;
 		}
 
 		public void Enter() {
-			_soundManager.PlayRandomMenuMusic();
-			_sceneLoader.LoadScene(TextConstants.MAIN_MENU_SCENE_NAME, SetupMainMenu);
+			_soundController.PlayRandomMenuMusic();
+			_sceneLoader.LoadScene(Constants.MAIN_MENU_SCENE_NAME, SetupMainMenu);
 		}
 
 		private void SetupMainMenu() {
@@ -49,7 +49,7 @@ namespace Infrastructure {
 		}
 
 		public void Exit() {
-			_soundManager.StopAll();
+			_soundController.StopAll();
 			if (!_permanentUiController.IsActivating)
 				_mainMenuController.Dispose();
 			else

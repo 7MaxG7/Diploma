@@ -1,4 +1,5 @@
-﻿using UI;
+﻿using Services;
+using UI;
 using UnityEngine;
 using Zenject;
 
@@ -15,8 +16,10 @@ namespace Infrastructure.Zenject {
 			Container.Bind<IGame>().To<Game>().AsSingle();
 			Container.Bind<ISceneLoader>().To<SceneLoader>().AsSingle();
 			Container.Bind<IPermanentUiController>().To<PermanentUiController>().AsSingle();
-			Container.Bind<IRandomController>().To<RandomController>().AsSingle();
-			Container.Bind<ISoundManager>().To<SoundManager>().AsSingle();
+			Container.Bind<IRandomManager>().To<RandomManager>().AsSingle();
+			Container.Bind<ISoundController>().To<SoundController>().AsSingle();
+			Container.Bind<IPhotonManager>().To<PhotonManager>().AsSingle();
+			Container.Bind<IPlayfabManager>().To<PlayfabManager>().AsSingle();
 		}
 	}
 

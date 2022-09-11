@@ -1,5 +1,5 @@
-﻿using Abstractions.Services;
-using Infrastructure;
+﻿using Infrastructure;
+using Photon.Pun;
 using UI;
 using Units.Views;
 using UnityEngine;
@@ -10,14 +10,16 @@ using static UnityEngine.Object;
 
 namespace Services {
 
-	internal class ViewsFactory : IViewsFactory {
+	internal sealed class ViewsFactory : IViewsFactory {
+		private readonly IPhotonManager _photonManager;
 		private readonly SoundConfig _soundConfig;
 		private readonly MainMenuConfig _mainMenuConfig;
 		private readonly UiConfig _uiConfig;
 
 
 		[Inject]
-		public ViewsFactory(SoundConfig soundConfig, MainMenuConfig mainMenuConfig, UiConfig uiConfig) {
+		public ViewsFactory(IPhotonManager photonManager, SoundConfig soundConfig, MainMenuConfig mainMenuConfig, UiConfig uiConfig) {
+			_photonManager = photonManager;
 			_soundConfig = soundConfig;
 			_mainMenuConfig = mainMenuConfig;
 			_uiConfig = uiConfig;
@@ -25,6 +27,10 @@ namespace Services {
 
 		public GameObject CreateGameObject(string name) {
 			return new GameObject(name);
+		}
+
+		public GameObject CreatePhotonObj(string prefabPath, Vector2 position, Quaternion rotation) {
+			return _photonManager.Create(prefabPath, position, rotation);
 		}
 
 		public SoundPlayerView CreateSoundPlayer() {
@@ -36,12 +42,16 @@ namespace Services {
 		}
 
 		public MissionUiView CreateMissionUi() {
-			var uiRoot = GameObject.Find(TextConstants.UI_ROOT_NAME) ?? new GameObject(TextConstants.UI_ROOT_NAME);
+			var uiRoot = GameObject.Find(Constants.UI_ROOT_NAME) ?? new GameObject(Constants.UI_ROOT_NAME);
 			return Instantiate(_uiConfig.MissionUiView, uiRoot.transform);
 		}
 
-		public void DestroyView(GameObject go) {
-			Destroy(go);
+		public void DestroyView(MonoBehaviour view) {
+			Destroy(view.gameObject);
+		}
+
+		public void DestroyPhotonObj(PhotonView obj) {
+			_photonManager.Destroy(obj);
 		}
 	}
 

@@ -5,19 +5,19 @@ using Zenject;
 
 namespace Infrastructure {
 
-	internal class Game : IGame, IDisposable {
+	internal sealed class Game : IGame, IDisposable {
 		public IControllersHolder Controllers { get; private set; }
 		
 		private IGameStateMachine _gameStateMachine;
 		private IPermanentUiController _permanentUiController;
 		private ISceneLoader _sceneLoader;
-		private ISoundManager _soundManager;
+		private ISoundController _soundController;
 
 
 		[Inject]
-		private void InjectDependencies(IControllersHolder controllers, IGameStateMachine gameStateMachine, ISoundManager soundManager
+		private void InjectDependencies(IControllersHolder controllers, IGameStateMachine gameStateMachine, ISoundController soundController
 				, IPermanentUiController permanentUiController, ISceneLoader sceneLoader) {
-			_soundManager = soundManager;
+			_soundController = soundController;
 			Controllers = controllers;
 			_gameStateMachine = gameStateMachine;
 			_permanentUiController = permanentUiController;
@@ -33,7 +33,7 @@ namespace Infrastructure {
 		}
 
 		public void Init(ICoroutineRunner coroutineRunner) {
-			_soundManager.Init();
+			_soundController.Init();
 			_permanentUiController.Init(coroutineRunner);
 			_sceneLoader.Init(coroutineRunner);
 			
@@ -50,7 +50,7 @@ namespace Infrastructure {
 		}
 
 		private void EnterLoadMissionState() {
-			_gameStateMachine.Enter<LoadMissionState, string>(TextConstants.MISSION_SCENE_NAME);
+			_gameStateMachine.Enter<LoadMissionState, string>(Constants.MISSION_SCENE_NAME);
 		}
 
 		private void EnterRunMissionState() {

@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 namespace UI {
 
-	internal class PlayerPanelView : MonoBehaviour {
+	internal sealed class PlayerPanelView : MonoBehaviour {
 		[SerializeField] private Slider _healthSlider;
 		[SerializeField] private TMP_Text _healthText;
 		[SerializeField] private Slider _expSlider;

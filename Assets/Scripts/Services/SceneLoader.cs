@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections;
-using Photon.Pun;
+using Services;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Utils;
@@ -9,9 +9,14 @@ using Utils;
 namespace Infrastructure {
 
 	internal sealed class SceneLoader : ISceneLoader {
+		private readonly IPhotonManager _photonManager;
 		private ICoroutineRunner _coroutineRunner;
-		
 
+
+		public SceneLoader(IPhotonManager photonManager) {
+			_photonManager = photonManager;
+		}
+		
 		public void Init(ICoroutineRunner coroutineRunner) {
 			_coroutineRunner = coroutineRunner;
 		}
@@ -25,7 +30,7 @@ namespace Infrastructure {
 		}
 
 		public static bool SceneIsMission(Scene scene) {
-			return scene.name == TextConstants.MISSION_SCENE_NAME;
+			return scene.name == Constants.MISSION_SCENE_NAME;
 		}
 
 		private IEnumerator LoadMissionSceneCoroutine(string sceneName, Action onSceneLoadedCallback) {
@@ -35,8 +40,8 @@ namespace Infrastructure {
 				yield break;
 			}
 			
-			PhotonNetwork.LoadLevel(sceneName);
-			while (PhotonNetwork.LevelLoadingProgress < 1)
+			_photonManager.LoadLevel(sceneName);
+			while (_photonManager.GetLevelLoadingProgress() < 1)
 				yield return new WaitForEndOfFrame();
 
 			onSceneLoadedCallback?.Invoke();

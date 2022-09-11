@@ -1,12 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using Services;
 using UnityEngine;
 
 
 namespace Infrastructure {
 
-	internal interface IMapWrapper {
+	internal interface IMapWrapper : IUpdater, IDisposable {
 		void Init(Vector2 bottomLeftCornerPosition, Vector2 topRightCornerPosition);
-		void CheckAndReturnInsideMap(Transform checkingTransform, IEnumerable<Transform> dependingTransforms);
+		void SetCheckingTransform(Transform checkingTransform);
+		void AddDependingTransforms(IEnumerable<IView> dependingTransforms);
 	}
 
 }

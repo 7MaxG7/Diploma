@@ -7,15 +7,13 @@ using Zenject;
 
 namespace Services {
 
-	internal class MonstersSpawner : IMonstersSpawner {
-		private const float SPAWN_FROM_SCREEN_OFFSET = 2;
-		
+	internal sealed class MonstersSpawner : IMonstersSpawner {
 		public bool SpawnIsOn { get; private set; }
 		
 		private readonly MonstersConfig _monstersConfig;
-		private readonly IMonstersMoveController _monstersMoveController;
-		private readonly IRandomController _random;
-		private readonly ICameraController _cameraController;
+		private readonly IMonstersMoveManager _monstersMoveManager;
+		private readonly IRandomManager _random;
+		private readonly ICameraManager _cameraManager;
 		private readonly IUnitsPool _unitsPool;
 		private readonly int _maxSpawnerLevel;
 		private Camera _mainCamera;
@@ -30,11 +28,11 @@ namespace Services {
 
 
 		[Inject]
-		public MonstersSpawner(IMonstersMoveController monstersMoveController, IRandomController randomController
-				, ICameraController cameraController, IUnitsPool unitsPool, MonstersConfig monstersConfig, IControllersHolder  controllersHolder) {
-			_monstersMoveController = monstersMoveController;
-			_random = randomController;
-			_cameraController = cameraController;
+		public MonstersSpawner(IMonstersMoveManager monstersMoveManager, IRandomManager randomManager
+				, ICameraManager cameraManager, IUnitsPool unitsPool, MonstersConfig monstersConfig, IControllersHolder  controllersHolder) {
+			_monstersMoveManager = monstersMoveManager;
+			_random = randomManager;
+			_cameraManager = cameraManager;
 			_unitsPool = unitsPool;
 			_monstersConfig = monstersConfig;
 			_maxSpawnerLevel = _monstersConfig.GetMaxSpawnerLevel();
@@ -53,7 +51,7 @@ namespace Services {
 				return;
 			}
 			
-			if (!SpawnIsOn || !_cameraController.CameraIsPositioned)
+			if (!SpawnIsOn || !_cameraManager.CameraIsPositioned)
 				return;
 
 			var monstersAmount = _unitsPool.ActiveMonsters.Count > 0
@@ -61,7 +59,7 @@ namespace Services {
 					: _random.GetRandomIncludingMax(_monstersConfig.GetMaxMonstersAmount(_spawnerLevel), 1);
 			for (var i = 0; i < monstersAmount; i++) {
 				var monster = SpawnMonster();
-				_monstersMoveController.RegisterMonster(monster);
+				_monstersMoveManager.RegisterMonster(monster);
 			}
 
 			_spawnWaveTimer = _monstersConfig.GetSpawnCooldown(_spawnerLevel);
@@ -100,9 +98,9 @@ namespace Services {
 			Vector2 GenerateSpawnPosition() {
 				var spawnSide = (ScreenSide)_random.GetRandomExcludingMax((int)ScreenSide.Count, 1);
 				var bottomLeftCorner = _mainCamera.ViewportToWorldPoint(Vector3.zero);
-				bottomLeftCorner -= new Vector3(SPAWN_FROM_SCREEN_OFFSET, SPAWN_FROM_SCREEN_OFFSET);
+				bottomLeftCorner -= new Vector3(_monstersConfig.HorizontalSpawnFromScreenOffset, _monstersConfig.VerticalSpawnFromScreenOffset);
 				var topRightCorner = _mainCamera.ViewportToWorldPoint(new Vector3(1, 1, 0));
-				topRightCorner += new Vector3(SPAWN_FROM_SCREEN_OFFSET, SPAWN_FROM_SCREEN_OFFSET);
+				topRightCorner += new Vector3(_monstersConfig.HorizontalSpawnFromScreenOffset, _monstersConfig.VerticalSpawnFromScreenOffset);
 				
 				switch (spawnSide) {
 					case ScreenSide.Left:

@@ -1,9 +1,15 @@
 ﻿using Units.Views;
+using UnityEngine;
 
 
 namespace Units {
 
-	internal class PlayerView : UnitView {
+	internal sealed class PlayerView : UnitView {
+		
+		public override void Move(Vector3 deltaPosition) {
+			base.Move(deltaPosition);
+			_transform.up = deltaPosition;
+		}
 	}
 
 }

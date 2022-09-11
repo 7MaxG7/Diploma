@@ -4,9 +4,9 @@ using Utils;
 
 namespace Services {
 
-	class MobileInputService : InputService {
+	internal class MobileInputService : InputService {
 		public override Vector2 Axis => 
-				new(SimpleInput.GetAxis(TextConstants.HORIZONTAL), SimpleInput.GetAxis(TextConstants.VERTICAL));
+				new(SimpleInput.GetAxis(Constants.HORIZONTAL), SimpleInput.GetAxis(Constants.VERTICAL));
 		// TODO. Implement mobile button
 		public override bool CompassButtonIsPressed { get; }
 

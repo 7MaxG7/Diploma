@@ -9,7 +9,7 @@ using UnityEngine.UI;
 
 namespace Infrastructure {
 
-	internal class LobbyPanelView : MonoBehaviour {
+	internal sealed class LobbyPanelView : MonoBehaviour {
 		[SerializeField] private CanvasGroup _canvasGroup;
 		[SerializeField] private Transform _roomsListContent;
 		[SerializeField] private TMP_InputField _privateRoomNameInputText;

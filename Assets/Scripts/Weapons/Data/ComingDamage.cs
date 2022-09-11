@@ -4,7 +4,7 @@ using Units;
 
 namespace Infrastructure {
 
-	internal class ComingDamage {
+	internal sealed class ComingDamage {
 		public IDamagableView DamageTaker { get; }
 		public int Damage { get; }
 		public IUnit Damager { get; }
@@ -13,6 +13,7 @@ namespace Infrastructure {
 
 		private float _elapsedDelay;
 
+		
 		public ComingDamage(float elapsedDelay, IDamagableView damageTaker, int damage, IUnit damager) {
 			_elapsedDelay = elapsedDelay;
 			DamageTaker = damageTaker;

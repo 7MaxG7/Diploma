@@ -7,7 +7,7 @@ using Zenject;
 
 namespace Infrastructure {
 
-	internal class GameBootstrapState : IGameBootstrapState {
+	internal sealed class GameBootstrapState : IGameBootstrapState {
 		public event Action OnStateChange;
 		
 		private readonly ISceneLoader _sceneLoader;
@@ -26,7 +26,7 @@ namespace Infrastructure {
 			DOTween.Init();
 			_permanentUiController.ShowLoadingCurtain(false);
 			_inputService.Init();
-			_sceneLoader.LoadScene(TextConstants.BOOTSTRAP_SCENE_NAME, () => OnStateChange?.Invoke());
+			_sceneLoader.LoadScene(Constants.BOOTSTRAP_SCENE_NAME, () => OnStateChange?.Invoke());
 		}
 
 		public void Exit() {

@@ -5,30 +5,34 @@ using DG.Tweening;
 using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
+using Services;
 
 
 namespace Infrastructure {
 
-	internal class LobbyScreenController : IConnectionCallbacks, ILobbyCallbacks, IMatchmakingCallbacks, IInRoomCallbacks
+	internal sealed class LobbyScreenController : IConnectionCallbacks, ILobbyCallbacks, IMatchmakingCallbacks, IInRoomCallbacks
 			, ILobbyStatusDisplayer, IRoomEventsCallbacks, IDisposable {
 		public event Action OnLobbyJoin;
 		public event Action OnRoomCreationFail;
 		public event Action OnRoomJoinFail;
 		public event Action OnRandomRoomJoinFail;
 		
-		private string _userName;
+		private readonly IPhotonManager _photonManager;
 		private readonly LobbyScreenView _lobbyScreenView;
 		private readonly MainMenuConfig _mainMenuConfig;
 		private readonly LobbyPanelController _lobbyPanelController;
 		private readonly RoomPanelController _roomPanelController;
+		private string _userName;
 		private bool _uiIsBlocked;
 
 
-		public LobbyScreenController(LobbyScreenView lobbyScreenView, MainMenuConfig mainMenuConfig, IPermanentUiController permanentUiController) {
+		public LobbyScreenController(IPhotonManager photonManager, LobbyScreenView lobbyScreenView, MainMenuConfig mainMenuConfig
+				, IPermanentUiController permanentUiController) {
+			_photonManager = photonManager;
 			_lobbyScreenView = lobbyScreenView;
 			_mainMenuConfig = mainMenuConfig;
-			_lobbyPanelController = new LobbyPanelController(mainMenuConfig, _lobbyScreenView.LobbyPanelView, this);
-			_roomPanelController = new RoomPanelController(mainMenuConfig, _lobbyScreenView.RoomPanelView, permanentUiController);
+			_lobbyPanelController = new LobbyPanelController(_photonManager, mainMenuConfig, _lobbyScreenView.LobbyPanelView, this);
+			_roomPanelController = new RoomPanelController(_photonManager, mainMenuConfig, _lobbyScreenView.RoomPanelView, permanentUiController);
 		}
 
 		public void Dispose() {
@@ -41,7 +45,7 @@ namespace Infrastructure {
 		
 #region IConnectionCallbacks
 		public void OnConnectedToMaster() {
-			PhotonNetwork.JoinLobby(new TypedLobby("customLobby", LobbyType.Default));
+			_photonManager.JoinCustonLobby();
 		}
 
 		public void OnDisconnected(DisconnectCause cause) {
@@ -64,7 +68,7 @@ namespace Infrastructure {
 		}
 
 		public void OnLeftLobby() {
-			PhotonNetwork.Disconnect();
+			_photonManager.Disconnect();
 		}
 
 		public void OnRoomListUpdate(List<RoomInfo> roomList) {
@@ -132,7 +136,7 @@ namespace Infrastructure {
 			}
 
 			void InitPhoton() {
-				PhotonNetwork.LocalPlayer.NickName = _userName;
+				_photonManager.PlayerName = _userName;
 				PhotonNetwork.AutomaticallySyncScene = true;
 				PhotonNetwork.AddCallbackTarget(this);
 			}
@@ -142,7 +146,7 @@ namespace Infrastructure {
 			_lobbyScreenView.Show();
 			_roomPanelController.DeactivatePanel();
 			_lobbyPanelController.ShowPanel();
-			PhotonNetwork.ConnectUsingSettings();
+			_photonManager.Connect();
 		}
 
 		public void ShowLoadingStatusAsync() {
@@ -153,8 +157,8 @@ namespace Infrastructure {
 			_lobbyPanelController.HidePanel(onPanelHiddenCallback: ShowRoomPanel);
 
 			void ShowRoomPanel() {
-				_roomPanelController.ShowPanel(PhotonNetwork.CurrentRoom.Name, onPanelShownCallback: FinishRoomPanelShown);
-				foreach (var player in PhotonNetwork.CurrentRoom.Players.Values) {
+				_roomPanelController.ShowPanel(_photonManager.RoomName, onPanelShownCallback: FinishRoomPanelShown);
+				foreach (var player in _photonManager.GetRoomPlayers().Values) {
 					_roomPanelController.AddPlayer(player);
 				}
 			}

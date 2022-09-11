@@ -6,7 +6,7 @@ using Infrastructure;
 
 namespace Units {
 
-	internal class Experience {
+	internal sealed class Experience {
 		public event Action<int> OnExpChange;
 		public event Action<int> OnLevelUp;
 

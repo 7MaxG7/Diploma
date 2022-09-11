@@ -6,7 +6,7 @@ using Zenject;
 
 namespace Infrastructure {
 
-	internal class AmmosPool : ObjectsPool<IAmmo>, IAmmosPool {
+	internal sealed class AmmosPool : ObjectsPool<IAmmo>, IAmmosPool {
 		private readonly IAmmosFactory _ammosFactory;
 
 		

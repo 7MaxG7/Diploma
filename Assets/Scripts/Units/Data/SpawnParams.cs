@@ -4,7 +4,7 @@
 namespace Infrastructure {
 
 	[Serializable]
-	internal class SpawnParams {
+	internal sealed class SpawnParams {
 		public int SpawnerLevel;
 		public float SpawnCooldown;
 		public int WaveMaxMonstersAmount;

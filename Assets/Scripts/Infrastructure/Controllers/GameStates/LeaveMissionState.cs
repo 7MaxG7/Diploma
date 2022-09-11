@@ -1,79 +1,86 @@
 ﻿using System;
 using Abstractions;
-using Abstractions.Services;
 using Controllers;
-using Photon.Pun;
 using Services;
 using UI;
+using Utils;
 using Zenject;
 
 
 namespace Infrastructure {
 
-	internal class LeaveMissionState : ILeaveMissionState {
+	internal sealed class LeaveMissionState : ILeaveMissionState {
 		private readonly IPhotonObjectsSynchronizer _photonObjectsSynchronizer;
 		private readonly IPhotonDataExchangeController _photonDataExchangeController;
-		private readonly ICameraController _cameraController;
-		private readonly IMissionMapController _missionMapController;
-		private readonly IPlayerMoveController _playerMoveController;
+		private readonly ICameraManager _cameraManager;
+		private readonly IMissionMapManager _missionMapManager;
+		private readonly IPlayerMoveManager _playerMoveManager;
 		private readonly IMonstersSpawner _monstersSpawner;
-		private readonly IMonstersMoveController _monstersMoveController;
-		private readonly IWeaponsController _weaponsController;
-		private readonly ISkillsController _skillsController;
+		private readonly IMonstersMoveManager _monstersMoveManager;
+		private readonly IWeaponsManager _weaponsManager;
+		private readonly ISkillsManager _skillsManager;
 		private readonly IMissionUiController _missionUiController;
-		private readonly IMissionResultController _missionResultController;
+		private readonly IMissionResultManager _missionResultManager;
 		private readonly IUnitsPool _unitsPool;
 		private readonly IAmmosPool _ammosPool;
 		private readonly IPermanentUiController _permanentUiController;
-		private readonly IPlayersInteractionController _playersInteractionController;
-		private readonly ICompassController _compassController;
+		private readonly IMapWrapper _mapWrapper;
+		private readonly IUnitsFactory _unitsFactory;
+		private readonly IPlayersInteractionManager _playersInteractionManager;
+		private readonly ICompassManager _compassManager;
+		private readonly IPhotonManager _photonManager;
 		public event Action OnStateChange;
 
 		
 		[Inject]
 		public LeaveMissionState(IPhotonObjectsSynchronizer photonObjectsSynchronizer, IPhotonDataExchangeController photonDataExchangeController
-				, ICameraController cameraController, IMissionMapController missionMapController, IPlayerMoveController playerMoveController
-				, IMonstersSpawner monstersSpawner, IMonstersMoveController monstersMoveController, IWeaponsController weaponsController
-				, ISkillsController skillsController, IMissionUiController missionUiController, IMissionResultController missionResultController
-				, IUnitsPool unitsPool, IAmmosPool ammosPool, IPermanentUiController permanentUiController
-				, IPlayersInteractionController playersInteractionController, ICompassController compassController) {
+				, ICameraManager cameraManager, IMissionMapManager missionMapManager, IPlayerMoveManager playerMoveManager
+				, IMonstersSpawner monstersSpawner, IMonstersMoveManager monstersMoveManager, IWeaponsManager weaponsManager
+				, ISkillsManager skillsManager, IMissionUiController missionUiController, IMissionResultManager missionResultManager
+				, IUnitsPool unitsPool, IAmmosPool ammosPool, IPermanentUiController permanentUiController, IMapWrapper mapWrapper
+				, IUnitsFactory unitsFactory, IPlayersInteractionManager playersInteractionManager, ICompassManager compassManager
+				, IPhotonManager photonManager) {
 			_photonObjectsSynchronizer = photonObjectsSynchronizer;
 			_photonDataExchangeController = photonDataExchangeController;
-			_cameraController = cameraController;
-			_missionMapController = missionMapController;
-			_playersInteractionController = playersInteractionController;
-			_compassController = compassController;
-			_playerMoveController = playerMoveController;
+			_cameraManager = cameraManager;
+			_missionMapManager = missionMapManager;
+			_playersInteractionManager = playersInteractionManager;
+			_compassManager = compassManager;
+			_photonManager = photonManager;
+			_playerMoveManager = playerMoveManager;
 			_monstersSpawner = monstersSpawner;
-			_monstersMoveController = monstersMoveController;
-			_weaponsController = weaponsController;
-			_skillsController = skillsController;
+			_monstersMoveManager = monstersMoveManager;
+			_weaponsManager = weaponsManager;
+			_skillsManager = skillsManager;
 			_missionUiController = missionUiController;
-			_missionResultController = missionResultController;
+			_missionResultManager = missionResultManager;
 			_unitsPool = unitsPool;
 			_ammosPool = ammosPool;
 			_permanentUiController = permanentUiController;
+			_mapWrapper = mapWrapper;
+			_unitsFactory = unitsFactory;
 		}
 
 		public void Enter() {
 			_permanentUiController.OnResultPanelClosed += SwitchState;
 			_missionUiController.Dispose();
-			_missionResultController.Dispose();
-			_skillsController.Dispose();
-			_weaponsController.Dispose();
-			_monstersMoveController.Dispose();
+			_missionResultManager.Dispose();
+			_skillsManager.Dispose();
+			_mapWrapper.Dispose();
+			_weaponsManager.Dispose();
+			_monstersMoveManager.Dispose();
 			_monstersSpawner.Dispose();
-			_missionMapController.Dispose();
-			_cameraController.Dispose();
-			_playersInteractionController.Dispose();
-			_compassController.Dispose();
-			_playerMoveController.Player.Dispose();
-			_playerMoveController.Dispose();
+			_missionMapManager.Dispose();
+			_cameraManager.Dispose();
+			_playersInteractionManager.Dispose();
+			_compassManager.Dispose();
+			_playerMoveManager.Dispose();
 			_photonObjectsSynchronizer.Dispose();
 			_photonDataExchangeController.Dispose();
 			_ammosPool.Dispose();
 			_unitsPool.Dispose();
-			PhotonNetwork.Disconnect();
+			_unitsFactory.Dispose();
+			_photonManager.Disconnect();
 		}
 
 		public void Exit() {

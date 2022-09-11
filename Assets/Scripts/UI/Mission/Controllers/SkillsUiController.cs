@@ -4,7 +4,7 @@ using Infrastructure;
 
 namespace UI {
 
-	internal class SkillsUiController : IDisposable {
+	internal sealed class SkillsUiController : IDisposable {
 		public event Action<WeaponType> OnSkillChoose;
 		
 		private readonly UiConfig _uiConfig;

@@ -8,7 +8,12 @@ namespace Infrastructure {
 	internal class MonstersConfig : ScriptableObject {
 		[SerializeField] private SpawnParams[] _spawnParams;
 		[SerializeField] private MonstersParams[] _monstersParams;
-		
+		[Tooltip("Offset of monsters spawns from screen border")][SerializeField] private float _horizontalSpawnFromScreenOffset;
+		[Tooltip("Offset of monsters spawns from screen border")][SerializeField] private float _verticalSpawnFromScreenOffset;
+
+		public float HorizontalSpawnFromScreenOffset => _horizontalSpawnFromScreenOffset;
+		public float VerticalSpawnFromScreenOffset => _verticalSpawnFromScreenOffset;
+
 
 		public MonstersParams GetMonsterParams(int enemyLevel) {
 			var monsterParams = _monstersParams.FirstOrDefault(enemy => enemy.MonsterLevel == enemyLevel);

@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 namespace Infrastructure {
 
-	internal class LoginPanelView : MonoBehaviour {
+	internal sealed class LoginPanelView : MonoBehaviour {
 		[SerializeField] private CanvasGroup _canvasGroup;
 		[SerializeField] private TMP_InputField _usernameInputField;
 		[SerializeField] private TMP_InputField _passwordInputField;

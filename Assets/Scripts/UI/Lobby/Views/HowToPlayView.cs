@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 namespace Infrastructure {
 
-	internal class HowToPlayView : MonoBehaviour {
+	internal sealed class HowToPlayView : MonoBehaviour {
 		[SerializeField] private GameObject _gameObject;
 		[SerializeField] private CanvasGroup _canvasGroup;
 		[SerializeField] private HorizontalLayoutGroup _contentHorizontalGroup;
@@ -65,7 +65,7 @@ namespace Infrastructure {
 			StartCoroutine(MovePage(nextContentXPosition));
 		}
 
-		public void Dispose() {
+		public void OnDispose() {
 			_canvasGroup.DOKill();
 			_prevPageButton.onClick.RemoveAllListeners();
 			_nextPageButton.onClick.RemoveAllListeners();

@@ -6,20 +6,35 @@ using UnityEngine;
 namespace Units.Views {
 
 	internal abstract class UnitView : MonoBehaviour, IDamagableView {
-		public event Action<int, IUnit> OnDamageTake;
-		
-		[SerializeField] private GameObject _gameObject;
-		[SerializeField] private Transform _transform;
+		[SerializeField] protected GameObject _gameObject;
+		[SerializeField] protected Transform _transform;
 		[SerializeField] private PhotonView _photonView;
 		[SerializeField] private Rigidbody2D _rigidBody;
 
-		public GameObject GameObject => _gameObject;
+		public event Action<int, IUnit> OnDamageTake;
+		
 		public Transform Transform => _transform;
 		public PhotonView PhotonView => _photonView;
-		public Rigidbody2D RigidBody => _rigidBody;
 
+		
 		public void TakeDamage(int damage, IUnit damager) {
 			OnDamageTake?.Invoke(damage, damager);
+		}
+
+		public virtual void Move(Vector3 deltaPosition) {
+			_rigidBody.MovePosition(Transform.position + deltaPosition);
+		}
+
+		public void StopMoving() {
+			_rigidBody.velocity = Vector2.zero;
+		}
+
+		public void Locate(Vector2 position) {
+			_transform.position = position;
+		}
+
+		public void ToggleActivation(bool isActive) {
+			_gameObject.SetActive(isActive);
 		}
 	}
 

@@ -6,7 +6,7 @@ using Utils;
 
 namespace UI {
 
-	internal class PlayerUiController : IDisposable {
+	internal sealed class PlayerUiController : IDisposable {
 		private IUnit _player;
 		private readonly PlayerPanelView _playerPanel;
 		private readonly UiConfig _uiConfig;

@@ -5,11 +5,13 @@ using Abstractions.UI.Controllers;
 using DG.Tweening;
 using Photon.Pun;
 using Photon.Realtime;
+using Services;
 
 
 namespace Infrastructure {
 
-	internal class LobbyPanelController : IDisposable {
+	internal sealed class LobbyPanelController : IDisposable {
+		private readonly IPhotonManager _photonManager;
 		private readonly LobbyPanelView _lobbyPanelView;
 		private readonly MainMenuConfig _mainMenuConfig;
 		private readonly ILobbyStatusDisplayer _lobbyStatusDisplayer;
@@ -18,7 +20,8 @@ namespace Infrastructure {
 		private IRoomEventsCallbacks _lobbyScreenController;
 
 
-		public LobbyPanelController(MainMenuConfig mainMenuConfig, LobbyPanelView lobbyPanelView, ILobbyStatusDisplayer lobbyStatusDisplayer) {
+		public LobbyPanelController(IPhotonManager photonManager, MainMenuConfig mainMenuConfig, LobbyPanelView lobbyPanelView, ILobbyStatusDisplayer lobbyStatusDisplayer) {
+			_photonManager = photonManager;
 			_lobbyPanelView = lobbyPanelView;
 			_mainMenuConfig = mainMenuConfig;
 			_lobbyStatusDisplayer = lobbyStatusDisplayer;
@@ -84,11 +87,11 @@ namespace Infrastructure {
 		private void CreatePrivateRoom(string roomName) {
 			_lobbyStatusDisplayer.ShowLoadingStatusAsync();
 			var roomOptions = new RoomOptions { IsVisible = false };
-			PhotonNetwork.CreateRoom(roomName, roomOptions);
+			_photonManager.CreateRoom(roomName, roomOptions);
 		}
 
 		private void CreateRoom() {
-			var roomName = string.Format(_mainMenuConfig.RoomNameTemplate, PhotonNetwork.LocalPlayer.NickName, (int)PhotonNetwork.Time);
+			var roomName = string.Format(_mainMenuConfig.RoomNameTemplate, _photonManager.PlayerName, (int)PhotonNetwork.Time);
 			var currentRoomsNames = _roomsList.Select(roomInfo => roomInfo.Name).ToArray();
 			if (currentRoomsNames.Contains(roomName)) {
 				var additionalIndex = 0;
@@ -98,22 +101,22 @@ namespace Infrastructure {
 				roomName += $" {additionalIndex}";
 			}
 			_lobbyStatusDisplayer.ShowLoadingStatusAsync();
-			PhotonNetwork.CreateRoom(roomName, new RoomOptions());
+			_photonManager.CreateRoom(roomName, new RoomOptions());
 		}
 
 		private void JoinRoom(string roomName) {
 			_lobbyStatusDisplayer.ShowLoadingStatusAsync();
-			PhotonNetwork.JoinRoom(roomName);
+			_photonManager.JoinRoom(roomName);
 		}
 
 		private void JoinOrCreateRandomRoom() {
 			_lobbyStatusDisplayer.ShowLoadingStatusAsync();
-			PhotonNetwork.JoinRandomOrCreateRoom();
+			_photonManager.JoinRandomRoom();
 		}
 
 		private void Disconnect() {
 			_lobbyStatusDisplayer.ShowLoadingStatusAsync();
-			PhotonNetwork.LeaveLobby();
+			_photonManager.LeaveLobby();
 		}
 	}
 

@@ -8,7 +8,7 @@ using Button = UnityEngine.UI.Button;
 
 namespace Infrastructure {
 
-	internal class CreditsView : MonoBehaviour {
+	internal sealed class CreditsView : MonoBehaviour {
 		[SerializeField] private GameObject _gameObject;
 		[SerializeField] private CanvasGroup _canvasGroup;
 		[SerializeField] private ScrollRect _creditsScroll;
@@ -52,7 +52,7 @@ namespace Infrastructure {
 					.OnComplete(() => gameObject.SetActive(false));
 		}
 
-		public void Dispose() {
+		public void OnDispose() {
 			_canvasGroup.DOKill();
 			_closeCreditsButton.onClick.RemoveAllListeners();
 		}

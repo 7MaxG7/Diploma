@@ -5,7 +5,7 @@ using Infrastructure;
 
 namespace Units {
 
-	internal class Health {
+	internal sealed class Health {
 		public event Action<int> OnMaxHpChange;
 		public event Action<int> OnCurrentHpChange;
 		public event Action<DamageInfo> OnDied;

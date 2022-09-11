@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace Infrastructure {
 
-	internal class LobbyCachedRoomItemView : MonoBehaviour {
+	internal sealed class LobbyCachedRoomItemView : MonoBehaviour {
 		[SerializeField] private TMP_Text _roomName;
 		[SerializeField] private Button _roomButton;
 

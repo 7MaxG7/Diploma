@@ -861,7 +861,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 343eadc08ef3436d8cc8bad2624111d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _gameObject: {fileID: 574326454200508934}
   _headerLabel: {fileID: 361974878508405613}
   _scoreLable: {fileID: 6927954851730692350}
   _loginButtonText: {fileID: 1643383101849572505}
@@ -14303,8 +14302,8 @@ MonoBehaviour:
   m_fontSize: 72
   m_fontSizeBase: 72
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 50
   m_fontSizeMax: 72
   m_fontStyle: 1
   m_HorizontalAlignment: 2

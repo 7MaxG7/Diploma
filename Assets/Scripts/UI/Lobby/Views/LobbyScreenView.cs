@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Infrastructure {
 
-	internal class LobbyScreenView : MonoBehaviour {
+	internal sealed class LobbyScreenView : MonoBehaviour {
 		[SerializeField] private CanvasGroup _canvasGroup;
 		[SerializeField] private TMP_Text _statusLableText;
 		[SerializeField] private LobbyPanelView _lobbyPanelView;

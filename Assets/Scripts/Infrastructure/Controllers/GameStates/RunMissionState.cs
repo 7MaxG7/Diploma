@@ -5,37 +5,37 @@ using Zenject;
 
 namespace Infrastructure {
 
-	internal class RunMissionState : IRunMissionState {
+	internal sealed class RunMissionState : IRunMissionState {
 		public event Action OnStateChange;
 		
 		private readonly IMonstersSpawner _monstersSpawner;
-		private readonly IWeaponsController _weaponsController;
-		private readonly ISoundManager _soundManager;
-		private readonly IMissionResultController _missionResultController;
+		private readonly IWeaponsManager _weaponsManager;
+		private readonly ISoundController _soundController;
+		private readonly IMissionResultManager _missionResultManager;
 
 
 		[Inject]
-		public RunMissionState(IMonstersSpawner monstersSpawner, IWeaponsController weaponsController, ISoundManager soundManager
-				, IMissionResultController missionResultController) {
+		public RunMissionState(IMonstersSpawner monstersSpawner, IWeaponsManager weaponsManager, ISoundController soundController
+				, IMissionResultManager missionResultManager) {
 			_monstersSpawner = monstersSpawner;
-			_weaponsController = weaponsController;
-			_soundManager = soundManager;
-			_missionResultController = missionResultController;
+			_weaponsManager = weaponsManager;
+			_soundController = soundController;
+			_missionResultManager = missionResultManager;
 		}
 		
 		public void Enter() {
-			_soundManager.PlayRandomMissionMusic();
+			_soundController.PlayRandomMissionMusic();
 			_monstersSpawner.StartSpawn();
-			_weaponsController.AddWeapon(WeaponType.SmallOrb);
-			_weaponsController.StartShooting();
-			_missionResultController.OnGameLeft += SwitchState;
+			_weaponsManager.AddWeapon(WeaponType.SmallOrb);
+			_weaponsManager.StartShooting();
+			_missionResultManager.OnGameLeft += SwitchState;
 		}
 
 		public void Exit() {
-			_missionResultController.OnGameLeft -= SwitchState;
+			_missionResultManager.OnGameLeft -= SwitchState;
 			_monstersSpawner.KillMonstersAndStopSpawn();
-			_weaponsController.StopShooting();
-			_soundManager.StopAll();
+			_weaponsManager.StopShooting();
+			_soundController.StopAll();
 		}
 
 		private void SwitchState() {

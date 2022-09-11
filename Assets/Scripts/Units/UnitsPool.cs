@@ -9,25 +9,25 @@ using Zenject;
 
 namespace Services {
 
-	internal class UnitsPool : ObjectsPool<IUnit>, IUnitsPool {
-		private readonly IUnitsFactory _unitsFactory;
-		private readonly IHandleDamageController _handleDamageController;
-		private readonly IMissionResultController _missionResultController;
+	internal sealed class UnitsPool : ObjectsPool<IUnit>, IUnitsPool {
 		public List<IUnit> ActiveMonsters => _spawnedObjects;
+		private readonly IUnitsFactory _unitsFactory;
+		private readonly IHandleDamageManager _handleDamageManager;
+		private readonly IMissionResultManager _missionResultManager;
 
 		
 		[Inject]
-		public UnitsPool(IUnitsFactory unitsFactory, IHandleDamageController handleDamageController, IMissionResultController missionResultController) {
+		public UnitsPool(IUnitsFactory unitsFactory, IHandleDamageManager handleDamageManager, IMissionResultManager missionResultManager) {
 			_unitsFactory = unitsFactory;
-			_handleDamageController = handleDamageController;
-			_missionResultController = missionResultController;
+			_handleDamageManager = handleDamageManager;
+			_missionResultManager = missionResultManager;
 		}
 
 		public void Dispose() {
 			foreach (var unit in _objects.Values.SelectMany(obj => obj)) {
 				unit.OnDied -= ReturnUnit;
 				unit.OnDied -= StopUnitPeriodicalDamage;
-				unit.OnDied -= _missionResultController.CountKill;
+				unit.OnDied -= _missionResultManager.CountKill;
 				unit.Dispose();
 			}
 			foreach (var objList in _objects.Values) {
@@ -37,7 +37,7 @@ namespace Services {
 			foreach (var unit in ActiveMonsters) {
 				unit.OnDied -= ReturnUnit;
 				unit.OnDied -= StopUnitPeriodicalDamage;
-				unit.OnDied -= _missionResultController.CountKill;
+				unit.OnDied -= _missionResultManager.CountKill;
 				unit.Dispose();
 			}
 			ActiveMonsters.Clear();
@@ -52,7 +52,7 @@ namespace Services {
 			var unit = _unitsFactory.CreateMonster(currentMonsterLevel, spawnPosition);
 			unit.OnDied += ReturnUnit;
 			unit.OnDied += StopUnitPeriodicalDamage;
-			unit.OnDied += _missionResultController.CountKill;
+			unit.OnDied += _missionResultManager.CountKill;
 			return unit;
 		}
 
@@ -61,7 +61,7 @@ namespace Services {
 		}
 
 		private void StopUnitPeriodicalDamage(DamageInfo damageInfo) {
-			_handleDamageController.StopPeriodicalDamageForUnit(damageInfo.DamageTaker);
+			_handleDamageManager.StopPeriodicalDamageForUnit(damageInfo.DamageTaker);
 		}
 	}
 

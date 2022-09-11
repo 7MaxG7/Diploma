@@ -13,11 +13,11 @@ namespace Units {
 		bool IsDead { get; }
 		Health Health { get; }
 		Experience Experience { get; }
-		Rigidbody2D Rigidbody { get; }
 		UnitView UnitView { get; }
 
 		bool CheckOwnView(IDamagableView damageTaker);
 		void KillUnit();
+		void Move(Vector3 deltaPosition);
 	}
 
 }

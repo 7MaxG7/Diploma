@@ -1,5 +1,4 @@
 ﻿using Abstractions;
-using Abstractions.Services;
 using Controllers;
 using Services;
 using UI;
@@ -15,23 +14,23 @@ namespace Infrastructure.Zenject {
 				Container.Bind<IInputService>().To<PcInputService>().AsSingle();
 			else
 				Container.Bind<IInputService>().To<MobileInputService>().AsSingle();
-			Container.Bind<IPlayerMoveController>().To<PlayerMoveController>().AsSingle();
-			Container.Bind<ICameraController>().To<CameraController>().AsSingle();
-			Container.Bind<IMissionMapController>().To<MissionMapController>().AsSingle();
+			Container.Bind<IPlayerMoveManager>().To<PlayerMoveManager>().AsSingle();
+			Container.Bind<ICameraManager>().To<CameraManager>().AsSingle();
+			Container.Bind<IMissionMapManager>().To<MissionMapManager>().AsSingle();
 			Container.Bind<IMapWrapper>().To<MapWrapper>().AsSingle();
 			Container.Bind<IUnitsPool>().To<UnitsPool>().AsSingle();
 			Container.Bind<IMonstersSpawner>().To<MonstersSpawner>().AsSingle();
-			Container.Bind<IMonstersMoveController>().To<MonstersMoveController>().AsSingle();
+			Container.Bind<IMonstersMoveManager>().To<MonstersMoveManager>().AsSingle();
 			Container.Bind<IPhotonDataExchangeController>().To<PhotonDataExchangeController>().AsSingle();
 			Container.Bind<IPhotonObjectsSynchronizer>().To<PhotonObjectsSynchronizer>().AsSingle();
 			Container.Bind<IMissionUiController>().To<MissionUiController>().AsSingle();
 			Container.Bind<IAmmosPool>().To<AmmosPool>().AsSingle();
-			Container.Bind<IWeaponsController>().To<WeaponsController>().AsSingle();
-			Container.Bind<IHandleDamageController>().To<HandleDamageController>().AsSingle();
-			Container.Bind<ISkillsController>().To<SkillsController>().AsSingle();
-			Container.Bind<IMissionResultController>().To<MissionResultController>().AsSingle();
-			Container.Bind<IPlayersInteractionController>().To<PlayersInteractionController>().AsSingle();
-			Container.Bind<ICompassController>().To<CompassController>().AsSingle();
+			Container.Bind<IWeaponsManager>().To<WeaponsManager>().AsSingle();
+			Container.Bind<IHandleDamageManager>().To<HandleDamageManager>().AsSingle();
+			Container.Bind<ISkillsManager>().To<SkillsManager>().AsSingle();
+			Container.Bind<IMissionResultManager>().To<MissionResultManager>().AsSingle();
+			Container.Bind<IPlayersInteractionManager>().To<PlayersInteractionManager>().AsSingle();
+			Container.Bind<ICompassManager>().To<CompassManager>().AsSingle();
 
 			Container.Bind<IControllersHolder>().To<ControllersHolder>().AsSingle();
 		}

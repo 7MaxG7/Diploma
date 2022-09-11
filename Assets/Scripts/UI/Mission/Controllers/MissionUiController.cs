@@ -1,15 +1,14 @@
 ﻿using System;
-using Abstractions.Services;
 using Infrastructure;
+using Services;
 using Units;
 using UnityEngine;
 using Zenject;
-// using Object = UnityEngine.Object;
 
 
 namespace UI {
 
-	internal class MissionUiController : IMissionUiController {
+	internal sealed class MissionUiController : IMissionUiController {
 		public event Action<WeaponType> OnSkillChoose;
 		private event Action OnUpdateCallback;
 
@@ -40,7 +39,7 @@ namespace UI {
 			_playerUiController = null;
 			_missionUiView.OnSettingsClick -= ShowSettings;
 			_missionUiView.OnDispose();
-			_viewsFactory.DestroyView(_missionUiView.gameObject);
+			_viewsFactory.DestroyView(_missionUiView);
 		}
 
 		public void OnUpdate(float deltaTime) {

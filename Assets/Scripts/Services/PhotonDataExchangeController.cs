@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using Enums;
 using Photon.Pun;
+using Zenject;
 
 
 namespace Services {
 
-	internal class PhotonDataExchangeController : IPhotonDataExchangeController {
+	internal sealed class PhotonDataExchangeController : IPhotonDataExchangeController {
+		private readonly IViewsFactory _viewsFactory;
 		public event Action<int, bool> OnActivationDataRecieved;
 		public event Action<int> OnInstantiationDataRecieved;
 		public event Action<int, int> OnDamagePlayerDataRecieved;
@@ -15,6 +17,11 @@ namespace Services {
 		private PhotonDataExchanger _minePhotonDataExchanger;
 		private List<PhotonDataExchanger> _othersPhotonDataExchangers;
 
+
+		[Inject]
+		public PhotonDataExchangeController(IViewsFactory viewsFactory) {
+			_viewsFactory = viewsFactory;
+		}
 		
 		public void Dispose() {
 			_minePhotonDataExchanger.OnDataWriting -= SendData;
@@ -22,7 +29,7 @@ namespace Services {
 				othersPhotonDataExchanger.OnDataReading -= RecieveData;
 			}
 			_othersPhotonDataExchangers.Clear();
-			PhotonNetwork.Destroy(_minePhotonDataExchanger.gameObject);
+			_viewsFactory.DestroyPhotonObj(_minePhotonDataExchanger.photonView);
 		}
 
 		public void Init(PhotonDataExchanger minePhotonDataExchanger, List<PhotonDataExchanger> othersPhotonDataExchangers) {

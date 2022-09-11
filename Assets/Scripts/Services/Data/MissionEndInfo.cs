@@ -1,6 +1,6 @@
 ﻿namespace Infrastructure {
 
-	internal class MissionEndInfo {
+	internal sealed class MissionEndInfo {
 		public bool IsWinner { get; }
 		public int KillsAmount { get; }
 

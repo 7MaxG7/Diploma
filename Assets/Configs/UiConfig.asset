@@ -19,7 +19,7 @@ MonoBehaviour:
   _minSuffixSymbolsAmount: 0
   _maxSuffixSymbolsAmount: 5
   _statusLableSuffixUpdateDelay: 250
-  _curtainFadingAlfaPerFrameDelta: 0.01
+  _curtainFadingAlfaPerFrameDelta: 0.012
   _skillUiItemPrefab: {fileID: 7329006160628604031, guid: b34bc457af516824388803ea60f6a5f1, type: 3}
   _skillChooserActivationDelay: 0.5
   _winResultText: You win!

@@ -5,13 +5,13 @@ using UnityEngine;
 
 namespace Infrastructure {
 
-	internal class Weapon : IWeapon {
+	internal sealed class Weapon : IWeapon {
+		public event Action<WeaponType> OnShooted;
+		
 		public WeaponType Type { get; }
 		public float SqrRange { get; private set; }
 		public int Level { get; private set; }
-
 		public bool IsReady => _cooldownTimer <= 0;
-		public event Action<WeaponType> OnShooted;
 
 		private float _cooldown;
 		private readonly IUnit _owner;
@@ -37,8 +37,7 @@ namespace Infrastructure {
 			_isPiercing = weaponBaseParam.IsPiercing;
 			Level = 1;
 		}
-
-
+		
 		public void ReduceCooldown(float deltaTime) {
 			_cooldownTimer -= Math.Min(deltaTime, _cooldownTimer);
 		}
@@ -48,8 +47,7 @@ namespace Infrastructure {
 			var ownerPosition = _owner.Transform.position;
 			var ammo = _ammosPool.SpawnObject(ownerPosition, Type);
 			ammo.Init(_owner, _damage, _damageTickCooldown, _isPiercing);
-			var destination = targetPosition - ownerPosition;
-			ammo.RigidBody.AddForce(destination * _ammoSpeed, ForceMode2D.Impulse);
+			ammo.Push((targetPosition - ownerPosition) * _ammoSpeed);
 			OnShooted?.Invoke(Type);
 		}
 

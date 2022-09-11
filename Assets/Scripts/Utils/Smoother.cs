@@ -3,7 +3,7 @@
 
 namespace Utils {
 
-	internal class Smoother {
+	internal sealed class Smoother {
 		public event Action<float> OnValueUpdateCallback;
 		
 		private float _targetValue;

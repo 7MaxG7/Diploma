@@ -1,31 +1,33 @@
 ﻿using Photon.Pun;
+using Services;
 using Units;
 using UnityEngine;
 
 
 namespace Infrastructure {
 
-	internal class Ammo : IAmmo {
-		public GameObject GameObject => _ammoView.GameObject;
+	internal sealed class Ammo : IAmmo {
 		public Transform Transform => _ammoView.Transform;
 		public PhotonView PhotonView => _ammoView.PhotonView;
-		public Rigidbody2D RigidBody => _ammoView.RigidBody;
 		public int PoolIndex { get; }
-
-		private int[] _damage;
-		private float _damageTicksCooldown;
-		private bool _isPiercing;
 		
 		private readonly AmmoView _ammoView;
 		private IUnit _owner;
 		private IAmmosPool _ammosPool;
-		private IHandleDamageController _handleDamageController;
+		private IHandleDamageManager _handleDamageManager;
+		private readonly IViewsFactory _viewsFactory;
+
+		private int[] _damage;
+		private float _damageTicksCooldown;
+		private bool _isPiercing;
 
 
-		public Ammo(GameObject ammoGo, IAmmosPool ammosPool, IHandleDamageController handleDamageController, int poolIndex) {
+		public Ammo(GameObject ammoGo, IAmmosPool ammosPool, IHandleDamageManager handleDamageManager, IViewsFactory viewsFactory
+				, int poolIndex) {
 			PoolIndex = poolIndex;
 			_ammosPool = ammosPool;
-			_handleDamageController = handleDamageController;
+			_handleDamageManager = handleDamageManager;
+			_viewsFactory = viewsFactory;
 			_ammoView = ammoGo.GetComponent<AmmoView>();
 			_ammoView.OnTriggerEntered += HandleCollision;
 			_ammoView.OnBecomeInvisible += DeactivateObj;
@@ -34,9 +36,9 @@ namespace Infrastructure {
 		public void Dispose() {
 			_ammoView.OnTriggerEntered -= HandleCollision;
 			_ammoView.OnBecomeInvisible -= DeactivateObj;
-			PhotonNetwork.Destroy(_ammoView.GameObject);
+			_viewsFactory.DestroyPhotonObj(PhotonView);
 			_ammosPool = null;
-			_handleDamageController = null;
+			_handleDamageManager = null;
 			_owner = null;
 		}
 
@@ -49,20 +51,28 @@ namespace Infrastructure {
 			_isPiercing = isPiercing;
 		}
 
-		public void Respawn(Vector2 spawnPosition) {
-			Transform.position = _owner.Transform.position;
+		public void Push(Vector3 power) {
+			_ammoView.Push(power);
+		}
+
+		public void Respawn(Vector2 _) {
+			_ammoView.Locate(_owner.Transform.position);
+		}
+
+		public void ToggleActivation(bool isActive) {
+			_ammoView.ToggleActivation(isActive);
 		}
 
 		public void StopObj() {
-			RigidBody.velocity = Vector2.zero;
+			_ammoView.StopMoving();
 		}
 
 		private void HandleCollision(Collider2D collider) {
 			if (collider.TryGetComponent<IDamagableView>(out var damageTaker) && !_owner.CheckOwnView(damageTaker)) {
 				if (_damage.Length == 1)
-					_handleDamageController.DealPermanentDamage(damageTaker, _damage[0], _owner);
+					_handleDamageManager.DealPermanentDamage(damageTaker, _damage[0], _owner);
 				else if (_damage.Length > 1)
-					_handleDamageController.DealPeriodicalDamage(damageTaker, _damage, _damageTicksCooldown, _owner);
+					_handleDamageManager.DealPeriodicalDamage(damageTaker, _damage, _damageTicksCooldown, _owner);
 				
 				if (!_isPiercing)
 					_ammosPool.ReturnObject(this);
@@ -72,7 +82,6 @@ namespace Infrastructure {
 		private void DeactivateObj() {
 			_ammosPool.ReturnObject(this);
 		}
-
 	}
 
 }

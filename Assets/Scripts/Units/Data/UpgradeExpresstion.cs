@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Infrastructure {
 
 	[Serializable]
-	internal class UpgradeExpresstion {
+	internal sealed class UpgradeExpresstion {
 		[SerializeField] private WeaponCharacteristicType _characteristicType;
 		[SerializeField] private ArithmeticType _arithmetic;
 		[SerializeField] private float _deltaValue;

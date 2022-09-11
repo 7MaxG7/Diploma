@@ -8,7 +8,7 @@ using Object = UnityEngine.Object;
 
 namespace Infrastructure {
 
-	internal class PermanentUiController : IPermanentUiController, IDisposable {
+	internal sealed class PermanentUiController : IPermanentUiController, IDisposable {
 		public event Action OnCurtainShown;
 		public event  Action OnLeaveGameClicked;
 		public event  Action OnResultPanelClosed;
@@ -19,21 +19,21 @@ namespace Infrastructure {
 		public bool CurtainIsActive => _permanentUiView.CurtainIsActive;
 
 		private readonly IPermanentUiView _permanentUiView;
-		private readonly ISoundManager _soundManager;
+		private readonly ISoundController _soundController;
 		private readonly UiConfig _uiConfig;
 		private ICoroutineRunner _coroutineRunner;
 
 
 		[Inject]
-		public PermanentUiController(IPermanentUiView permanentUiView, ISoundManager soundManager, UiConfig uiConfig) {
+		public PermanentUiController(IPermanentUiView permanentUiView, ISoundController soundController, UiConfig uiConfig) {
 			_permanentUiView = permanentUiView;
-			_soundManager = soundManager;
+			_soundController = soundController;
 			_uiConfig = uiConfig;
 		}
 
 		public void Dispose() {
-			_permanentUiView.SettingsPanel.OnMusicVolumeSliderValueChange -= _soundManager.SetMusicVolume;
-			_permanentUiView.SettingsPanel.OnSoundVolumeSliderValueChange -= _soundManager.SetSoundVolume;
+			_permanentUiView.SettingsPanel.OnMusicVolumeSliderValueChange -= _soundController.SetMusicVolume;
+			_permanentUiView.SettingsPanel.OnSoundVolumeSliderValueChange -= _soundController.SetSoundVolume;
 			_permanentUiView.SettingsPanel.OnLeaveGameClick -= LeaveGame;
 			_permanentUiView.SettingsPanel.OnCloseSettingsClick -= HideSettingsPanel;
 			_permanentUiView.ResultPanel.OnCloseResultPanelClick -= HideMissionResult;
@@ -57,9 +57,9 @@ namespace Infrastructure {
 
 			void InitSettingsPanel() {
 				_permanentUiView.SettingsPanel.Init();
-				_permanentUiView.SettingsPanel.SetVolumeSliders(_soundManager.GetMusicVolume(), _soundManager.GetSoundVolume());
-				_permanentUiView.SettingsPanel.OnMusicVolumeSliderValueChange += _soundManager.SetMusicVolume;
-				_permanentUiView.SettingsPanel.OnSoundVolumeSliderValueChange += _soundManager.SetSoundVolume;
+				_permanentUiView.SettingsPanel.SetVolumeSliders(_soundController.GetMusicVolume(), _soundController.GetSoundVolume());
+				_permanentUiView.SettingsPanel.OnMusicVolumeSliderValueChange += _soundController.SetMusicVolume;
+				_permanentUiView.SettingsPanel.OnSoundVolumeSliderValueChange += _soundController.SetSoundVolume;
 				_permanentUiView.SettingsPanel.OnLeaveGameClick += LeaveGame;
 				_permanentUiView.SettingsPanel.OnCloseSettingsClick += HideSettingsPanel;
 				_permanentUiView.SettingsPanel.HideSettingsPanel(0);
@@ -117,8 +117,8 @@ namespace Infrastructure {
 		}
 
 		private void HideSettingsPanel() {
-			PlayerPrefs.SetFloat(TextConstants.MUSIC_VOLUME_PREFS_KEY, _soundManager.GetMusicVolume());
-			PlayerPrefs.SetFloat(TextConstants.SOUND_VOLUME_PREFS_KEY, _soundManager.GetSoundVolume());
+			PlayerPrefs.SetFloat(Constants.MUSIC_VOLUME_PREFS_KEY, _soundController.GetMusicVolume());
+			PlayerPrefs.SetFloat(Constants.SOUND_VOLUME_PREFS_KEY, _soundController.GetSoundVolume());
 			PlayerPrefs.Save();
 			_permanentUiView.SettingsPanel.HideSettingsPanel(_uiConfig.CanvasFadeAnimationDuration);
 		}

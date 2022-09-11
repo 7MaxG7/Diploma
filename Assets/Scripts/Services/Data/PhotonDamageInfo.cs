@@ -1,6 +1,6 @@
 ﻿namespace Services {
 
-	internal class PhotonDamageInfo {
+	internal sealed class PhotonDamageInfo {
 		public int PhotonViewID { get; }
 		public int Damage { get; }
 
