@@ -1,33 +1,30 @@
-﻿using Photon.Pun;
-using Services;
+﻿using System;
+using Photon.Pun;
 using Units;
 using UnityEngine;
 
 
-namespace Infrastructure {
+namespace Weapons {
 
 	internal sealed class Ammo : IAmmo {
+		public event Action<IAmmo> OnLifetimeExpired;
+		public event Action<IDamagableView, int[], float, IUnit> OnCollidedWithDamageTaker;
+		public event Action<PhotonView> OnDispose;
+		
 		public Transform Transform => _ammoView.Transform;
 		public PhotonView PhotonView => _ammoView.PhotonView;
 		public int PoolIndex { get; }
 		
 		private readonly AmmoView _ammoView;
 		private IUnit _owner;
-		private IAmmosPool _ammosPool;
-		private IHandleDamageManager _handleDamageManager;
-		private readonly IViewsFactory _viewsFactory;
 
 		private int[] _damage;
 		private float _damageTicksCooldown;
 		private bool _isPiercing;
 
 
-		public Ammo(GameObject ammoGo, IAmmosPool ammosPool, IHandleDamageManager handleDamageManager, IViewsFactory viewsFactory
-				, int poolIndex) {
+		public Ammo(GameObject ammoGo, int poolIndex) {
 			PoolIndex = poolIndex;
-			_ammosPool = ammosPool;
-			_handleDamageManager = handleDamageManager;
-			_viewsFactory = viewsFactory;
 			_ammoView = ammoGo.GetComponent<AmmoView>();
 			_ammoView.OnTriggerEntered += HandleCollision;
 			_ammoView.OnBecomeInvisible += DeactivateObj;
@@ -36,9 +33,7 @@ namespace Infrastructure {
 		public void Dispose() {
 			_ammoView.OnTriggerEntered -= HandleCollision;
 			_ammoView.OnBecomeInvisible -= DeactivateObj;
-			_viewsFactory.DestroyPhotonObj(PhotonView);
-			_ammosPool = null;
-			_handleDamageManager = null;
+			OnDispose?.Invoke(PhotonView);
 			_owner = null;
 		}
 
@@ -69,18 +64,15 @@ namespace Infrastructure {
 
 		private void HandleCollision(Collider2D collider) {
 			if (collider.TryGetComponent<IDamagableView>(out var damageTaker) && !_owner.CheckOwnView(damageTaker)) {
-				if (_damage.Length == 1)
-					_handleDamageManager.DealPermanentDamage(damageTaker, _damage[0], _owner);
-				else if (_damage.Length > 1)
-					_handleDamageManager.DealPeriodicalDamage(damageTaker, _damage, _damageTicksCooldown, _owner);
-				
+				OnCollidedWithDamageTaker?.Invoke(damageTaker, _damage, _damageTicksCooldown, _owner);
+
 				if (!_isPiercing)
-					_ammosPool.ReturnObject(this);
+					OnLifetimeExpired?.Invoke(this);
 			}
 		}
 
 		private void DeactivateObj() {
-			_ammosPool.ReturnObject(this);
+			OnLifetimeExpired?.Invoke(this);
 		}
 	}
 

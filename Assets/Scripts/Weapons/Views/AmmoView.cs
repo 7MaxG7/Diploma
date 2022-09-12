@@ -3,7 +3,7 @@ using Photon.Pun;
 using UnityEngine;
 
 
-namespace Infrastructure {
+namespace Weapons {
 
 	internal sealed class AmmoView : MonoBehaviour {
 		[SerializeField] private GameObject _gameObject;

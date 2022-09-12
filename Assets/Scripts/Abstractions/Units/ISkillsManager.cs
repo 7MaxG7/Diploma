@@ -1,8 +1,7 @@
 ﻿using System;
-using Units;
 
 
-namespace Infrastructure {
+namespace Units {
 
 	internal interface ISkillsManager : IDisposable {
 		void Init(IUnit player);

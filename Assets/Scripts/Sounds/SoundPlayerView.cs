@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 
-namespace Units.Views {
+namespace Sounds {
 
 	internal sealed class SoundPlayerView : MonoBehaviour {
 		[SerializeField] private AudioSource _musicSource;

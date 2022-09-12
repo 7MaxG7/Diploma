@@ -1,14 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Infrastructure;
 using Services;
-using Units.Views;
 using UnityEngine;
 using Utils;
+using Weapons;
 using Zenject;
 using Object = UnityEngine.Object;
 
 
-namespace Infrastructure {
+namespace Sounds {
 
 	internal sealed class SoundController : ISoundController {
 

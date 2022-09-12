@@ -9,6 +9,7 @@ using UI;
 using Units;
 using UnityEngine;
 using Utils;
+using Weapons;
 using Zenject;
 using Object = UnityEngine.Object;
 

@@ -1,4 +1,7 @@
-﻿namespace Infrastructure {
+﻿using Weapons;
+
+
+namespace Sounds {
 
 	internal interface ISoundController {
 		void Init();

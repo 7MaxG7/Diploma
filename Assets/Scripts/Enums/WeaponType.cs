@@ -1,4 +1,4 @@
-﻿namespace Infrastructure {
+﻿namespace Weapons {
 
 	internal enum WeaponType {
 		None = 0,

@@ -1,4 +1,7 @@
-﻿namespace Infrastructure {
+﻿using Weapons;
+
+
+namespace Units {
 
 	internal sealed class ActualSkillInfo {
 		public WeaponType WeaponType { get; }

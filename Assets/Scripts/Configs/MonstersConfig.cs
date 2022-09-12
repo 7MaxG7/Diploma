@@ -2,7 +2,7 @@
 using UnityEngine;
 
 
-namespace Infrastructure {
+namespace Units {
 
 	[CreateAssetMenu(menuName = "Configs/" + nameof(MonstersConfig), fileName = nameof(MonstersConfig), order = 3)]
 	internal class MonstersConfig : ScriptableObject {

@@ -2,6 +2,7 @@
 using Infrastructure;
 using Units;
 using UnityEngine;
+using Weapons;
 
 
 namespace UI {

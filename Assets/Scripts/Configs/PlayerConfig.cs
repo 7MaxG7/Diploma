@@ -2,7 +2,7 @@
 using UnityEngine;
 
 
-namespace Infrastructure {
+namespace Units {
 
 	[CreateAssetMenu(menuName = "Configs/" + nameof(PlayerConfig), fileName = nameof(PlayerConfig), order = 4)]
 	internal class PlayerConfig : ScriptableObject {

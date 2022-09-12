@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Infrastructure;
 using Services;
 using UI;
-using Units;
+using Weapons;
 using Zenject;
 
 
-namespace Infrastructure {
+namespace Units {
 
 	internal sealed class SkillsManager : ISkillsManager {
 		private readonly IWeaponsManager _weaponsManager;

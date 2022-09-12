@@ -1,7 +1,5 @@
 ﻿using Infrastructure;
 using Photon.Pun;
-using Services;
-using Units.Views;
 using UnityEngine;
 
 
@@ -13,11 +11,10 @@ namespace Units {
 		public override PhotonView PhotonView => _playerView.PhotonView;
 
 		private readonly PlayerView _playerView;
-		private readonly IViewsFactory _viewsFactory;
 
-		public PlayerUnit(GameObject playerGO, IViewsFactory viewsFactory, PlayerConfig playerConfig) 
+		
+		public PlayerUnit(GameObject playerGO, PlayerConfig playerConfig) 
 				: base(playerConfig.BaseMoveSpeed, playerConfig.LevelHpParameters[0].Health, -1) {
-			_viewsFactory = viewsFactory;
 			Experience = new Experience(playerConfig.LevelHpParameters[0].Level, playerConfig.LevelExpParameters);
 			Health.SetLevelUpHpParams(playerConfig.LevelHpParameters);
 			Experience.OnLevelUp += Health.AddLevelUpHealth;
@@ -29,7 +26,6 @@ namespace Units {
 		public override void Dispose() {
 			_playerView.OnDamageTake -= TakeDamage;
 			Experience.OnLevelUp -= Health.AddLevelUpHealth;
-			_viewsFactory.DestroyPhotonObj(PhotonView);
 			base.Dispose();
 		}
 		

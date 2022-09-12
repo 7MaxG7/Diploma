@@ -1,9 +1,10 @@
 ﻿using System;
+using Infrastructure;
 using Units;
 using UnityEngine;
 
 
-namespace Infrastructure {
+namespace Weapons {
 
 	internal sealed class Weapon : IWeapon {
 		public event Action<WeaponType> OnShooted;
@@ -13,9 +14,9 @@ namespace Infrastructure {
 		public int Level { get; private set; }
 		public bool IsReady => _cooldownTimer <= 0;
 
-		private float _cooldown;
 		private readonly IUnit _owner;
-		private readonly IAmmosPool _ammosPool;
+		private IAmmosPool _ammosPool;
+		private float _cooldown;
 		private float _cooldownTimer;
 		
 		private readonly int[] _damage;
@@ -37,7 +38,11 @@ namespace Infrastructure {
 			_isPiercing = weaponBaseParam.IsPiercing;
 			Level = 1;
 		}
-		
+
+		public void OnDispose() {
+			_ammosPool = null;
+		}
+
 		public void ReduceCooldown(float deltaTime) {
 			_cooldownTimer -= Math.Min(deltaTime, _cooldownTimer);
 		}

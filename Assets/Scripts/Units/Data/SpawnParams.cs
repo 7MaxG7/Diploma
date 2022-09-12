@@ -1,7 +1,7 @@
 ﻿using System;
 
 
-namespace Infrastructure {
+namespace Units {
 
 	[Serializable]
 	internal sealed class SpawnParams {

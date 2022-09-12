@@ -1,5 +1,6 @@
 ﻿using Services;
 using Utils;
+using Weapons;
 using Zenject;
 
 

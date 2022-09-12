@@ -3,18 +3,15 @@ using UnityEngine;
 using Zenject;
 
 
-namespace Infrastructure {
+namespace Weapons {
 
 	internal sealed class AmmosFactory : IAmmosFactory {
-		private readonly IHandleDamageManager _handleDamageManager;
 		private readonly IViewsFactory _viewsFactory;
 		private readonly WeaponsConfig _weaponsConfig;
-		private IAmmosPool _ammosPool;
 
 		
 		[Inject]
-		public AmmosFactory(IHandleDamageManager handleDamageManager, IViewsFactory viewsFactory, WeaponsConfig weaponsConfig) {
-			_handleDamageManager = handleDamageManager;
+		public AmmosFactory(IViewsFactory viewsFactory, WeaponsConfig weaponsConfig) {
 			_viewsFactory = viewsFactory;
 			_weaponsConfig = weaponsConfig;
 		}
@@ -22,11 +19,8 @@ namespace Infrastructure {
 		public IAmmo CreateAmmo(Vector2 position, WeaponType weaponType) {
 			var ammoParam = _weaponsConfig.GetWeaponBaseParam(weaponType);
 			var ammoGo = _viewsFactory.CreatePhotonObj(ammoParam.AmmoPrefabPath, position, Quaternion.identity);
-			return new Ammo(ammoGo, _ammosPool, _handleDamageManager, _viewsFactory, (int)weaponType);
-		}
-
-		public void SetAmmosPool(IAmmosPool ammosPool) {
-			_ammosPool = ammosPool;
+			var ammo = new Ammo(ammoGo, (int)weaponType);
+			return ammo;
 		}
 	}
 

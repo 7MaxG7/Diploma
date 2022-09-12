@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEngine;
 
 
-namespace Infrastructure {
+namespace Weapons {
 
 	[Serializable]
 	internal class WeaponUpgradeParam : IWeaponDescription {

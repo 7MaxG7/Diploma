@@ -1,8 +1,9 @@
 ﻿using System;
 using UnityEngine;
+using Weapons;
 
 
-namespace Infrastructure {
+namespace Sounds {
 
 	[Serializable]
 	internal sealed class WeaponShootingClip {

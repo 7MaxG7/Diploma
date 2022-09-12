@@ -12,7 +12,6 @@ namespace Services {
 		List<IUnit> ActiveMonsters { get; }
 
 		IUnit SpawnObject(Vector2 spawnPosition, params object[] parameters);
-		void ReturnObject(IUnit obj);
 	}
 
 }

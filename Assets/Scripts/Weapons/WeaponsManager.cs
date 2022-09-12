@@ -1,13 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Abstractions;
+using Infrastructure;
 using Services;
+using Sounds;
 using Units;
 using UnityEngine;
 using Zenject;
 
 
-namespace Infrastructure {
+namespace Weapons {
 
 	internal sealed class WeaponsManager : IWeaponsManager {
 		private readonly IAmmosPool _ammosPool;
@@ -37,6 +39,7 @@ namespace Infrastructure {
 			StopShooting();
 			foreach (var weapon in _activeWeapons) {
 				weapon.OnShooted -= _soundController.PlayWeaponShootSound;
+				weapon.OnDispose();
 			}
 			_activeWeapons.Clear();
 			_player = null;

@@ -42,17 +42,25 @@ namespace Infrastructure {
 			}
 		}
 
-		public void DealPermanentDamage(IDamagableView damageTaker, int damage, IUnit owner) {
-			damageTaker.TakeDamage(damage, owner);
-			if (damageTaker is PlayerView enemyPlayer && enemyPlayer != owner.UnitView) {
+		public void DealDamage(IDamagableView damageTaker, int[] damage, float damageTicksCooldown, IUnit damager) {
+			if (damage.Length == 1)
+				DealPermanentDamage(damageTaker, damage[0], damager);
+			else if (damage.Length > 1) {
+				DeadPeriodicalDamage(damageTaker, damage, damageTicksCooldown, damager);
+			}
+		}
+
+		private void DealPermanentDamage(IDamagableView damageTaker, int damage, IUnit damager) {
+			damageTaker.TakeDamage(damage, damager);
+			if (damageTaker is PlayerView enemyPlayer && enemyPlayer != damager.UnitView) {
 				OnDamageEnemyPlayer?.Invoke(new PhotonDamageInfo(enemyPlayer.PhotonView.ViewID, damage));
 			}
 		}
 
-		public void DealPeriodicalDamage(IDamagableView damageTaker, int[] damages, float damageTicksCooldown, IUnit damager) {
+		private void DeadPeriodicalDamage(IDamagableView damageTaker, int[] damage, float damageTicksCooldown, IUnit damager) {
 			float currentCooldown = 0;
-			foreach (var damage in damages) {
-				_comingDamages.Add(new ComingDamage(currentCooldown, damageTaker, damage, damager));
+			foreach (var tickDamage in damage) {
+				_comingDamages.Add(new ComingDamage(currentCooldown, damageTaker, tickDamage, damager));
 				currentCooldown += damageTicksCooldown;
 			}
 		}

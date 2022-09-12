@@ -2,11 +2,11 @@
 using UnityEngine;
 
 
-namespace Infrastructure {
+namespace Weapons {
 
 	[Serializable]
 	internal class WeaponBaseParam : IWeaponDescription {
-		[SerializeField] private WeaponType weaponType;
+		[SerializeField] private WeaponType _weaponType;
 		[SerializeField] private string _ammoPrefabPath;
 		[SerializeField] private float _range;
 		[SerializeField] private float _cooldown;
@@ -19,7 +19,7 @@ namespace Infrastructure {
 		[SerializeField] private string _name;
 		[SerializeField] private string _description;
 
-		public WeaponType WeaponType => weaponType;
+		public WeaponType WeaponType => _weaponType;
 		public string AmmoPrefabPath => _ammoPrefabPath;
 		public float Range => _range;
 		public float Cooldown => _cooldown;

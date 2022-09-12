@@ -2,7 +2,7 @@
 using UnityEngine;
 
 
-namespace Infrastructure {
+namespace Weapons {
 
 	[CreateAssetMenu(menuName = "Configs/" + nameof(WeaponsConfig), fileName = nameof(WeaponsConfig), order = 6)]
 	internal class WeaponsConfig : ScriptableObject {

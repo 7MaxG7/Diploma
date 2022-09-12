@@ -17,13 +17,16 @@ namespace Services {
 
 		
 		[Inject]
-		public UnitsPool(IUnitsFactory unitsFactory, IHandleDamageManager handleDamageManager, IMissionResultManager missionResultManager) {
+		public UnitsPool(IUnitsFactory unitsFactory, IHandleDamageManager handleDamageManager, IMissionResultManager missionResultManager
+				, IViewsFactory viewsFactory) {
 			_unitsFactory = unitsFactory;
 			_handleDamageManager = handleDamageManager;
 			_missionResultManager = missionResultManager;
+			_viewsFactory = viewsFactory;
 		}
 
-		public void Dispose() {
+		public override void Dispose() {
+			base.Dispose();
 			foreach (var unit in _objects.Values.SelectMany(obj => obj)) {
 				unit.OnDied -= ReturnUnit;
 				unit.OnDied -= StopUnitPeriodicalDamage;

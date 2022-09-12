@@ -1,4 +1,4 @@
-﻿namespace Infrastructure {
+﻿namespace Weapons {
 
 	internal interface IWeaponDescription {
 		string GetNameForLevel(int level);

@@ -3,7 +3,7 @@ using Photon.Pun;
 using UnityEngine;
 
 
-namespace Units.Views {
+namespace Units {
 
 	internal abstract class UnitView : MonoBehaviour, IDamagableView {
 		[SerializeField] protected GameObject _gameObject;

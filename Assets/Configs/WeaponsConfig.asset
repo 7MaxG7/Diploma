@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: WeaponsConfig
   m_EditorClassIdentifier: 
   _weaponParams:
-  - weaponType: 1
+  - _weaponType: 1
     _ammoPrefabPath: PurpleOrb
     _range: 5
     _cooldown: 2
@@ -23,7 +23,7 @@ MonoBehaviour:
     _isPiercing: 0
     _name: Small orb
     _description: Pew-pew-pew
-  - weaponType: 2
+  - _weaponType: 2
     _ammoPrefabPath: GreenOrb
     _range: 4
     _cooldown: 3
@@ -33,7 +33,7 @@ MonoBehaviour:
     _isPiercing: 0
     _name: Acid orb
     _description: Deals periodic damage for 3 sec
-  - weaponType: 3
+  - _weaponType: 3
     _ammoPrefabPath: YellowOrb
     _range: 3
     _cooldown: 5

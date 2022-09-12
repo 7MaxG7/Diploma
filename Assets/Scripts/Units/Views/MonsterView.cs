@@ -2,7 +2,7 @@
 using UnityEngine;
 
 
-namespace Units.Views {
+namespace Units {
 
 	internal sealed class MonsterView : UnitView {
 		public event Action<Collision2D> OnTriggerEnter;

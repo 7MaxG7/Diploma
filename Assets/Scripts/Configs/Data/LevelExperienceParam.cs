@@ -2,7 +2,7 @@
 using UnityEngine;
 
 
-namespace Infrastructure {
+namespace Units {
 
 	[Serializable]
 	internal class LevelExperienceParam {

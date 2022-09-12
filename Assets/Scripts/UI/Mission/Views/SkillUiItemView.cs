@@ -1,6 +1,7 @@
 ﻿using System;
 using Infrastructure;
 using TMPro;
+using Units;
 using UnityEngine;
 using UnityEngine.UI;
 

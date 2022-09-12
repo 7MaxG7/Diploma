@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using Infrastructure;
 using Units;
 
 
-namespace Infrastructure {
+namespace Weapons {
 
 	internal interface IWeaponsManager : IUpdater, IDisposable {
 		List<WeaponType> UpgradableWeaponTypes { get; }

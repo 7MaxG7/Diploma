@@ -1,5 +1,4 @@
-﻿using Units.Views;
-using UnityEngine;
+﻿using UnityEngine;
 
 
 namespace Units {

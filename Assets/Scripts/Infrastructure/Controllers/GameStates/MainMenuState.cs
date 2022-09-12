@@ -1,4 +1,5 @@
 ﻿using System;
+using Sounds;
 using UnityEngine.SceneManagement;
 using Utils;
 using Zenject;

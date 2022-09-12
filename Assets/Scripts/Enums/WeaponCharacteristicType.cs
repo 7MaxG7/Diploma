@@ -1,4 +1,4 @@
-﻿namespace Infrastructure {
+﻿namespace Weapons {
 
 	internal enum WeaponCharacteristicType {
 		None = 0,

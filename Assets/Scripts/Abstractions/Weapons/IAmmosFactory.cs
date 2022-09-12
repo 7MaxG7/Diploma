@@ -1,11 +1,10 @@
 ﻿using UnityEngine;
 
 
-namespace Infrastructure {
+namespace Weapons {
 
 	internal interface IAmmosFactory {
 		IAmmo CreateAmmo(Vector2 spawnPosition, WeaponType weaponType);
-		void SetAmmosPool(IAmmosPool ammosPool);
 	}
 
 }

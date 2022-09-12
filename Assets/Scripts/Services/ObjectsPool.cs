@@ -1,20 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 
 namespace Services {
 
-	internal abstract class ObjectsPool<T> where T : IPoolObject {
+	internal abstract class ObjectsPool<T> : IDisposable where T : IPoolObject {
 		public event Action<int> OnObjectInstantiated;
 		public event Action<int, bool> OnObjectActivationToggle;
-		
+
 		private readonly IPhotonDataExchangeController _photonDataExchangeController;
+		// ReSharper disable once InconsistentNaming
+		protected IViewsFactory _viewsFactory;
 		// ReSharper disable once InconsistentNaming
 		protected readonly Dictionary<int,List<T>> _objects = new();
 		// ReSharper disable once InconsistentNaming
 		protected readonly List<T> _spawnedObjects = new();
 
+
+		public virtual void Dispose() {
+			foreach (var obj in _objects.Values.SelectMany(obj => obj)) {
+				obj.OnDispose -= _viewsFactory.DestroyPhotonObj;
+			}
+			foreach (var obj in _spawnedObjects) {
+				obj.OnDispose -= _viewsFactory.DestroyPhotonObj;
+			}
+		}
 
 		public T SpawnObject(Vector2 spawnPosition, params object[] parameters) {
 			T obj;
@@ -26,6 +38,7 @@ namespace Services {
 			if (objects.Count == 0) {
 				objects.Capacity++;
 				obj = SpawnSpecifiedObject(spawnPosition, parameters);
+				obj.OnDispose += _viewsFactory.DestroyPhotonObj;
 				OnObjectInstantiated?.Invoke(obj.PhotonView.ViewID);
 			} else {
 				var objIndex = objects.Count - 1;
@@ -38,7 +51,7 @@ namespace Services {
 			return obj;
 		}
 
-		public void ReturnObject(T obj) {
+		protected void ReturnObject(T obj) {
 			// In case of ammo it can be returned twice: on collision it returnes, deactivates and becomes invisible - so returnes second time OnBecameInvisible.
 			// Thats why we check if its active first
 			if (!_spawnedObjects.Remove(obj))
@@ -58,6 +71,7 @@ namespace Services {
 		protected abstract int GetSpecifiedPoolIndex(object[] parameters);
 
 		protected abstract T SpawnSpecifiedObject(Vector2 spawnPosition, object[] parameters);
+
 	}
 
 }

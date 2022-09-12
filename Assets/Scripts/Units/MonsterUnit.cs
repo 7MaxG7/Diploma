@@ -1,7 +1,5 @@
 ﻿using Infrastructure;
 using Photon.Pun;
-using Services;
-using Units.Views;
 using UnityEngine;
 
 
@@ -13,14 +11,12 @@ namespace Units {
 		public override PhotonView PhotonView => _monsterView.PhotonView;
 
 		private readonly MonsterView _monsterView;
-		private readonly IViewsFactory _viewsFactory;
 		private readonly int _collisionDamage;
 		private readonly int _killExperience;
 
 
-		public MonsterUnit(GameObject monsterGO, MonstersParams monstersParam, int poolIndex, IViewsFactory viewsFactory) 
+		public MonsterUnit(GameObject monsterGO, MonstersParams monstersParam, int poolIndex) 
 				: base(monstersParam.MoveSpeed, monstersParam.Hp, poolIndex) {
-			_viewsFactory = viewsFactory;
 			Experience = new Experience(monstersParam.MonsterLevel, null);
 			_collisionDamage = monstersParam.Damage;
 			_killExperience = monstersParam.ExperienceOnKill;
@@ -33,7 +29,6 @@ namespace Units {
 		public override void Dispose() {
 			_monsterView.OnDamageTake -= TakeDamage;
 			_monsterView.OnTriggerEnter -= DamageTriggerUnit;
-			_viewsFactory.DestroyPhotonObj(PhotonView);
 			base.Dispose();
 		}
 

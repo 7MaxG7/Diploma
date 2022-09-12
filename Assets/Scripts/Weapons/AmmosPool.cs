@@ -1,23 +1,29 @@
 ﻿using System.Linq;
+using Infrastructure;
 using Services;
 using UnityEngine;
 using Zenject;
 
 
-namespace Infrastructure {
+namespace Weapons {
 
 	internal sealed class AmmosPool : ObjectsPool<IAmmo>, IAmmosPool {
 		private readonly IAmmosFactory _ammosFactory;
+		private readonly IHandleDamageManager _handleDamageManager;
 
-		
+
 		[Inject]
-		public AmmosPool(IAmmosFactory ammosFactory) {
+		public AmmosPool(IAmmosFactory ammosFactory, IHandleDamageManager handleDamageManager, IViewsFactory viewsFactory) {
 			_ammosFactory = ammosFactory;
-			_ammosFactory.SetAmmosPool(this);
+			_handleDamageManager = handleDamageManager;
+			_viewsFactory = viewsFactory;
 		}
 
-		public void Dispose() {
+		public override void Dispose() {
+			base.Dispose();
 			foreach (var ammo in _objects.Values.SelectMany(obj => obj)) {
+				ammo.OnLifetimeExpired -= ReturnObject;
+				ammo.OnCollidedWithDamageTaker -= _handleDamageManager.DealDamage;
 				ammo.Dispose();
 			}
 			foreach (var objList in _objects.Values) {
@@ -25,6 +31,8 @@ namespace Infrastructure {
 			}
 			_objects.Clear();
 			foreach (var ammo in _spawnedObjects) {
+				ammo.OnLifetimeExpired -= ReturnObject;
+				ammo.OnCollidedWithDamageTaker -= _handleDamageManager.DealDamage;
 				ammo.Dispose();
 			}
 			_spawnedObjects.Clear();
@@ -36,7 +44,10 @@ namespace Infrastructure {
 
 		protected override IAmmo SpawnSpecifiedObject(Vector2 spawnPosition, object[] parameters) {
 			var ammoType = (WeaponType)parameters[0];
-			return _ammosFactory.CreateAmmo(spawnPosition, ammoType);
+			var ammo = _ammosFactory.CreateAmmo(spawnPosition, ammoType);
+			ammo.OnLifetimeExpired += ReturnObject;
+			ammo.OnCollidedWithDamageTaker += _handleDamageManager.DealDamage;
+			return ammo;
 		}
 
 	}

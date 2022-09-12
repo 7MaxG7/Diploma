@@ -8,8 +8,7 @@ namespace Infrastructure {
 	internal interface IHandleDamageManager : IUpdater {
 		event Action<PhotonDamageInfo> OnDamageEnemyPlayer;
 		
-		void DealPermanentDamage(IDamagableView damageTaker, int damage, IUnit owner);
-		void DealPeriodicalDamage(IDamagableView damageTaker, int[] damages, float damageTicksCooldown, IUnit damager);
+		void DealDamage(IDamagableView damageTaker, int[] damage, float damageTicksCooldown, IUnit damager);
 		void StopPeriodicalDamageForUnit(IUnit unit);
 	}
 

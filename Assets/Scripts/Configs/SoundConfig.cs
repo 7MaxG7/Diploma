@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Units.Views;
 using UnityEngine;
+using Weapons;
 
 
-namespace Infrastructure {
+namespace Sounds {
 
 	[CreateAssetMenu(menuName = "Configs/" + nameof(SoundConfig), fileName = nameof(SoundConfig), order = 7)]
 	internal sealed class SoundConfig : ScriptableObject {

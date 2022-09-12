@@ -1,8 +1,9 @@
 ﻿using System;
+using Infrastructure;
 using UnityEngine;
 
 
-namespace Infrastructure {
+namespace Weapons {
 
 	[Serializable]
 	internal sealed class UpgradeExpresstion {

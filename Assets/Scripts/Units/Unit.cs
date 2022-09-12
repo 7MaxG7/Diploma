@@ -1,6 +1,5 @@
 ﻿using System;
 using Photon.Pun;
-using Units.Views;
 using UnityEngine;
 // ReSharper disable InconsistentNaming
 
@@ -9,6 +8,7 @@ namespace Units {
 
 	internal abstract class Unit : IUnit {
 		public event Action<DamageInfo> OnDied;
+		public event Action<PhotonView> OnDispose;
 		
 		public abstract UnitView UnitView { get; }
 		public abstract Transform Transform { get; }
@@ -29,6 +29,7 @@ namespace Units {
 
 		public virtual void Dispose() {
 			Health.OnDied -= KillView;
+			OnDispose?.Invoke(PhotonView);
 			Health = null;
 			Experience = null;
 		}

@@ -2,7 +2,7 @@
 using UnityEngine;
 
 
-namespace Infrastructure {
+namespace Weapons {
 
 	[Serializable]
 	internal class WeaponLevelUpgradeParam {
