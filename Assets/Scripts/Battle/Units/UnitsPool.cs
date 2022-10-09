@@ -18,11 +18,11 @@ namespace Services {
 		
 		[Inject]
 		public UnitsPool(IUnitsFactory unitsFactory, IHandleDamageManager handleDamageManager, IMissionResultManager missionResultManager
-				, IViewsFactory viewsFactory) {
+				, IPhotonManager photonManager) {
 			_unitsFactory = unitsFactory;
 			_handleDamageManager = handleDamageManager;
 			_missionResultManager = missionResultManager;
-			_viewsFactory = viewsFactory;
+			_photonManager = photonManager;
 		}
 
 		public override void Dispose() {

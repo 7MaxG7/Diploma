@@ -6,7 +6,7 @@ namespace Infrastructure {
 
 	internal interface IMissionResultManager : IDisposable {
 		event Action OnGameLeft;
-		event Action OnPlayerLeftRoomEvent;
+		event Action<int> OnPlayerWithIdLeftRoomEvent;
 
 		void Init(IUnit player);
 		void CountKill(DamageInfo damageInfo);

@@ -5,6 +5,7 @@ using Units;
 using UnityEngine;
 using Weapons;
 using Zenject;
+using Object = UnityEngine.Object;
 
 
 namespace UI {
@@ -40,7 +41,7 @@ namespace UI {
 			_playerUiController = null;
 			_missionUiView.OnSettingsClick -= ShowSettings;
 			_missionUiView.OnDispose();
-			_viewsFactory.DestroyView(_missionUiView);
+			Object.Destroy(_missionUiView.gameObject);
 		}
 
 		public void OnUpdate(float deltaTime) {

@@ -17,7 +17,7 @@ namespace Infrastructure {
 
 	internal sealed class MissionResultManager : IMissionResultManager, IInRoomCallbacks {
 		public event Action OnGameLeft;
-		public event Action OnPlayerLeftRoomEvent;
+		public event Action<int> OnPlayerWithIdLeftRoomEvent;
 
 		private readonly IPhotonManager _photonManager;
 		private readonly IPlayfabManager _playfabManager;
@@ -47,7 +47,7 @@ namespace Infrastructure {
 
 #region IInRoomCallbacksMethods
 		public void OnPlayerLeftRoom(Player otherPlayer) {
-			OnPlayerLeftRoomEvent?.Invoke();
+			OnPlayerWithIdLeftRoomEvent?.Invoke(otherPlayer.ActorNumber);
 			if (_photonManager.GetRoomPlayersAmount() == 1) {
 				WinGame();
 			}

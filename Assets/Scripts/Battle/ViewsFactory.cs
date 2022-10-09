@@ -45,14 +45,6 @@ namespace Services {
 			var uiRoot = GameObject.Find(Constants.UI_ROOT_NAME) ?? new GameObject(Constants.UI_ROOT_NAME);
 			return Instantiate(_uiConfig.MissionUiView, uiRoot.transform);
 		}
-
-		public void DestroyView(MonoBehaviour view) {
-			Destroy(view.gameObject);
-		}
-
-		public void DestroyPhotonObj(PhotonView obj) {
-			_photonManager.Destroy(obj);
-		}
 	}
 
 }

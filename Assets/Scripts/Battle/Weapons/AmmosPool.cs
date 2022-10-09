@@ -13,10 +13,10 @@ namespace Weapons {
 
 
 		[Inject]
-		public AmmosPool(IAmmosFactory ammosFactory, IHandleDamageManager handleDamageManager, IViewsFactory viewsFactory) {
+		public AmmosPool(IAmmosFactory ammosFactory, IHandleDamageManager handleDamageManager, IPhotonManager photonManager) {
 			_ammosFactory = ammosFactory;
 			_handleDamageManager = handleDamageManager;
-			_viewsFactory = viewsFactory;
+			_photonManager = photonManager;
 		}
 
 		public override void Dispose() {

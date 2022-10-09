@@ -13,8 +13,6 @@ namespace Services {
 		SoundPlayerView CreateSoundPlayer();
 		MainMenuView CreateMainMenu();
 		MissionUiView CreateMissionUi();
-		void DestroyView(MonoBehaviour view);
-		void DestroyPhotonObj(PhotonView obj);
 	}
 
 }

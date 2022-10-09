@@ -25,7 +25,7 @@ namespace Services {
 
 		public void Dispose() {
 			foreach (var groundItem in _groundItems) {
-				_viewsFactory.DestroyView(groundItem);
+				Object.Destroy(groundItem.gameObject);
 			}
 			_groundItems = null;
 			_playerTransform = null;

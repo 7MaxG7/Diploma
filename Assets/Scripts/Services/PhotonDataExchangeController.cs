@@ -8,7 +8,7 @@ using Zenject;
 namespace Services {
 
 	internal sealed class PhotonDataExchangeController : IPhotonDataExchangeController {
-		private readonly IViewsFactory _viewsFactory;
+		private readonly IPhotonManager _photonManager;
 		public event Action<int, bool> OnActivationDataRecieved;
 		public event Action<int> OnInstantiationDataRecieved;
 		public event Action<int, int> OnDamagePlayerDataRecieved;
@@ -19,8 +19,9 @@ namespace Services {
 
 
 		[Inject]
-		public PhotonDataExchangeController(IViewsFactory viewsFactory) {
-			_viewsFactory = viewsFactory;
+		public PhotonDataExchangeController(IPhotonManager photonManager)
+		{
+			_photonManager = photonManager;
 		}
 		
 		public void Dispose() {
@@ -29,7 +30,7 @@ namespace Services {
 				othersPhotonDataExchanger.OnDataReading -= RecieveData;
 			}
 			_othersPhotonDataExchangers.Clear();
-			_viewsFactory.DestroyPhotonObj(_minePhotonDataExchanger.photonView);
+			_photonManager.Destroy(_minePhotonDataExchanger.photonView);
 		}
 
 		public void Init(PhotonDataExchanger minePhotonDataExchanger, List<PhotonDataExchanger> othersPhotonDataExchangers) {

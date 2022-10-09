@@ -113,7 +113,7 @@ namespace Infrastructure {
 				var yPosition = ((_photonManager.GetPlayerActorNumber() - 1) % 2 + .5f) * Constants.GROUND_ITEMS_AMOUNT_PER_PLAYER_ZONE_LENGTH * groundSize.y;
 
 				var player = _unitsFactory.CreatePlayer(new Vector2(xPosition, yPosition));
-				var enemyPlayers = await FindEnemyPlayersAsync(player);
+				var enemyPlayers = await FindEnemyPlayersAsync();
 				_playersInteractionManager.Init(player, enemyPlayers);
 				_playerMoveManager.Init(player);
 				_compassManager.Init(player);
@@ -126,36 +126,34 @@ namespace Infrastructure {
 				return player;
 			}
 
-			async Task<List<PlayerView>> FindEnemyPlayersAsync(IUnit player) {
-				var enemyPlayers = new PlayerView[] { };
+			async Task<List<PlayerView>> FindEnemyPlayersAsync() {
+				var enemyPlayers = Array.Empty<PlayerView>();
+				// This objects are instantiated on other clients and automaticly appear and syncronize on this client
+				// with photon, so we just have to wait when they appear here
 				while (enemyPlayers.Length != _photonManager.GetRoomPlayersAmount()) {
 					enemyPlayers = Object.FindObjectsOfType<PlayerView>();
 					await Task.Yield();
 				}
-				var enemyPlayersList = enemyPlayers.ToList();
-				var playerUnit = player.UnitView as PlayerView;
-				if (playerUnit != null)
-					enemyPlayersList.Remove(playerUnit);
-				return enemyPlayersList;
+				return enemyPlayers.Where(view => !view.PhotonView.IsMine).ToList();
 			}
 
 			async Task InitPhotonDataControllersAsync(IUnit player) {
 				var minePhotonDataExchanger = _viewsFactory.CreatePhotonObj(_missionConfig.PhotonDataSynchronizerPath, Vector3.zero, Quaternion.identity)
 						.GetComponent<PhotonDataExchanger>();
-				var othersPhotonDataExchangers = await FindSynchronizers(minePhotonDataExchanger);
+				var othersPhotonDataExchangers = await FindSynchronizers();
 				_photonDataExchangeController.Init(minePhotonDataExchanger, othersPhotonDataExchangers);
 				_photonObjectsSynchronizer.Init(player.UnitView as PlayerView);
 			}
 
-			async Task<List<PhotonDataExchanger>> FindSynchronizers(PhotonDataExchanger minePhotonDataExchanger) {
-				var photonDataExchangers = new PhotonDataExchanger[] { };
+			async Task<List<PhotonDataExchanger>> FindSynchronizers() {
+				var photonDataExchangers = Array.Empty<PhotonDataExchanger>();
+				// This objects are instantiated on other clients and automaticly appear and syncronize on this client
+				// with photon, so we just have to wait when they appear here
 				while (photonDataExchangers.Length != _photonManager.GetRoomPlayersAmount()) {
 					photonDataExchangers = Object.FindObjectsOfType<PhotonDataExchanger>();
 					await Task.Yield();
 				}
-				var photonDataExchangersList = photonDataExchangers.ToList();
-				photonDataExchangersList.Remove(minePhotonDataExchanger);
-				return photonDataExchangersList;
+				return photonDataExchangers.Where(view => !view.photonView.IsMine).ToList();
 			}
 
 			void InitUi(IUnit player) {

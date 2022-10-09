@@ -12,7 +12,7 @@ namespace Services {
 
 		private readonly IPhotonDataExchangeController _photonDataExchangeController;
 		// ReSharper disable once InconsistentNaming
-		protected IViewsFactory _viewsFactory;
+		protected IPhotonManager _photonManager;
 		// ReSharper disable once InconsistentNaming
 		protected readonly Dictionary<int,List<T>> _objects = new();
 		// ReSharper disable once InconsistentNaming
@@ -21,10 +21,10 @@ namespace Services {
 
 		public virtual void Dispose() {
 			foreach (var obj in _objects.Values.SelectMany(obj => obj)) {
-				obj.OnDispose -= _viewsFactory.DestroyPhotonObj;
+				obj.OnDispose -= _photonManager.Destroy;
 			}
 			foreach (var obj in _spawnedObjects) {
-				obj.OnDispose -= _viewsFactory.DestroyPhotonObj;
+				obj.OnDispose -= _photonManager.Destroy;
 			}
 		}
 
@@ -38,7 +38,7 @@ namespace Services {
 			if (objects.Count == 0) {
 				objects.Capacity++;
 				obj = SpawnSpecifiedObject(spawnPosition, parameters);
-				obj.OnDispose += _viewsFactory.DestroyPhotonObj;
+				obj.OnDispose += _photonManager.Destroy;
 				OnObjectInstantiated?.Invoke(obj.PhotonView.ViewID);
 			} else {
 				var objIndex = objects.Count - 1;

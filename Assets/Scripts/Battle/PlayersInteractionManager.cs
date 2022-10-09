@@ -36,7 +36,7 @@ namespace Services {
 
 		public void Dispose() {
 			IsMultiplayerGame = null;
-			_missionResultManager.OnPlayerLeftRoomEvent -= RefindEnemyPlayerViews;
+			_missionResultManager.OnPlayerWithIdLeftRoomEvent -= RemoveLeavingPlayer;
 			_player = null;
 			_controllersHolder.RemoveController(this);
 			EnemyPlayerViews.Clear();
@@ -67,24 +67,24 @@ namespace Services {
 			} 
 		}
 
-		public void Init(IUnit player, List<PlayerView> enemyPlayerViews) {
-			if (enemyPlayerViews.Count == 0) {
+		public void Init(IUnit player, List<PlayerView> enemyPlayerViews)
+		{
+			if (enemyPlayerViews.Count == 0)
+			{
 				IsMultiplayerGame = false;
 				return;
 			}
 			
 			_player = player;
 			EnemyPlayerViews = enemyPlayerViews;
-			_missionResultManager.OnPlayerLeftRoomEvent += RefindEnemyPlayerViews;
+			_missionResultManager.OnPlayerWithIdLeftRoomEvent += RemoveLeavingPlayer;
 			IsMultiplayerGame = true;
 			_controllersHolder.AddController(this);
 		}
 		
-		private void RefindEnemyPlayerViews() {
-			EnemyPlayerViews = Object.FindObjectsOfType<PlayerView>().ToList();
-			var playerView = _player.UnitView as PlayerView;
-			if (playerView != null)
-				EnemyPlayerViews.Remove(playerView);
+		private void RemoveLeavingPlayer(int playerActorId)
+		{
+			EnemyPlayerViews.RemoveAll(view => view.PhotonView.Owner.ActorNumber == playerActorId);
 		}
 	}
 
