@@ -10,7 +10,7 @@ namespace Units {
 		public event Action<DamageInfo> OnDied;
 		public event Action<PhotonView> OnDispose;
 		
-		public abstract UnitView UnitView { get; }
+		public abstract IUnitView UnitView { get; }
 		public abstract Transform Transform { get; }
 		public abstract PhotonView PhotonView { get; }
 		public Health Health { get; private set; }
@@ -44,7 +44,7 @@ namespace Units {
 		}
 
 		public bool CheckOwnView(IDamagableView damageTaker) {
-			if (damageTaker is UnitView unitView) {
+			if (damageTaker is IUnitView unitView) {
 				return unitView == UnitView;
 			}
 			return false;

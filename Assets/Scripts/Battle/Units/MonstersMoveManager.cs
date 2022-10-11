@@ -27,7 +27,7 @@ namespace Infrastructure {
 			
 			_enemies.RemoveAll(enemy => enemy.IsDead);
 			foreach (var enemy in _enemies) {
-				enemy.Move((_target.position - enemy.Transform.position).normalized * deltaTime * enemy.MoveSpeed);
+				enemy.Move((_target.position - enemy.Transform.position).normalized * (deltaTime * enemy.MoveSpeed));
 			}
 		}
 

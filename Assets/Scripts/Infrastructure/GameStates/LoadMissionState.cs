@@ -142,7 +142,7 @@ namespace Infrastructure {
 						.GetComponent<PhotonDataExchanger>();
 				var othersPhotonDataExchangers = await FindSynchronizers();
 				_photonDataExchangeController.Init(minePhotonDataExchanger, othersPhotonDataExchangers);
-				_photonObjectsSynchronizer.Init(player.UnitView as PlayerView);
+				_photonObjectsSynchronizer.Init(player.UnitView);
 			}
 
 			async Task<List<PhotonDataExchanger>> FindSynchronizers() {

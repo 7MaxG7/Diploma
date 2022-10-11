@@ -1,12 +1,11 @@
-﻿using Infrastructure;
-using Photon.Pun;
+﻿using Photon.Pun;
 using UnityEngine;
 
 
 namespace Units {
 
 	internal sealed class MonsterUnit : Unit {
-		public override UnitView UnitView => _monsterView;
+		public override IUnitView UnitView => _monsterView;
 		public override Transform Transform => _monsterView.Transform;
 		public override PhotonView PhotonView => _monsterView.PhotonView;
 
@@ -15,12 +14,12 @@ namespace Units {
 		private readonly int _killExperience;
 
 
-		public MonsterUnit(GameObject monsterGO, MonstersParams monstersParam, int poolIndex) 
+		public MonsterUnit(GameObject monsterGo, MonstersParams monstersParam, int poolIndex) 
 				: base(monstersParam.MoveSpeed, monstersParam.Hp, poolIndex) {
 			Experience = new Experience(monstersParam.MonsterLevel, null);
 			_collisionDamage = monstersParam.Damage;
 			_killExperience = monstersParam.ExperienceOnKill;
-			var monsterView = monsterGO.GetComponent<MonsterView>();
+			var monsterView = monsterGo.GetComponent<MonsterView>();
 			monsterView.OnTriggerEnter += DamageTriggerUnit;
 			monsterView.OnDamageTake += TakeDamage;
 			_monsterView = monsterView;

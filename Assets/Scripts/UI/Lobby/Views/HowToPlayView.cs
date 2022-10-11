@@ -8,7 +8,6 @@ using UnityEngine.UI;
 namespace Infrastructure {
 
 	internal sealed class HowToPlayView : MonoBehaviour {
-		[SerializeField] private GameObject _gameObject;
 		[SerializeField] private CanvasGroup _canvasGroup;
 		[SerializeField] private HorizontalLayoutGroup _contentHorizontalGroup;
 		[SerializeField] private ScrollRect _rulesScroll;

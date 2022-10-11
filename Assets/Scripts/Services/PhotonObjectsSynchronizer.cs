@@ -15,7 +15,7 @@ namespace Services {
 		private readonly IUnitsPool _unitsPool;
 		private readonly IAmmosPool _ammosPool;
 		private readonly IHandleDamageManager _handleDamageManager;
-		private PlayerView _playerView;
+		private IUnitView _playerView;
 		private readonly List<PhotonView> _otherPlayersObjects = new();
 
 
@@ -40,7 +40,7 @@ namespace Services {
 			_otherPlayersObjects.Clear();
 		}
 
-		public void Init(PlayerView playerView) {
+		public void Init(IUnitView playerView) {
 			_playerView = playerView;
 			_unitsPool.OnObjectInstantiated += SendInstantiationData;
 			_unitsPool.OnObjectActivationToggle += SendActivationToggleData;

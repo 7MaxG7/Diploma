@@ -12,7 +12,7 @@ namespace Units {
 		bool IsDead { get; }
 		Health Health { get; }
 		Experience Experience { get; }
-		UnitView UnitView { get; }
+		IUnitView UnitView { get; }
 
 		bool CheckOwnView(IDamagableView damageTaker);
 		void KillUnit();

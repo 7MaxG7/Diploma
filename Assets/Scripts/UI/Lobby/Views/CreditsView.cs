@@ -9,7 +9,6 @@ using Button = UnityEngine.UI.Button;
 namespace Infrastructure {
 
 	internal sealed class CreditsView : MonoBehaviour {
-		[SerializeField] private GameObject _gameObject;
 		[SerializeField] private CanvasGroup _canvasGroup;
 		[SerializeField] private ScrollRect _creditsScroll;
 		[SerializeField] private Button _closeCreditsButton;

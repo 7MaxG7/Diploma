@@ -5,7 +5,8 @@ using UnityEngine;
 
 namespace Units {
 
-	internal abstract class UnitView : MonoBehaviour, IDamagableView {
+	internal abstract class UnitView : MonoBehaviour, IUnitView
+	{
 		[SerializeField] protected GameObject _gameObject;
 		[SerializeField] protected Transform _transform;
 		[SerializeField] private PhotonView _photonView;
