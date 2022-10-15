@@ -50,59 +50,59 @@ MonoBehaviour:
       _name: Painful Small orb
       _description: Projectile deal 15% more damage
       _upgrades:
-      - _characteristicType: 1
+      - _statType: 1
         _arithmetic: 3
         _deltaValue: 1.15
     - _weaponLevel: 3
       _name: Far Small orb
       _description: Weapon detects enemies for shooting 15% farer
       _upgrades:
-      - _characteristicType: 2
+      - _statType: 2
         _arithmetic: 3
         _deltaValue: 1.15
     - _weaponLevel: 4
       _name: Fast Small orb
       _description: Projectile moves 15% faster
       _upgrades:
-      - _characteristicType: 4
+      - _statType: 4
         _arithmetic: 3
         _deltaValue: 1.15
     - _weaponLevel: 5
       _name: Deadly Small orb
       _description: Projective damage increases by 150
       _upgrades:
-      - _characteristicType: 1
+      - _statType: 1
         _arithmetic: 1
         _deltaValue: 150
     - _weaponLevel: 6
       _name: Rapid Small orb
       _description: Cooldown between shooting decreases by 15%
       _upgrades:
-      - _characteristicType: 3
+      - _statType: 3
         _arithmetic: 3
         _deltaValue: 0.85
     - _weaponLevel: 7
       _name: Far Small orb
       _description: Weapon detects enemies for shooting 20% farer
       _upgrades:
-      - _characteristicType: 2
+      - _statType: 2
         _arithmetic: 3
         _deltaValue: 1.2
     - _weaponLevel: 8
       _name: Painful Small orb
       _description: Projectile deal 20% more damage
       _upgrades:
-      - _characteristicType: 1
+      - _statType: 1
         _arithmetic: 3
         _deltaValue: 1.2
     - _weaponLevel: 9
       _name: Supersonic Small orb
       _description: Projectiles move and shoot 25% faster
       _upgrades:
-      - _characteristicType: 3
+      - _statType: 3
         _arithmetic: 3
         _deltaValue: 0.75
-      - _characteristicType: 4
+      - _statType: 4
         _arithmetic: 3
         _deltaValue: 1.25
   - _weaponType: 2
@@ -111,56 +111,56 @@ MonoBehaviour:
       _name: Far Acid orb
       _description: Weapon detects enemies for shooting 10% farer
       _upgrades:
-      - _characteristicType: 2
+      - _statType: 2
         _arithmetic: 3
         _deltaValue: 1.1
     - _weaponLevel: 3
       _name: Fast Acid orb
       _description: Projectile moves 10% faster
       _upgrades:
-      - _characteristicType: 4
+      - _statType: 4
         _arithmetic: 3
         _deltaValue: 1.1
     - _weaponLevel: 4
       _name: Painful Acid orb
       _description: Projectile deal 20% more damage
       _upgrades:
-      - _characteristicType: 1
+      - _statType: 1
         _arithmetic: 3
         _deltaValue: 1.2
     - _weaponLevel: 5
       _name: Deadly Acid orb
       _description: Damage ticks twice faster
       _upgrades:
-      - _characteristicType: 5
+      - _statType: 5
         _arithmetic: 3
         _deltaValue: 0.5
     - _weaponLevel: 6
       _name: Rapid Acid orb
       _description: Cooldown between shooting decreases by 15%
       _upgrades:
-      - _characteristicType: 3
+      - _statType: 3
         _arithmetic: 3
         _deltaValue: 0.85
     - _weaponLevel: 7
-      _name: Rapid Acid orb
+      _name: Far Acid orb
       _description: Weapon detects enemies for shooting 20% farer
       _upgrades:
-      - _characteristicType: 2
+      - _statType: 2
         _arithmetic: 3
         _deltaValue: 1.2
     - _weaponLevel: 8
       _name: Painful Acid orb
       _description: Projectile deal 30% more damage
       _upgrades:
-      - _characteristicType: 1
+      - _statType: 1
         _arithmetic: 3
         _deltaValue: 1.3
     - _weaponLevel: 9
       _name: Cutting Acid orb
       _description: Projectile becomes piercing
       _upgrades:
-      - _characteristicType: 6
+      - _statType: 6
         _arithmetic: 5
         _deltaValue: 1
   - _weaponType: 3
@@ -169,55 +169,55 @@ MonoBehaviour:
       _name: More Mines
       _description: Reloading of projectiles 10% faster
       _upgrades:
-      - _characteristicType: 3
+      - _statType: 3
         _arithmetic: 3
         _deltaValue: 0.9
     - _weaponLevel: 3
       _name: Painful Mine
       _description: Projectile damage increases by 15%
       _upgrades:
-      - _characteristicType: 1
+      - _statType: 1
         _arithmetic: 3
         _deltaValue: 1.15
     - _weaponLevel: 4
       _name: Far Mine
       _description: Weapon detects enemies for shooting 15% farer
       _upgrades:
-      - _characteristicType: 2
+      - _statType: 2
         _arithmetic: 3
         _deltaValue: 1.15
     - _weaponLevel: 5
       _name: Rapid Mine
-      _description: Reloading of projectiles 50% faster
+      _description: Reloading of projectiles twice faster
       _upgrades:
-      - _characteristicType: 3
+      - _statType: 3
         _arithmetic: 3
         _deltaValue: 0.5
     - _weaponLevel: 6
       _name: Painful Mine
       _description: Projectile damage increases by 25%
       _upgrades:
-      - _characteristicType: 1
+      - _statType: 1
         _arithmetic: 3
         _deltaValue: 1.25
     - _weaponLevel: 7
       _name: Far Mine
       _description: Weapon detects enemies for shooting 25% farer
       _upgrades:
-      - _characteristicType: 2
+      - _statType: 2
         _arithmetic: 3
         _deltaValue: 1.25
     - _weaponLevel: 8
       _name: More Mines
       _description: Reloading of projectiles 20% faster
       _upgrades:
-      - _characteristicType: 3
+      - _statType: 3
         _arithmetic: 3
         _deltaValue: 0.8
     - _weaponLevel: 9
       _name: Deadly mine
       _description: Projectile damage increased by 1500
       _upgrades:
-      - _characteristicType: 1
+      - _statType: 1
         _arithmetic: 1
         _deltaValue: 1500
