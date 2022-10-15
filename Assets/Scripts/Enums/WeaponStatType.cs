@@ -1,12 +1,12 @@
 ﻿namespace Weapons {
 
-	internal enum WeaponCharacteristicType {
+	internal enum WeaponStatType {
 		None = 0,
 		Damage = 1,
 		Range = 2,
 		Cooldown = 3,
 		AmmoSpeed = 4,
-		DamageTickCooldown = 5,
+		DamageTicksCooldown = 5,
 		Pierciness = 6,
 	}
 
