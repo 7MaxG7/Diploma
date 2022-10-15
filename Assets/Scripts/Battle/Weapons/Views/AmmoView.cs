@@ -16,6 +16,7 @@ namespace Weapons {
 		
 		public Transform Transform => _transform;
 		public PhotonView PhotonView => _photonView;
+		public GameObject GameObject => _gameObject;
 
 
 		private void OnTriggerEnter2D(Collider2D other) {
@@ -23,6 +24,8 @@ namespace Weapons {
 		}
 
 		private void OnBecameInvisible() {
+			// If we change logic of returning to pool OnBecameInvisible, we should do return it to ppol in
+			// Ammo.HandleCollision intead of just SetActive(false)
 			OnBecomeInvisible?.Invoke();
 		}
 

@@ -14,7 +14,7 @@ namespace Services {
 		// ReSharper disable once InconsistentNaming
 		protected IPhotonManager _photonManager;
 		// ReSharper disable once InconsistentNaming
-		protected readonly Dictionary<int,List<T>> _objects = new();
+		protected readonly Dictionary<int,Stack<T>> _objects = new();
 		// ReSharper disable once InconsistentNaming
 		protected readonly List<T> _spawnedObjects = new();
 
@@ -32,18 +32,15 @@ namespace Services {
 			T obj;
 			var poolIndex = GetSpecifiedPoolIndex(parameters);
 			if (!_objects.ContainsKey(poolIndex))
-				_objects.Add(poolIndex, new List<T>());
+				_objects.Add(poolIndex, new Stack<T>());
 			
 			var objects = _objects[poolIndex];
 			if (objects.Count == 0) {
-				objects.Capacity++;
 				obj = SpawnSpecifiedObject(spawnPosition, parameters);
 				obj.OnDispose += _photonManager.Destroy;
 				OnObjectInstantiated?.Invoke(obj.PhotonView.ViewID);
 			} else {
-				var objIndex = objects.Count - 1;
-				obj = objects[objIndex];
-				objects.RemoveAt(objIndex);
+				obj = objects.Pop();
 				obj.Respawn(spawnPosition);
 			}
 			_spawnedObjects.Add(obj);
@@ -52,15 +49,11 @@ namespace Services {
 		}
 
 		protected void ReturnObject(T obj) {
-			// In case of ammo it can be returned twice: on collision it returnes, deactivates and becomes invisible - so returnes second time OnBecameInvisible.
-			// Thats why we check if its active first
-			if (!_spawnedObjects.Remove(obj))
-				return;
-
+			_spawnedObjects.Remove(obj);
 			TogglePoolObjectActivation(obj, false);
 			obj.StopObj();
 			obj.Transform.position = Vector3.zero;
-			_objects[obj.PoolIndex].Add(obj);
+			_objects[obj.PoolIndex].Push(obj);
 		}
 
 		private void TogglePoolObjectActivation(T obj, bool isActive) {

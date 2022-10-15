@@ -67,7 +67,10 @@ namespace Weapons {
 				OnCollidedWithDamageTaker?.Invoke(damageTaker, _damage, _damageTicksCooldown, _owner);
 
 				if (!_isPiercing)
-					OnLifetimeExpired?.Invoke(this);
+					// On deactivating obj becomes invisible, so while ammo returnes to pool OnBecomeInvisible we've got
+					// to just deactivate it here to not return it to pool twice. If we change OnBecomeInvisible logic,
+					// we should do OnLifetimeExpired?.Invoke(this) here
+					_ammoView.GameObject.SetActive(false);
 			}
 		}
 

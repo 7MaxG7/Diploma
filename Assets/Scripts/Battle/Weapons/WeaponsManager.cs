@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Abstractions;
+using Abstractions.Utils;
 using Infrastructure;
 using Services;
 using Sounds;
@@ -18,6 +19,7 @@ namespace Weapons {
 		private readonly List<IWeapon> _activeWeapons;
 		private readonly List<IUnit> _monsters;
 		private readonly ISoundController _soundController;
+		private readonly IUpgradedWeaponsFactory _upgradedWeaponsFactory;
 		public List<WeaponType> UpgradableWeaponTypes { get; private set; }
 		private IUnit _player;
 		private bool _isShooting;
@@ -25,10 +27,12 @@ namespace Weapons {
 
 		[Inject]
 		public WeaponsManager(IUnitsPool unitsPool, IAmmosPool ammosPool, IPlayersInteractionManager playersInteractionManager
-				, ISoundController soundController, WeaponsConfig weaponsConfig, IControllersHolder controllersHolder) {
+				, ISoundController soundController, IUpgradedWeaponsFactory upgradedWeaponsFactory
+				, WeaponsConfig weaponsConfig, IControllersHolder controllersHolder) {
 			_ammosPool = ammosPool;
 			_playersInteractionManager = playersInteractionManager;
 			_soundController = soundController;
+			_upgradedWeaponsFactory = upgradedWeaponsFactory;
 			_weaponsConfig = weaponsConfig;
 			_activeWeapons = new List<IWeapon>(weaponsConfig.WeaponsAmount);
 			_monsters = unitsPool.ActiveMonsters;
@@ -114,7 +118,7 @@ namespace Weapons {
 			if (_activeWeapons.Any(weapon => weapon.Type == type))
 				return;
 
-			var newWeapon = new Weapon(_player, _weaponsConfig.GetWeaponBaseParam(type), _ammosPool);
+			var newWeapon = new Weapon(_player, _weaponsConfig.GetWeaponBaseParam(type), _ammosPool, _upgradedWeaponsFactory);
 			newWeapon.OnShooted += _soundController.PlayWeaponShootSound;
 			_activeWeapons.Add(newWeapon);
 			UpdateUpgradableWeaponsList(newWeapon);
@@ -122,10 +126,7 @@ namespace Weapons {
 
 		public int GetCurrentLevelOfWeapon(WeaponType weaponType) {
 			var requiredWeapon = _activeWeapons.FirstOrDefault(weapon => weapon.Type == weaponType);
-			if (requiredWeapon == null)
-				return 0;
-
-			return requiredWeapon.Level;
+			return requiredWeapon?.Level ?? 0;
 		}
 
 		private void UpdateUpgradableWeaponsList(IWeapon newWeapon) {

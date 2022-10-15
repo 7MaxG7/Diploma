@@ -1,4 +1,5 @@
-﻿using Services;
+﻿using Abstractions.Utils;
+using Services;
 using Utils;
 using Weapons;
 using Zenject;
@@ -11,6 +12,7 @@ namespace Infrastructure.Zenject {
 			Container.Bind<IUnitsFactory>().To<UnitsFactory>().AsSingle();
 			Container.Bind<IAmmosFactory>().To<AmmosFactory>().AsSingle();
 			Container.Bind<IViewsFactory>().To<ViewsFactory>().AsSingle();
+			Container.Bind<IUpgradedWeaponsFactory>().To<UpgradedWeaponsFactory>().AsSingle();
 		}
 	}
 
