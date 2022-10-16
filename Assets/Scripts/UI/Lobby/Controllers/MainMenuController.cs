@@ -23,6 +23,7 @@ namespace Infrastructure {
 		private readonly IPlayfabManager _playfabManager;
 		private readonly MainMenuConfig _mainMenuConfig;
 		private bool _rulesPageIsMoving;
+		private bool _isSetuped;
 
 
 		[Inject]
@@ -42,6 +43,10 @@ namespace Infrastructure {
 		}
 
 		public void OnDispose() {
+			if (!_isSetuped)
+				return;
+
+			_isSetuped = false;
 			_mainMenuView.OnLoginClick -= _loginPanelController.ShowPanel;
 			_mainMenuView.OnPlayClick -= _lobbyScreenController.ShowScreen;
 			_mainMenuView.OnSettingsClick -= OpenSettingsPanel;
@@ -72,6 +77,7 @@ namespace Infrastructure {
 			InitLobbyPanel();
 			InitButtons();
 			SetupScoresLable();
+			_isSetuped = true;
 
 			void InitHowToPlay() {
 				_mainMenuView.HowToPlayView.Init(_mainMenuConfig);
