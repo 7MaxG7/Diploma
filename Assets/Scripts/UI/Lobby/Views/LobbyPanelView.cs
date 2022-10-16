@@ -115,7 +115,7 @@ namespace Infrastructure {
 			ToggleBlockingUi(false);
 		}
 
-		public void Dispose() {
+		public void OnDispose() {
 			ClearPanel();
 			_createPrivateRoomButton.onClick.RemoveAllListeners();
 			_joinPrivateRoomButton.onClick.RemoveAllListeners();

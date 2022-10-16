@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Linq;
+using Services;
 using Sounds;
 using UI;
 using UnityEngine;
-using Utils;
 using Zenject;
 using Object = UnityEngine.Object;
 
@@ -21,14 +22,19 @@ namespace Infrastructure {
 
 		private readonly IPermanentUiView _permanentUiView;
 		private readonly ISoundController _soundController;
+		private readonly IPlayerPrefsService _playerPrefsService;
+		private readonly IScreenService _screenService;
 		private readonly UiConfig _uiConfig;
 		private ICoroutineRunner _coroutineRunner;
 
 
 		[Inject]
-		public PermanentUiController(IPermanentUiView permanentUiView, ISoundController soundController, UiConfig uiConfig) {
+		public PermanentUiController(IPermanentUiView permanentUiView, ISoundController soundController
+			, IPlayerPrefsService playerPrefsService, IScreenService screenService, UiConfig uiConfig) {
 			_permanentUiView = permanentUiView;
 			_soundController = soundController;
+			_playerPrefsService = playerPrefsService;
+			_screenService = screenService;
 			_uiConfig = uiConfig;
 		}
 
@@ -37,6 +43,10 @@ namespace Infrastructure {
 			_permanentUiView.SettingsPanel.OnSoundVolumeSliderValueChange -= _soundController.SetSoundVolume;
 			_permanentUiView.SettingsPanel.OnLeaveGameClick -= LeaveGame;
 			_permanentUiView.SettingsPanel.OnCloseSettingsClick -= HideSettingsPanel;
+#if UNITY_EDITOR || UNITY_STANDALONE
+			_permanentUiView.SettingsPanel.OnResolutionChanged -= SetResolutionByIndex;
+			_permanentUiView.SettingsPanel.OnWindowModeChanged -= SetWindowMode;
+#endif
 			_permanentUiView.ResultPanel.OnCloseResultPanelClick -= HideMissionResult;
 			_permanentUiView.OnCurtainShown -= InvokeOnCurtainShown;
 			_permanentUiView.SettingsPanel.Dispose();
@@ -63,6 +73,15 @@ namespace Infrastructure {
 				_permanentUiView.SettingsPanel.OnSoundVolumeSliderValueChange += _soundController.SetSoundVolume;
 				_permanentUiView.SettingsPanel.OnLeaveGameClick += LeaveGame;
 				_permanentUiView.SettingsPanel.OnCloseSettingsClick += HideSettingsPanel;
+#if UNITY_EDITOR || UNITY_STANDALONE
+				_permanentUiView.SettingsPanel.ToggleStandaloneSettings(true);
+				_permanentUiView.SettingsPanel.SetupResolutionOptions(Screen.resolutions);
+				_permanentUiView.SettingsPanel.OnResolutionChanged += SetResolutionByIndex;
+				_permanentUiView.SettingsPanel.OnWindowModeChanged += SetWindowMode;
+				SetSavedResolution();
+#else
+				_permanentUiView.SettingsPanel.ToggleStandaloneSettings(false);
+#endif
 				_permanentUiView.SettingsPanel.HideSettingsPanel(0);
 			}
 
@@ -117,12 +136,50 @@ namespace Infrastructure {
 			OnLeaveGameClicked?.Invoke();
 		}
 
-		private void HideSettingsPanel() {
-			PlayerPrefs.SetFloat(Constants.MUSIC_VOLUME_PREFS_KEY, _soundController.GetMusicVolume());
-			PlayerPrefs.SetFloat(Constants.SOUND_VOLUME_PREFS_KEY, _soundController.GetSoundVolume());
-			PlayerPrefs.Save();
+		private void HideSettingsPanel()
+		{
+			_playerPrefsService.SaveSoundVolumes(_soundController.GetMusicVolume(), _soundController.GetSoundVolume());
+#if UNITY_EDITOR || UNITY_STANDALONE
+			_playerPrefsService.SaveCurrentResolution(_screenService.GetCurrentResolution());
+			_playerPrefsService.SaveCurrentFullScreenMode(_screenService.GetCurrentFullScreenMode());
+#endif
 			_permanentUiView.SettingsPanel.HideSettingsPanel(_uiConfig.CanvasFadeAnimationDuration);
 		}
-	}
+		
+#if UNITY_EDITOR || UNITY_STANDALONE
+		private void SetResolutionByIndex(int resolutionIndex)
+		{
+			SetResolution(resolutionIndex, null);
+		}
 
+		private void SetWindowMode(bool isFullScreen)
+		{
+			SetResolution(null, isFullScreen);
+		}
+
+		private void SetResolution(int? resolutionIndex, bool? isFullScreen)
+		{
+			isFullScreen ??= Screen.fullScreen;
+			var resolution = resolutionIndex.HasValue
+				? Screen.resolutions[resolutionIndex.Value]
+				: _screenService.GetCurrentResolution();
+
+			Screen.SetResolution(resolution.width, resolution.height, isFullScreen.Value, resolution.refreshRate);
+		}
+
+		private void SetSavedResolution()
+		{
+			var resolution = _playerPrefsService.GetSavedResolution() ?? _screenService.GetCurrentResolution();
+			var isFullScreen = _playerPrefsService.GetFullScreenMode() ?? _screenService.GetCurrentFullScreenMode();
+
+			var resolutionItem = Screen.resolutions.FirstOrDefault(item => item.Equals(resolution));
+			var resolutionIndex = Array.IndexOf(Screen.resolutions, resolutionItem);
+			if (resolutionIndex < 0)
+				return;
+
+			SetResolution(resolutionIndex, isFullScreen);
+			_permanentUiView.SettingsPanel.SetResolutionUiElements(resolutionIndex, isFullScreen);
+		}
+#endif
+	}
 }

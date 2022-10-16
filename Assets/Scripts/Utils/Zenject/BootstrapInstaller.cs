@@ -21,6 +21,8 @@ namespace Infrastructure.Zenject {
 			Container.Bind<ISoundController>().To<SoundController>().AsSingle();
 			Container.Bind<IPhotonManager>().To<PhotonManager>().AsSingle();
 			Container.Bind<IPlayfabManager>().To<PlayfabManager>().AsSingle();
+			Container.Bind<IPlayerPrefsService>().To<PlayerPrefsService>().AsSingle();
+			Container.Bind<IScreenService>().To<ScreenService>().AsSingle();
 		}
 	}
 

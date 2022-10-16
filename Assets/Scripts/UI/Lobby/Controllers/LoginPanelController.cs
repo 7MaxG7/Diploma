@@ -32,7 +32,13 @@ namespace Infrastructure {
 			_mainMenuConfig = mainMenuConfig;
 		}
 
-		public void Dispose() {
+		public void Dispose()
+		{
+			OnDispose();
+		}
+
+		public void OnDispose()
+		{
 			_loginPanelView.OnDispose();
 			_loginPanelView.OnLoginConfirmClick -= ConfirmLogin;
 			_loginPanelView.OnHideLoginPanelClick -= _loginPanelView.Hide;

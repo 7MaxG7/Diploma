@@ -18,6 +18,7 @@ namespace Infrastructure {
 		private readonly List<RoomInfo> _roomsList = new();
 		private bool _uiIsBlocked;
 		private IRoomEventsCallbacks _lobbyScreenController;
+		private bool _isInited;
 
 
 		public LobbyPanelController(IPhotonManager photonManager, MainMenuConfig mainMenuConfig, LobbyPanelView lobbyPanelView, ILobbyStatusDisplayer lobbyStatusDisplayer) {
@@ -27,9 +28,19 @@ namespace Infrastructure {
 			_lobbyStatusDisplayer = lobbyStatusDisplayer;
 		}
 
-		public void Dispose() {
+		public void Dispose()
+		{
+			OnDispose();
+		}
+
+		public void OnDispose()
+		{
+			if (!_isInited)
+				return;
+
+			_isInited = false;
 			DOTween.KillAll();
-			_lobbyPanelView.Dispose();
+			_lobbyPanelView.OnDispose();
 			_lobbyPanelView.OnCreatePrivateRoomClick -= CreatePrivateRoom;
 			_lobbyPanelView.OnJoinPrivateRoomClick -= JoinRoom;
 			_lobbyPanelView.OnCreateNewRoomClick -= CreateRoom;
@@ -55,6 +66,7 @@ namespace Infrastructure {
 			_lobbyScreenController.OnRoomCreationFail += _lobbyPanelView.UnblockUi;
 			_lobbyScreenController.OnRoomJoinFail += _lobbyPanelView.UnblockUi;
 			_lobbyScreenController.OnRandomRoomJoinFail += _lobbyPanelView.UnblockUi;
+			_isInited = true;
 		}
 
 		public void ShowPanel(Action onPanelShownCallback = null) {

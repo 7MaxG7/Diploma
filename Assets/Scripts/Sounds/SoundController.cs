@@ -3,7 +3,6 @@ using System.Linq;
 using Infrastructure;
 using Services;
 using UnityEngine;
-using Utils;
 using Weapons;
 using Zenject;
 using Object = UnityEngine.Object;
@@ -16,6 +15,7 @@ namespace Sounds {
 		private readonly SoundConfig _soundConfig;
 		private readonly IRandomManager _random;
 		private readonly IViewsFactory _viewsFactory;
+		private readonly IPlayerPrefsService _playerPrefsService;
 		private SoundPlayerView _soundPlayer;
 		private Dictionary<WeaponType, AudioClip> _weaponShootClips;
 		private AudioClip[] _menuClips;
@@ -23,10 +23,12 @@ namespace Sounds {
 
 
 		[Inject]
-		public SoundController(SoundConfig soundConfig, IRandomManager randomManager, IViewsFactory viewsFactory) {
+		public SoundController(SoundConfig soundConfig, IRandomManager randomManager, IViewsFactory viewsFactory
+			, IPlayerPrefsService playerPrefsService) {
 			_soundConfig = soundConfig;
 			_random = randomManager;
 			_viewsFactory = viewsFactory;
+			_playerPrefsService = playerPrefsService;
 		}
 
 		public void Init() {
@@ -38,11 +40,11 @@ namespace Sounds {
 					_soundPlayer = _viewsFactory.CreateSoundPlayer();
 				_soundPlayer.MusicLoop = true;
 				Object.DontDestroyOnLoad(_soundPlayer);
-				if (PlayerPrefs.HasKey(Constants.MUSIC_VOLUME_PREFS_KEY)) {
-					SetMusicVolume(PlayerPrefs.GetFloat(Constants.MUSIC_VOLUME_PREFS_KEY));
-				}
-				if (PlayerPrefs.HasKey(Constants.SOUND_VOLUME_PREFS_KEY)) {
-					SetSoundVolume(PlayerPrefs.GetFloat(Constants.SOUND_VOLUME_PREFS_KEY));
+				var volumes = _playerPrefsService.GetSoundVolumes();
+				if (volumes != null)
+				{
+					SetMusicVolume(volumes.Value.MusicVolume);
+					SetSoundVolume(volumes.Value.SoundVolume);
 				}
 			}
 

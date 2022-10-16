@@ -23,7 +23,13 @@ namespace Infrastructure {
 			_roomPanelView = roomPanelView;
 		}
 
-		public void Dispose() {
+		public void Dispose()
+		{
+			OnDispose();
+		}
+
+		public void OnDispose()
+		{
 			_roomPanelView.OnStartGameClick -= StartGame;
 			_roomPanelView.OnClosePanelClick -= LeaveRoom;
 			_roomPanelView.OnDispose();

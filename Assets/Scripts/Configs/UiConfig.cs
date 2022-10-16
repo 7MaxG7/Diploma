@@ -54,5 +54,4 @@ namespace Infrastructure {
 		public string NewWeaponLevelText => _newWeaponLevelText;
 		public string UpgradeWeaponLevelText => _upgradeWeaponLevelText;
 	}
-
 }

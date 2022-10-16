@@ -52,14 +52,14 @@ namespace Infrastructure {
 		public void Exit() {
 			_soundController.StopAll();
 			if (!_permanentUiController.IsActivating)
-				_mainMenuController.Dispose();
+				_mainMenuController.OnDispose();
 			else
 				_permanentUiController.OnCurtainShown += DisposeMainMenu;
 
 
 			void DisposeMainMenu() {
 				_permanentUiController.OnCurtainShown -= DisposeMainMenu;
-				_mainMenuController.Dispose();
+				_mainMenuController.OnDispose();
 			}
 		}
 	}

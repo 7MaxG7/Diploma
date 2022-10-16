@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using PlayFab;
 using Services;
 using UnityEngine;
@@ -10,7 +9,7 @@ using Zenject;
 namespace Infrastructure {
 
 	internal sealed class MainMenuController : IMainMenuController {
-		public event Action<string> OnPlayfabLogin;
+		// public event Action<string> OnPlayfabLogin;
 		
 		private string _userName;
 		private string _playfabId;
@@ -37,7 +36,12 @@ namespace Infrastructure {
 			_mainMenuConfig = mainMenuConfig;
 		}
 
-		public void Dispose() {
+		public void Dispose()
+		{
+			OnDispose();
+		}
+
+		public void OnDispose() {
 			_mainMenuView.OnLoginClick -= _loginPanelController.ShowPanel;
 			_mainMenuView.OnPlayClick -= _lobbyScreenController.ShowScreen;
 			_mainMenuView.OnSettingsClick -= OpenSettingsPanel;
@@ -49,8 +53,8 @@ namespace Infrastructure {
 			_mainMenuView.CreditsView.OnCloseCreditsClick -= _mainMenuView.CreditsView.HideCredits;
 			_mainMenuView.OnQuitGameClick -= QuitGame;
 			_loginPanelController.OnUserLoginSuccess -= SetUser;
-			_loginPanelController.Dispose();
-			_lobbyScreenController.Dispose();
+			_loginPanelController.OnDispose();
+			_lobbyScreenController.OnDispose();
 			_mainMenuView.HowToPlayView.OnDispose();
 			_mainMenuView.CreditsView.OnDispose();
 			_mainMenuView.OnDispose();
@@ -110,13 +114,13 @@ namespace Infrastructure {
 		}
 
 		private void QuitGame() {
-			Dispose();
+			OnDispose();
 			_photonManager.Disconnect();
 			Application.Quit();
 		}
 
 		private void SetUser(string userName, string playfabId) {
-			OnPlayfabLogin?.Invoke(playfabId);
+			// OnPlayfabLogin?.Invoke(playfabId);
 			_userName = userName;
 			_playfabId = playfabId;
 			SetupScoresLable();

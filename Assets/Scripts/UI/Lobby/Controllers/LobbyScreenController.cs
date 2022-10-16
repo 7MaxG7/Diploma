@@ -35,14 +35,11 @@ namespace Infrastructure {
 			_roomPanelController = new RoomPanelController(_photonManager, mainMenuConfig, _lobbyScreenView.RoomPanelView, permanentUiController);
 		}
 
-		public void Dispose() {
-			_lobbyPanelController.Dispose();
-			_roomPanelController.Dispose();
-			DOTween.Clear();
-			DOTween.KillAll();
-			PhotonNetwork.RemoveCallbackTarget(this);
+		public void Dispose()
+		{
+			OnDispose();
 		}
-		
+
 #region IConnectionCallbacks
 		public void OnConnectedToMaster() {
 			_photonManager.JoinCustonLobby();
@@ -123,6 +120,14 @@ namespace Infrastructure {
 		public void OnMasterClientSwitched(Player newMasterClient) { }
 #endregion
 
+		public void OnDispose()
+		{
+			_lobbyPanelController.OnDispose();
+			_roomPanelController.OnDispose();
+			DOTween.Clear();
+			DOTween.KillAll();
+			PhotonNetwork.RemoveCallbackTarget(this);
+		}
 
 		public void Init(string userName) {
 			_userName = userName;

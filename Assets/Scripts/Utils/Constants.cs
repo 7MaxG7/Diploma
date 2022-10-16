@@ -32,8 +32,12 @@
 			
 		// Settings
 		public const string MUSIC_VOLUME_PREFS_KEY = "music_volume";
-		public const string SOUND_VOLUME_PREFS_KEY = "sound_value";
-		
+		public const string SOUND_VOLUME_PREFS_KEY = "sound_volume";
+		public const string SAVED_WIDTH_PREFS_KEY = "resolution_width";
+		public const string SAVED_HEIGHT_PREFS_KEY = "resolution_height";
+		public const string SAVED_WINDOW_MODE_PREFS_KEY = "resolution_window_mode";
+		public const string SAVED_FRAMERATE_PREFS_KEY = "resolution_framerate";
+	
 		// Playfab
 		public const string WINS_AMOUNT_PLAYFAB_KEY = "wins_amount";
 		public const string KILLS_AMOUNT_PLAYFAB_KEY = "kills_amount";

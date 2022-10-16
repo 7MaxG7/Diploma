@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _missionUiView: {fileID: 8977646226471751123, guid: 5e47b395351f0eb40a6a36dc35c5941e, type: 3}
   _canvasFadeAnimationDuration: 0.5
+  _resolutionDescriptionTemplate: '{0} x {1} @{2}'
   _loadingStatusPrefixText: Loading
   _loadingStatusSuffixSymbol: 46
   _minSuffixSymbolsAmount: 0
