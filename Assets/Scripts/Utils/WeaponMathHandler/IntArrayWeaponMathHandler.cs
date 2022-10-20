@@ -1,10 +1,11 @@
 ﻿using Infrastructure;
 
-namespace Utils.WeaponMathHandler
+namespace Utils
 {
     internal class IntArrayWeaponMathHandler : AbstractWeaponMathHandler<int[]>
     {
-        protected override int[] CountSpecificUpgradedStat(int[] baseStat, ArithmeticType arithmeticType, float deltaValue)
+        protected override int[] CountSpecificUpgradedStat(int[] baseStat, ArithmeticType arithmeticType,
+            float deltaValue)
         {
             var stat = new int[baseStat.Length];
             baseStat.CopyTo(stat, 0);

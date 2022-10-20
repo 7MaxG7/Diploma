@@ -1,13 +1,13 @@
 ﻿using UnityEngine;
 
 
-namespace Services {
+namespace Services
+{
+    internal interface IInputService
+    {
+        Vector2 Axis { get; }
+        bool CompassButtonIsPressed { get; }
 
-	internal interface IInputService {
-		Vector2 Axis { get; }
-		bool CompassButtonIsPressed { get; }
-		
-		void Init();
-	}
-
+        void Init();
+    }
 }

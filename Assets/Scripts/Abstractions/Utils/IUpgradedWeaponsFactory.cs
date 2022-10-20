@@ -1,6 +1,6 @@
 ﻿using Weapons;
 
-namespace Abstractions.Utils
+namespace Utils
 {
     internal interface IUpgradedWeaponsFactory
     {

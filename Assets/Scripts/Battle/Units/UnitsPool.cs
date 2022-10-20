@@ -7,65 +7,78 @@ using Utils;
 using Zenject;
 
 
-namespace Services {
+namespace Services
+{
+    internal sealed class UnitsPool : ObjectsPool<IUnit>, IUnitsPool
+    {
+        public List<IUnit> ActiveMonsters => _spawnedObjects;
+        private readonly IUnitsFactory _unitsFactory;
+        private readonly IHandleDamageManager _handleDamageManager;
+        private readonly IMissionResultManager _missionResultManager;
 
-	internal sealed class UnitsPool : ObjectsPool<IUnit>, IUnitsPool {
-		public List<IUnit> ActiveMonsters => _spawnedObjects;
-		private readonly IUnitsFactory _unitsFactory;
-		private readonly IHandleDamageManager _handleDamageManager;
-		private readonly IMissionResultManager _missionResultManager;
 
-		
-		[Inject]
-		public UnitsPool(IUnitsFactory unitsFactory, IHandleDamageManager handleDamageManager, IMissionResultManager missionResultManager
-				, IPhotonManager photonManager) {
-			_unitsFactory = unitsFactory;
-			_handleDamageManager = handleDamageManager;
-			_missionResultManager = missionResultManager;
-			_photonManager = photonManager;
-		}
+        [Inject]
+        public UnitsPool(IUnitsFactory unitsFactory, IHandleDamageManager handleDamageManager,
+            IMissionResultManager missionResultManager
+            , IPhotonManager photonManager)
+        {
+            _unitsFactory = unitsFactory;
+            _handleDamageManager = handleDamageManager;
+            _missionResultManager = missionResultManager;
+            _photonManager = photonManager;
+        }
 
-		public override void Dispose() {
-			base.Dispose();
-			foreach (var unit in _objects.Values.SelectMany(obj => obj)) {
-				unit.OnDied -= ReturnUnit;
-				unit.OnDied -= StopUnitPeriodicalDamage;
-				unit.OnDied -= _missionResultManager.CountKill;
-				unit.Dispose();
-			}
-			foreach (var objList in _objects.Values) {
-				objList.Clear();
-			}
-			_objects.Clear();
-			foreach (var unit in ActiveMonsters) {
-				unit.OnDied -= ReturnUnit;
-				unit.OnDied -= StopUnitPeriodicalDamage;
-				unit.OnDied -= _missionResultManager.CountKill;
-				unit.Dispose();
-			}
-			ActiveMonsters.Clear();
-		}
+        public override void Dispose()
+        {
+            base.Dispose();
+            foreach (var unit in _objects.Values.SelectMany(obj => obj))
+            {
+                unit.OnDied -= ReturnUnit;
+                unit.OnDied -= StopUnitPeriodicalDamage;
+                unit.OnDied -= _missionResultManager.CountKill;
+                unit.Dispose();
+            }
 
-		protected override int GetSpecifiedPoolIndex(object[] parameters) {
-			return (int)parameters[0];
-		}
+            foreach (var objList in _objects.Values)
+            {
+                objList.Clear();
+            }
 
-		protected override IUnit SpawnSpecifiedObject(Vector2 spawnPosition, object[] parameters) {
-			var currentMonsterLevel = (int)parameters[0];
-			var unit = _unitsFactory.CreateMonster(currentMonsterLevel, spawnPosition);
-			unit.OnDied += ReturnUnit;
-			unit.OnDied += StopUnitPeriodicalDamage;
-			unit.OnDied += _missionResultManager.CountKill;
-			return unit;
-		}
+            _objects.Clear();
+            foreach (var unit in ActiveMonsters)
+            {
+                unit.OnDied -= ReturnUnit;
+                unit.OnDied -= StopUnitPeriodicalDamage;
+                unit.OnDied -= _missionResultManager.CountKill;
+                unit.Dispose();
+            }
 
-		private void ReturnUnit(DamageInfo damageInfo) {
-			ReturnObject(damageInfo.DamageTaker);
-		}
+            ActiveMonsters.Clear();
+        }
 
-		private void StopUnitPeriodicalDamage(DamageInfo damageInfo) {
-			_handleDamageManager.StopPeriodicalDamageForUnit(damageInfo.DamageTaker);
-		}
-	}
+        protected override int GetSpecifiedPoolIndex(object[] parameters)
+        {
+            return (int)parameters[0];
+        }
 
+        protected override IUnit SpawnSpecifiedObject(Vector2 spawnPosition, object[] parameters)
+        {
+            var currentMonsterLevel = (int)parameters[0];
+            var unit = _unitsFactory.CreateMonster(currentMonsterLevel, spawnPosition);
+            unit.OnDied += ReturnUnit;
+            unit.OnDied += StopUnitPeriodicalDamage;
+            unit.OnDied += _missionResultManager.CountKill;
+            return unit;
+        }
+
+        private void ReturnUnit(DamageInfo damageInfo)
+        {
+            ReturnObject(damageInfo.DamageTaker);
+        }
+
+        private void StopUnitPeriodicalDamage(DamageInfo damageInfo)
+        {
+            _handleDamageManager.StopPeriodicalDamageForUnit(damageInfo.DamageTaker);
+        }
+    }
 }

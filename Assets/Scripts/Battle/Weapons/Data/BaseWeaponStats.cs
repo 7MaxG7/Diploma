@@ -13,7 +13,7 @@ namespace Weapons
         public float AmmoSpeed { get; }
         public float DamageTicksCooldown { get; }
 
-		
+
         public BaseWeaponStats(WeaponBaseParam weaponBaseParam)
         {
             WeapomType = weaponBaseParam.WeaponType;
@@ -29,8 +29,9 @@ namespace Weapons
 
         public override string ToString()
         {
-            return $"{WeapomType}: Damage = {Damage[0]}, DamageTicksCooldown = {DamageTicksCooldown}, Cooldown = {Cooldown}," +
-                   $" AmmoSpeed = {AmmoSpeed}, IsPiercing = {IsPiercing}, Range = {Range}";
+            return
+                $"{WeapomType}: Damage = {Damage[0]}, DamageTicksCooldown = {DamageTicksCooldown}, Cooldown = {Cooldown}," +
+                $" AmmoSpeed = {AmmoSpeed}, IsPiercing = {IsPiercing}, Range = {Range}";
         }
     }
 }

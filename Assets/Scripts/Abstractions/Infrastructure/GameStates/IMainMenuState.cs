@@ -1,6 +1,6 @@
-﻿namespace Infrastructure {
-
-	internal interface IMainMenuState : IUnparamedGameState {
-	}
-
+﻿namespace Infrastructure
+{
+    internal interface IMainMenuState : IUnparamedGameState
+    {
+    }
 }

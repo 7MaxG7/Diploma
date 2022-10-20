@@ -1,7 +1,7 @@
-﻿namespace Infrastructure {
-
-	internal interface IFixedUpdater : IController {
-		public void OnFixedUpdate(float deltaTime);
-	}
-
+﻿namespace Infrastructure
+{
+    internal interface IFixedUpdater : IController
+    {
+        public void OnFixedUpdate(float deltaTime);
+    }
 }

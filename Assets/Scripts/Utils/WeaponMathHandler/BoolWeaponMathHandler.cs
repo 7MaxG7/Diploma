@@ -1,11 +1,12 @@
 ﻿using System;
 using Infrastructure;
 
-namespace Utils.WeaponMathHandler
+namespace Utils
 {
     internal class BoolWeaponMathHandler : AbstractWeaponMathHandler<bool>
     {
-        protected override bool CountSpecificUpgradedStat(bool baseStat, ArithmeticType arithmeticType, float deltaValue)
+        protected override bool CountSpecificUpgradedStat(bool baseStat, ArithmeticType arithmeticType,
+            float deltaValue)
         {
             switch (arithmeticType)
             {

@@ -6,65 +6,80 @@ using Units;
 using UnityEngine;
 
 
-namespace UI {
+namespace UI
+{
+    internal sealed class SkillsPanelView : MonoBehaviour
+    {
+        [SerializeField] private Transform _skillsUpgradeItemsContent;
+        [SerializeField] private CanvasGroup _canvasGroup;
 
-	internal sealed class SkillsPanelView : MonoBehaviour {
-		[SerializeField] private Transform _skillsUpgradeItemsContent;
-		[SerializeField] private CanvasGroup _canvasGroup;
+        public event Action<ActualSkillInfo> OnSkillChoosen;
 
-		public event Action<ActualSkillInfo> OnSkillChoosen;
+        private UiConfig _uiConfig;
+        private readonly List<SkillUiItemView> _skillItems = new();
 
-		private UiConfig _uiConfig;
-		private readonly List<SkillUiItemView> _skillItems = new();
 
-		
-		public void Init(UiConfig uiConfig) {
-			_uiConfig = uiConfig;
-			_canvasGroup.alpha = 0;
-		}
+        public void Init(UiConfig uiConfig)
+        {
+            _uiConfig = uiConfig;
+            _canvasGroup.alpha = 0;
+        }
 
-		public void OnDispose() {
-			foreach (var skillItem in _skillItems) {
-				skillItem.OnSkillChoosen -= InvokeSkillChoosen;
-				skillItem.OnDispose();
-			}
-			_skillItems.Clear();
-			_canvasGroup.DOKill();
-		}
+        public void OnDispose()
+        {
+            foreach (var skillItem in _skillItems)
+            {
+                skillItem.OnSkillChoosen -= InvokeSkillChoosen;
+                skillItem.OnDispose();
+            }
 
-		public void ShowSkills(ActualSkillInfo[] skills) {
-			while (_skillItems.Count < skills.Length) {
-				var skillItem = Instantiate(_uiConfig.SkillUiItemPrefab, _skillsUpgradeItemsContent);
-				skillItem.Init(_uiConfig);
-				skillItem.OnSkillChoosen += InvokeSkillChoosen;
-				_skillItems.Add(skillItem);
-			}
-			for (var i = 0; i < _skillItems.Count; i++) {
-				_skillItems[i].gameObject.SetActive(i < skills.Length);
-			}
+            _skillItems.Clear();
+            _canvasGroup.DOKill();
+        }
 
-			for (var i = 0; i < skills.Length; i++) {
-				_skillItems[i].Setup(skills[i]);
-			}
-			ToggleSkillsPanelVisibility(true);
-		}
+        public void ShowSkills(ActualSkillInfo[] skills)
+        {
+            while (_skillItems.Count < skills.Length)
+            {
+                var skillItem = Instantiate(_uiConfig.SkillUiItemPrefab, _skillsUpgradeItemsContent);
+                skillItem.Init(_uiConfig);
+                skillItem.OnSkillChoosen += InvokeSkillChoosen;
+                _skillItems.Add(skillItem);
+            }
 
-		private void InvokeSkillChoosen(ActualSkillInfo skill) {
-			OnSkillChoosen?.Invoke(skill);
-			ToggleSkillsPanelVisibility(false);
-		}
+            for (var i = 0; i < _skillItems.Count; i++)
+            {
+                _skillItems[i].gameObject.SetActive(i < skills.Length);
+            }
 
-		private void ToggleSkillsPanelVisibility(bool isVisible) {
-			_canvasGroup.DOKill();
-			if (isVisible) {
-				_canvasGroup.gameObject.SetActive(true);
-				_canvasGroup.DOFade(1, _uiConfig.CanvasFadeAnimationDuration)
-						.SetDelay(_uiConfig.SkillChooserActivationDelay);
-			} else {
-				_canvasGroup.DOFade(0, _uiConfig.CanvasFadeAnimationDuration)
-						.OnComplete(() => _canvasGroup.gameObject.SetActive(false));
-			}
-		}
-	}
+            for (var i = 0; i < skills.Length; i++)
+            {
+                _skillItems[i].Setup(skills[i]);
+            }
 
+            ToggleSkillsPanelVisibility(true);
+        }
+
+        private void InvokeSkillChoosen(ActualSkillInfo skill)
+        {
+            OnSkillChoosen?.Invoke(skill);
+            ToggleSkillsPanelVisibility(false);
+        }
+
+        private void ToggleSkillsPanelVisibility(bool isVisible)
+        {
+            _canvasGroup.DOKill();
+            if (isVisible)
+            {
+                _canvasGroup.gameObject.SetActive(true);
+                _canvasGroup.DOFade(1, _uiConfig.CanvasFadeAnimationDuration)
+                    .SetDelay(_uiConfig.SkillChooserActivationDelay);
+            }
+            else
+            {
+                _canvasGroup.DOFade(0, _uiConfig.CanvasFadeAnimationDuration)
+                    .OnComplete(() => _canvasGroup.gameObject.SetActive(false));
+            }
+        }
+    }
 }

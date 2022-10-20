@@ -4,17 +4,17 @@ using Infrastructure;
 using Units;
 
 
-namespace Weapons {
+namespace Weapons
+{
+    internal interface IWeaponsManager : IUpdater, IDisposable
+    {
+        List<WeaponType> UpgradableWeaponTypes { get; }
 
-	internal interface IWeaponsManager : IUpdater, IDisposable {
-		List<WeaponType> UpgradableWeaponTypes { get; }
-		
-		void Init(IUnit player);
-		void StopShooting();
-		void StartShooting();
-		void AddWeapon(WeaponType type);
-		int GetCurrentLevelOfWeapon(WeaponType weaponType);
-		void AddOrUpgradeWeapon(WeaponType weaponType);
-	}
-
+        void Init(IUnit player);
+        void StopShooting();
+        void StartShooting();
+        void AddWeapon(WeaponType type);
+        int GetCurrentLevelOfWeapon(WeaponType weaponType);
+        void AddOrUpgradeWeapon(WeaponType weaponType);
+    }
 }

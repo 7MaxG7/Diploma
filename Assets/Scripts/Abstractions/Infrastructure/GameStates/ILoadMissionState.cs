@@ -1,6 +1,6 @@
-namespace Infrastructure {
-
-	internal interface ILoadMissionState : IParamedGameState<string> {
-	}
-
+namespace Infrastructure
+{
+    internal interface ILoadMissionState : IParamedGameState<string>
+    {
+    }
 }

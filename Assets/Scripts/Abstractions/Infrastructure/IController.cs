@@ -1,6 +1,6 @@
-﻿namespace Infrastructure {
-
-	internal interface IController {
-	}
-
+﻿namespace Infrastructure
+{
+    internal interface IController
+    {
+    }
 }

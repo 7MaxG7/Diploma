@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 
 
-namespace Services {
-
-	internal interface IView {
-		Transform Transform { get; }
-	}
-
+namespace Services
+{
+    internal interface IView
+    {
+        Transform Transform { get; }
+    }
 }

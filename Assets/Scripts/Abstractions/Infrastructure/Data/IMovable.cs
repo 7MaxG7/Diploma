@@ -1,7 +1,7 @@
-﻿namespace Services {
-
-	internal interface IMovable {
-		void StopObj();
-	}
-
+﻿namespace Services
+{
+    internal interface IMovable
+    {
+        void StopObj();
+    }
 }

@@ -2,39 +2,44 @@
 using Zenject;
 
 
-namespace Infrastructure {
+namespace Infrastructure
+{
+    internal sealed class GameBootstrapper : MonoBehaviour, ICoroutineRunner
+    {
+        private IGame _game;
 
-	internal sealed class GameBootstrapper : MonoBehaviour, ICoroutineRunner {
-		
-		private IGame _game;
-		
-		
-		[Inject]
-		private void InjectDependencies(IGame game) {
-			_game = game;
-		}
 
-		private void Awake() {
-			_game.Init(this);
-			
-			DontDestroyOnLoad(this);
-		}
+        [Inject]
+        private void InjectDependencies(IGame game)
+        {
+            _game = game;
+        }
 
-		private void Update() {
-			_game.Controllers?.OnUpdate(Time.deltaTime);
-		}
+        private void Awake()
+        {
+            _game.Init(this);
 
-		private void LateUpdate() {
-			_game.Controllers?.OnLateUpdate(Time.deltaTime);
-		}
+            DontDestroyOnLoad(this);
+        }
 
-		private void FixedUpdate() {
-			_game.Controllers?.OnFixedUpdate(Time.fixedDeltaTime);
-		}
+        private void Update()
+        {
+            _game.Controllers?.OnUpdate(Time.deltaTime);
+        }
 
-		private void OnDestroy() {
-			_game.Controllers.ClearControllers();
-		}
-	}
+        private void LateUpdate()
+        {
+            _game.Controllers?.OnLateUpdate(Time.deltaTime);
+        }
 
+        private void FixedUpdate()
+        {
+            _game.Controllers?.OnFixedUpdate(Time.fixedDeltaTime);
+        }
+
+        private void OnDestroy()
+        {
+            _game.Controllers.ClearControllers();
+        }
+    }
 }

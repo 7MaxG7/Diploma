@@ -1,10 +1,11 @@
 ﻿using Infrastructure;
 
-namespace Utils.WeaponMathHandler
+namespace Utils
 {
     internal class FloatWeaponMathHandler : AbstractWeaponMathHandler<float>
     {
-        protected override float CountSpecificUpgradedStat(float baseStat, ArithmeticType arithmeticType, float deltaValue)
+        protected override float CountSpecificUpgradedStat(float baseStat, ArithmeticType arithmeticType,
+            float deltaValue)
         {
             switch (arithmeticType)
             {
@@ -17,7 +18,7 @@ namespace Utils.WeaponMathHandler
                 case ArithmeticType.Divide:
                     return baseStat / deltaValue;
                 case ArithmeticType.Equal:
-                    return  deltaValue;
+                    return deltaValue;
                 default:
                     return baseStat;
             }

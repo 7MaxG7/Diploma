@@ -2,13 +2,13 @@
 using UnityEngine;
 
 
-namespace Weapons {
+namespace Weapons
+{
+    internal interface IAmmosPool : IDisposable
+    {
+        event Action<int> OnObjectInstantiated;
+        event Action<int, bool> OnObjectActivationToggle;
 
-	internal interface IAmmosPool : IDisposable {
-		event Action<int> OnObjectInstantiated;
-		event Action<int, bool> OnObjectActivationToggle;
-		
-		IAmmo SpawnObject(Vector2 spawnPosition, params object[] parameters);
-	}
-
+        IAmmo SpawnObject(Vector2 spawnPosition, params object[] parameters);
+    }
 }

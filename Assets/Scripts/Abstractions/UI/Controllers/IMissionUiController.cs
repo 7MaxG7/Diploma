@@ -5,15 +5,15 @@ using UnityEngine;
 using Weapons;
 
 
-namespace UI {
+namespace UI
+{
+    internal interface IMissionUiController : IUpdater, IDisposable
+    {
+        event Action<WeaponType> OnSkillChoose;
 
-	internal interface IMissionUiController : IUpdater, IDisposable {
-		event Action<WeaponType> OnSkillChoose;
-
-		void Init(IUnit player);
-		void ShowSkillsChoose(ActualSkillInfo[] skills);
-		void ShowCompass(Vector3 closestEnemyPlayerDestination);
-		void HideCompass(Vector3 closestEnemyPlayerDestination);
-	}
-
+        void Init(IUnit player);
+        void ShowSkillsChoose(ActualSkillInfo[] skills);
+        void ShowCompass(Vector3 closestEnemyPlayerDestination);
+        void HideCompass(Vector3 closestEnemyPlayerDestination);
+    }
 }

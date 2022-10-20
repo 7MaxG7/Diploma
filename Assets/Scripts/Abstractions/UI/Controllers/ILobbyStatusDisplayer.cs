@@ -1,7 +1,7 @@
-﻿namespace Abstractions.UI.Controllers {
-
-	internal interface ILobbyStatusDisplayer {
-		void ShowLoadingStatusAsync();
-	}
-
+﻿namespace UI
+{
+    internal interface ILobbyStatusDisplayer
+    {
+        void ShowLoadingStatusAsync();
+    }
 }

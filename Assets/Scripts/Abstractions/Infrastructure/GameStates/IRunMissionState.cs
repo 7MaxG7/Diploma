@@ -1,6 +1,6 @@
-namespace Infrastructure {
-
-	internal interface IRunMissionState : IUnparamedGameState {
-	}
-
+namespace Infrastructure
+{
+    internal interface IRunMissionState : IUnparamedGameState
+    {
+    }
 }

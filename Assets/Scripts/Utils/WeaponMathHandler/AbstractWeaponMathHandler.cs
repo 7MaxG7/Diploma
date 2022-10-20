@@ -1,18 +1,17 @@
-﻿using Abstractions.Utils;
-using Infrastructure;
+﻿using Infrastructure;
 
-namespace Utils.WeaponMathHandler
+namespace Utils
 {
     internal abstract class AbstractWeaponMathHandler<T> : IWeaponMathHandler
     {
         protected T WeaponCharacteristicValue;
-        
+
 
         public object CountUpgradedStat(object baseStat, ArithmeticType arithmeticType, float deltaValue)
         {
             return CountSpecificUpgradedStat((T)baseStat, arithmeticType, deltaValue);
         }
-        
+
         // public void HandleArithmetics(ArithmeticType arithmeticType, float deltaValue)
         // {
         //     HandleSpecificValueArithmetic(arithmeticType, deltaValue);

@@ -3,20 +3,20 @@ using Services;
 using UnityEngine;
 
 
-namespace Units {
+namespace Units
+{
+    internal interface IUnit : IPoolObject, IDisposable
+    {
+        event Action<DamageInfo> OnDied;
 
-	internal interface IUnit : IPoolObject, IDisposable {
-		event Action<DamageInfo> OnDied;
-		
-		float MoveSpeed { get; }
-		bool IsDead { get; }
-		Health Health { get; }
-		Experience Experience { get; }
-		IUnitView UnitView { get; }
+        float MoveSpeed { get; }
+        bool IsDead { get; }
+        Health Health { get; }
+        Experience Experience { get; }
+        IUnitView UnitView { get; }
 
-		bool CheckOwnView(IDamagableView damageTaker);
-		void KillUnit();
-		void Move(Vector3 deltaPosition);
-	}
-
+        bool CheckOwnView(IDamagableView damageTaker);
+        void KillUnit();
+        void Move(Vector3 deltaPosition);
+    }
 }

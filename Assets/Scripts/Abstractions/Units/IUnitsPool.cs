@@ -4,14 +4,14 @@ using Units;
 using UnityEngine;
 
 
-namespace Services {
+namespace Services
+{
+    internal interface IUnitsPool : IDisposable
+    {
+        event Action<int> OnObjectInstantiated;
+        event Action<int, bool> OnObjectActivationToggle;
+        List<IUnit> ActiveMonsters { get; }
 
-	internal interface IUnitsPool : IDisposable {
-		event Action<int> OnObjectInstantiated;
-		event Action<int, bool> OnObjectActivationToggle;
-		List<IUnit> ActiveMonsters { get; }
-
-		IUnit SpawnObject(Vector2 spawnPosition, params object[] parameters);
-	}
-
+        IUnit SpawnObject(Vector2 spawnPosition, params object[] parameters);
+    }
 }

@@ -4,90 +4,113 @@ using Photon.Realtime;
 using UnityEngine;
 
 
-namespace Services {
+namespace Services
+{
+    internal sealed class PhotonManager : IPhotonManager
+    {
+        public string PlayerName
+        {
+            get => PhotonNetwork.LocalPlayer.NickName;
+            set => PhotonNetwork.LocalPlayer.NickName = value;
+        }
 
-	internal sealed class PhotonManager : IPhotonManager {
-		public string PlayerName {
-			get => PhotonNetwork.LocalPlayer.NickName;
-			set => PhotonNetwork.LocalPlayer.NickName = value;
-		}
-
-		public string RoomName => PhotonNetwork.CurrentRoom.Name;
-		public bool IsMasterClient => PhotonNetwork.IsMasterClient;
+        public string RoomName => PhotonNetwork.CurrentRoom.Name;
+        public bool IsMasterClient => PhotonNetwork.IsMasterClient;
 
 
-#region Objects
-		public GameObject Create(string prefabPath, Vector2 position, Quaternion rotation) {
-			return PhotonNetwork.Instantiate(prefabPath, position, rotation);
-		}
+        #region Objects
 
-		public void Destroy(PhotonView obj) {
-			PhotonNetwork.Destroy(obj);
-		}
-#endregion
-		
-#region Lobby
-		public void JoinCustonLobby() {
-			PhotonNetwork.JoinLobby(new TypedLobby("customLobby", LobbyType.Default));
-		}
+        public GameObject Create(string prefabPath, Vector2 position, Quaternion rotation)
+        {
+            return PhotonNetwork.Instantiate(prefabPath, position, rotation);
+        }
 
-		public void LeaveLobby() {
-			PhotonNetwork.LeaveLobby();
-		}
+        public void Destroy(PhotonView obj)
+        {
+            PhotonNetwork.Destroy(obj);
+        }
 
-		public void Connect() {
-			PhotonNetwork.ConnectUsingSettings();
-		}
+        #endregion
 
-		public void Disconnect() {
-			PhotonNetwork.Disconnect();
-		}
-#endregion
-		
-#region Rooms
-		public void SetRoomParameters(bool? isOpened = null, bool? isVisible = null) {
-			if (isOpened.HasValue)
-				PhotonNetwork.CurrentRoom.IsOpen = isOpened.Value;
-			if (isVisible.HasValue)
-				PhotonNetwork.CurrentRoom.IsVisible = isVisible.Value;
-		}
+        #region Lobby
 
-		public int GetRoomPlayersAmount() {
-			return PhotonNetwork.CurrentRoom.PlayerCount;
-		}
+        public void JoinCustonLobby()
+        {
+            PhotonNetwork.JoinLobby(new TypedLobby("customLobby", LobbyType.Default));
+        }
 
-		public int GetPlayerActorNumber() {
-			return PhotonNetwork.LocalPlayer.ActorNumber;
-		}
+        public void LeaveLobby()
+        {
+            PhotonNetwork.LeaveLobby();
+        }
 
-		public float GetLevelLoadingProgress() {
-			return PhotonNetwork.LevelLoadingProgress;
-		}
+        public void Connect()
+        {
+            PhotonNetwork.ConnectUsingSettings();
+        }
 
-		public Dictionary<int, Player> GetRoomPlayers() {
-			return PhotonNetwork.CurrentRoom.Players;
-		}
+        public void Disconnect()
+        {
+            PhotonNetwork.Disconnect();
+        }
 
-		public void CreateRoom(string roomName, RoomOptions roomOptions) {
-			PhotonNetwork.CreateRoom(roomName, roomOptions);
-		}
+        #endregion
 
-		public void JoinRoom(string roomName) {
-			PhotonNetwork.JoinRoom(roomName);
-		}
+        #region Rooms
 
-		public void JoinRandomRoom() {
-			PhotonNetwork.JoinRandomOrCreateRoom();
-		}
+        public void SetRoomParameters(bool? isOpened = null, bool? isVisible = null)
+        {
+            if (isOpened.HasValue)
+                PhotonNetwork.CurrentRoom.IsOpen = isOpened.Value;
+            if (isVisible.HasValue)
+                PhotonNetwork.CurrentRoom.IsVisible = isVisible.Value;
+        }
 
-		public void LeaveRoom() {
-			PhotonNetwork.LeaveRoom();
-		}
+        public int GetRoomPlayersAmount()
+        {
+            return PhotonNetwork.CurrentRoom.PlayerCount;
+        }
 
-		public void LoadLevel(string sceneName) {
-			PhotonNetwork.LoadLevel(sceneName);
-		}
-#endregion
-	}
+        public int GetPlayerActorNumber()
+        {
+            return PhotonNetwork.LocalPlayer.ActorNumber;
+        }
 
+        public float GetLevelLoadingProgress()
+        {
+            return PhotonNetwork.LevelLoadingProgress;
+        }
+
+        public Dictionary<int, Player> GetRoomPlayers()
+        {
+            return PhotonNetwork.CurrentRoom.Players;
+        }
+
+        public void CreateRoom(string roomName, RoomOptions roomOptions)
+        {
+            PhotonNetwork.CreateRoom(roomName, roomOptions);
+        }
+
+        public void JoinRoom(string roomName)
+        {
+            PhotonNetwork.JoinRoom(roomName);
+        }
+
+        public void JoinRandomRoom()
+        {
+            PhotonNetwork.JoinRandomOrCreateRoom();
+        }
+
+        public void LeaveRoom()
+        {
+            PhotonNetwork.LeaveRoom();
+        }
+
+        public void LoadLevel(string sceneName)
+        {
+            PhotonNetwork.LoadLevel(sceneName);
+        }
+
+        #endregion
+    }
 }

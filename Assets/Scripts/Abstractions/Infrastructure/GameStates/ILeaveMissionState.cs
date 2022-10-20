@@ -1,6 +1,6 @@
-﻿namespace Infrastructure {
-
-	internal interface ILeaveMissionState : IUnparamedGameState {
-	}
-
+﻿namespace Infrastructure
+{
+    internal interface ILeaveMissionState : IUnparamedGameState
+    {
+    }
 }

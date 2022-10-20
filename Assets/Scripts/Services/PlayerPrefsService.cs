@@ -5,7 +5,8 @@ namespace Services
 {
     internal class PlayerPrefsService : IPlayerPrefsService
     {
-#region GetPrefs
+        #region GetPrefs
+
         public Resolution? GetSavedResolution()
         {
             var width = PlayerPrefs.GetInt(Constants.SAVED_WIDTH_PREFS_KEY, 0);
@@ -13,7 +14,7 @@ namespace Services
             var refreshRate = PlayerPrefs.GetInt(Constants.SAVED_FRAMERATE_PREFS_KEY, 0);
             if (width == 0 || height == 0 || refreshRate == 0)
                 return null;
-            return new Resolution {width = width, height = height, refreshRate = refreshRate};
+            return new Resolution { width = width, height = height, refreshRate = refreshRate };
         }
 
         public bool? GetFullScreenMode()
@@ -32,9 +33,11 @@ namespace Services
                 return null;
             return (musicVolume, soundVolume);
         }
-#endregion
 
-#region SetPrefs
+        #endregion
+
+        #region SetPrefs
+
         public void SaveCurrentResolution(Resolution resolution)
         {
             PlayerPrefs.SetInt(Constants.SAVED_WIDTH_PREFS_KEY, resolution.width);
@@ -55,6 +58,7 @@ namespace Services
             PlayerPrefs.SetFloat(Constants.SOUND_VOLUME_PREFS_KEY, soundVolume);
             PlayerPrefs.Save();
         }
-#endregion
+
+        #endregion
     }
 }

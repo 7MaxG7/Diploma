@@ -4,12 +4,12 @@ using Services;
 using UnityEngine;
 
 
-namespace Infrastructure {
-
-	internal interface IMapWrapper : IUpdater, IDisposable {
-		void Init(Vector2 bottomLeftCornerPosition, Vector2 topRightCornerPosition);
-		void SetCheckingTransform(Transform checkingTransform);
-		void AddDependingTransforms(IEnumerable<IView> dependingTransforms);
-	}
-
+namespace Infrastructure
+{
+    internal interface IMapWrapper : IUpdater, IDisposable
+    {
+        void Init(Vector2 bottomLeftCornerPosition, Vector2 topRightCornerPosition);
+        void SetCheckingTransform(Transform checkingTransform);
+        void AddDependingTransforms(IEnumerable<IView> dependingTransforms);
+    }
 }

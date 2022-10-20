@@ -1,7 +1,7 @@
-﻿namespace Infrastructure {
-
-	internal interface ILateUpdater : IController {
-		public void OnLateUpdate(float deltaTime);
-	}
-
+﻿namespace Infrastructure
+{
+    internal interface ILateUpdater : IController
+    {
+        public void OnLateUpdate(float deltaTime);
+    }
 }

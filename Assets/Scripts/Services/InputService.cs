@@ -1,14 +1,14 @@
 ﻿using UnityEngine;
 
 
-namespace Services {
+namespace Services
+{
+    public abstract class InputService : IInputService
+    {
+        public abstract Vector2 Axis { get; }
+        public abstract bool CompassButtonIsPressed { get; }
 
-	public abstract class InputService : IInputService {
-		public abstract Vector2 Axis { get; }
-		public abstract bool CompassButtonIsPressed { get; }
 
-		
-		public abstract void Init();
-	}
-
+        public abstract void Init();
+    }
 }

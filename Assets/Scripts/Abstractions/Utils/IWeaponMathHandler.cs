@@ -1,6 +1,6 @@
 ﻿using Infrastructure;
 
-namespace Abstractions.Utils
+namespace Utils
 {
     internal interface IWeaponMathHandler
     {

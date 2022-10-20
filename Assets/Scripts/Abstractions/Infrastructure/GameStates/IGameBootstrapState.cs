@@ -1,6 +1,6 @@
-﻿namespace Infrastructure {
-
-	internal interface IGameBootstrapState : IUnparamedGameState {
-	}
-
+﻿namespace Infrastructure
+{
+    internal interface IGameBootstrapState : IUnparamedGameState
+    {
+    }
 }

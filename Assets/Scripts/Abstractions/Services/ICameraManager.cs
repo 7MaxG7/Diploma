@@ -1,13 +1,14 @@
 ﻿using System;
+using Infrastructure;
 using UnityEngine;
 
 
-namespace Infrastructure {
+namespace Services
+{
+    internal interface ICameraManager : ILateUpdater, IDisposable
+    {
+        bool CameraIsPositioned { get; }
 
-	internal interface ICameraManager : ILateUpdater, IDisposable {
-		bool CameraIsPositioned { get; }
-		
-		void Follow(Transform target, Vector3 cameraOffset);
-	}
-
+        void Follow(Transform target, Vector3 cameraOffset);
+    }
 }

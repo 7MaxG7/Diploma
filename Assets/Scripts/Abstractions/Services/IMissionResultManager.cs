@@ -2,16 +2,16 @@
 using Units;
 
 
-namespace Infrastructure {
+namespace Infrastructure
+{
+    internal interface IMissionResultManager : IDisposable
+    {
+        event Action OnGameLeft;
+        event Action<int> OnPlayerWithIdLeftRoomEvent;
 
-	internal interface IMissionResultManager : IDisposable {
-		event Action OnGameLeft;
-		event Action<int> OnPlayerWithIdLeftRoomEvent;
-
-		void Init(IUnit player);
-		void CountKill(DamageInfo damageInfo);
-		void SetWinsAmount(int winsAmount);
-		void SetKillsAmount(int killsAmount);
-	}
-
+        void Init(IUnit player);
+        void CountKill(DamageInfo damageInfo);
+        void SetWinsAmount(int winsAmount);
+        void SetKillsAmount(int killsAmount);
+    }
 }
