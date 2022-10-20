@@ -130,9 +130,17 @@ namespace Infrastructure {
 				var enemyPlayers = Array.Empty<PlayerView>();
 				// This objects are instantiated on other clients and automaticly appear and syncronize on this client
 				// with photon, so we just have to wait when they appear here
+				var isFirstTry = true;
 				while (enemyPlayers.Length != _photonManager.GetRoomPlayersAmount()) {
+					if (isFirstTry)
+					{
+						isFirstTry = false;
+					}
+					else
+					{ 
+						await Task.Yield();
+					}
 					enemyPlayers = Object.FindObjectsOfType<PlayerView>();
-					await Task.Yield();
 				}
 				return enemyPlayers.Where(view => !view.PhotonView.IsMine).ToList();
 			}
@@ -149,9 +157,17 @@ namespace Infrastructure {
 				var photonDataExchangers = Array.Empty<PhotonDataExchanger>();
 				// This objects are instantiated on other clients and automaticly appear and syncronize on this client
 				// with photon, so we just have to wait when they appear here
+				var isFirstTry = true;
 				while (photonDataExchangers.Length != _photonManager.GetRoomPlayersAmount()) {
+					if (isFirstTry)
+					{
+						isFirstTry = false;
+					}
+					else
+					{ 
+						await Task.Yield();
+					}
 					photonDataExchangers = Object.FindObjectsOfType<PhotonDataExchanger>();
-					await Task.Yield();
 				}
 				return photonDataExchangers.Where(view => !view.photonView.IsMine).ToList();
 			}
