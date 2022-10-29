@@ -14,7 +14,7 @@ namespace Services
         public event Action<int> OnInstantiationDataRecieved;
         public event Action<int, int> OnDamagePlayerDataRecieved;
 
-        private readonly List<List<object>> _data = new();
+        private readonly Queue<List<object>> _data = new();
         private PhotonDataExchanger _minePhotonDataExchanger;
         private List<PhotonDataExchanger> _othersPhotonDataExchangers;
 
@@ -54,7 +54,7 @@ namespace Services
         {
             var parameters = new List<object> { dataType };
             parameters.AddRange(data);
-            _data.Add(parameters);
+            _data.Enqueue(parameters);
         }
 
         private void RecieveData(PhotonStream stream)
@@ -89,17 +89,15 @@ namespace Services
 
         private void SendData(PhotonStream stream)
         {
-            var dataCount = _data.Count;
-            stream.SendNext(dataCount);
-            for (var i = 0; i < dataCount; i++)
+            stream.SendNext(_data.Count);
+            while (_data.Count > 0)
             {
-                foreach (var dataParam in _data[i])
+                var data = _data.Dequeue();
+                foreach (var dataParam in data)
                 {
                     stream.SendNext(dataParam);
                 }
             }
-
-            _data.Clear();
         }
     }
 }
