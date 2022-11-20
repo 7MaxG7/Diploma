@@ -1,4 +1,5 @@
-﻿using Sounds;
+﻿using Configs;
+using Sounds;
 using Units;
 using UnityEngine;
 using Weapons;
@@ -16,6 +17,7 @@ namespace Infrastructure.Zenject
         [SerializeField] private UiConfig _uiConfig;
         [SerializeField] private WeaponsConfig _weaponsConfig;
         [SerializeField] private SoundConfig _soundConfig;
+        [SerializeField] private AssetsConfig _assetsConfig;
 
         public override void InstallBindings()
         {
@@ -26,6 +28,7 @@ namespace Infrastructure.Zenject
             Container.Bind<UiConfig>().FromScriptableObject(_uiConfig).AsSingle();
             Container.Bind<WeaponsConfig>().FromScriptableObject(_weaponsConfig).AsSingle();
             Container.Bind<SoundConfig>().FromScriptableObject(_soundConfig).AsSingle();
+            Container.Bind<AssetsConfig>().FromScriptableObject(_assetsConfig).AsSingle();
         }
     }
 }

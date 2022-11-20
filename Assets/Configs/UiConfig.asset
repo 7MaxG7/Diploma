@@ -12,16 +12,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7b897f9f4264a618f00f20384163705, type: 3}
   m_Name: UiConfig
   m_EditorClassIdentifier: 
-  _missionUiView: {fileID: 8977646226471751123, guid: 5e47b395351f0eb40a6a36dc35c5941e, type: 3}
+  _missionUiView:
+    m_AssetGUID: 5e47b395351f0eb40a6a36dc35c5941e
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
   _canvasFadeAnimationDuration: 0.5
-  _resolutionDescriptionTemplate: '{0} x {1} @{2}'
   _loadingStatusPrefixText: Loading
   _loadingStatusSuffixSymbol: 46
   _minSuffixSymbolsAmount: 0
   _maxSuffixSymbolsAmount: 5
   _statusLableSuffixUpdateDelay: 250
   _curtainFadingAlfaPerFrameDelta: 0.012
-  _skillUiItemPrefab: {fileID: 7329006160628604031, guid: b34bc457af516824388803ea60f6a5f1, type: 3}
+  _skillUiItemPrefab:
+    m_AssetGUID: b34bc457af516824388803ea60f6a5f1
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
   _skillChooserActivationDelay: 0.5
   _winResultText: You win!
   _winResultColor: {r: 0, g: 0.78431374, b: 0, a: 1}

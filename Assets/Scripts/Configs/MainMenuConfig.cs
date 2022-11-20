@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 
 namespace Infrastructure
@@ -27,18 +28,15 @@ namespace Infrastructure
         [SerializeField] private string _registrationFailStatusText;
         [SerializeField] private string _loginSuccessStatusText;
         [SerializeField] private string _loginFailStatusText;
-
         [Tooltip("Time in ms for adding symbol to status suffix")] [SerializeField]
         private int _statusLableSuffixUpdateDelay;
-
         [Tooltip("Delay in ms before panel hides after success opration")] [SerializeField]
         private int _successfulStatusDelay;
 
-        [Header("Main lobby")] [SerializeField]
-        private MainMenuView _mainMenuPref;
-
-        [SerializeField] private LobbyCachedRoomItemView _lobbyCachedRoomItemPref;
-        [SerializeField] private RoomPlayerItemView _roomCachedPlayerItemPref;
+        [Header("Main lobby")]
+        [SerializeField] private AssetReferenceGameObject  _mainMenuPref;
+        [SerializeField] private AssetReferenceGameObject _lobbyCachedRoomItemPref;
+        [SerializeField] private AssetReferenceGameObject _roomCachedPlayerItemPref;
         [SerializeField] private string _mainMenuLableText;
         [SerializeField] private string _loginButtonText;
         [SerializeField] private string _scoreLableTemplate;
@@ -54,9 +52,9 @@ namespace Infrastructure
 
         public float CreditsFadingDuration => _creditsFadingDuration;
         public float CreditsScrollSpeed => _creditsScrollSpeed;
-        public MainMenuView MainMenuPref => _mainMenuPref;
-        public LobbyCachedRoomItemView LobbyCachedRoomItemPref => _lobbyCachedRoomItemPref;
-        public RoomPlayerItemView RoomCachedPlayerItemPref => _roomCachedPlayerItemPref;
+        public AssetReferenceGameObject MainMenuPref => _mainMenuPref;
+        public AssetReferenceGameObject LobbyCachedRoomItemPref => _lobbyCachedRoomItemPref;
+        public AssetReferenceGameObject RoomCachedPlayerItemPref => _roomCachedPlayerItemPref;
         public string ScoreLableTemplate => _scoreLableTemplate;
         public int ScorePerWin => _scorePerWin;
         public int ScorePerKill => _scorePerKill;

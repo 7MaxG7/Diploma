@@ -1,4 +1,5 @@
-﻿using Infrastructure;
+﻿using System.Threading.Tasks;
+using Infrastructure;
 using Sounds;
 using UI;
 using UnityEngine;
@@ -11,7 +12,10 @@ namespace Services
         GameObject CreateGameObject(string name);
         GameObject CreatePhotonObj(string playerConfigPlayerPrefabPath, Vector2 position, Quaternion rotation);
         SoundPlayerView CreateSoundPlayer();
-        MainMenuView CreateMainMenu();
-        MissionUiView CreateMissionUi();
+        Task<MainMenuView> CreateMainMenuAsync();
+        Task<LobbyCachedRoomItemView> CreateLobbyCachedRoomItemAsync(Transform parent = null);
+        Task<RoomPlayerItemView> CreateRoomCachedPlayerItemAsync(Transform parent = null);
+        Task<MissionUiView> CreateMissionUi();
+        Task<SkillUiItemView> CreateSkillUiItemAsync(Transform parent = null);
     }
 }

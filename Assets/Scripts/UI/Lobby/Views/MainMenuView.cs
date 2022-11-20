@@ -36,7 +36,7 @@ namespace Infrastructure
         public HowToPlayView HowToPlayView => _howToPlayView;
 
         private MainMenuConfig _mainMenuConfig;
-
+        
 
         public void Init(MainMenuConfig mainMenuConfig)
         {

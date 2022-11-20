@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using PlayFab;
 using Services;
 using UI;
@@ -19,6 +20,7 @@ namespace Infrastructure
         private LoginPanelController _loginPanelController;
         private LobbyScreenController _lobbyScreenController;
         private readonly IMissionResultManager _missionResultManager;
+        private readonly IAssetProvider _assetProvider;
         private readonly IPermanentUiController _permanentUiController;
         private readonly IViewsFactory _viewsFactory;
         private readonly IPhotonManager _photonManager;
@@ -29,12 +31,12 @@ namespace Infrastructure
 
 
         [Inject]
-        public MainMenuController(IMissionResultManager missionResultManager,
-            IPermanentUiController permanentUiController
-            , IViewsFactory viewsFactory, IPhotonManager photonManager, IPlayfabManager playfabManager,
-            MainMenuConfig mainMenuConfig)
+        public MainMenuController(IMissionResultManager missionResultManager, IAssetProvider assetProvider
+            , IPermanentUiController permanentUiController, IViewsFactory viewsFactory
+            , IPhotonManager photonManager, IPlayfabManager playfabManager, MainMenuConfig mainMenuConfig)
         {
             _missionResultManager = missionResultManager;
+            _assetProvider = assetProvider;
             _viewsFactory = viewsFactory;
             _photonManager = photonManager;
             _playfabManager = playfabManager;
@@ -69,14 +71,15 @@ namespace Infrastructure
             _mainMenuView.HowToPlayView.OnDispose();
             _mainMenuView.CreditsView.OnDispose();
             _mainMenuView.OnDispose();
+            _assetProvider.CleanUp();
         }
 
 
-        public void SetupMainMenu()
+        public async Task SetupMainMenu()
         {
             if (_mainMenuView == null)
             {
-                _mainMenuView = _viewsFactory.CreateMainMenu();
+                _mainMenuView = await _viewsFactory.CreateMainMenuAsync();
             }
 
             _mainMenuView.Init(_mainMenuConfig);
@@ -112,8 +115,8 @@ namespace Infrastructure
 
             void InitLobbyPanel()
             {
-                _lobbyScreenController = new LobbyScreenController(_photonManager, _mainMenuView.LobbyScreenView,
-                    _mainMenuConfig, _permanentUiController);
+                _lobbyScreenController = new LobbyScreenController(_viewsFactory, _photonManager
+                    , _mainMenuView.LobbyScreenView, _mainMenuConfig, _permanentUiController);
                 if (_playfabManager.CheckClientAutorization())
                 {
                     _lobbyScreenController.Init(_userName);

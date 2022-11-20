@@ -14,16 +14,17 @@ namespace Infrastructure
         private readonly IPhotonManager _photonManager;
         private readonly MainMenuConfig _mainMenuConfig;
         private readonly IPermanentUiController _permanentUiController;
+        private readonly IViewsFactory _viewsFactory;
         private readonly List<Player> _players = new();
 
 
         public RoomPanelController(IPhotonManager photonManager, MainMenuConfig mainMenuConfig,
-            RoomPanelView roomPanelView
-            , IPermanentUiController permanentUiController)
+            RoomPanelView roomPanelView , IPermanentUiController permanentUiController, IViewsFactory viewsFactory)
         {
             _photonManager = photonManager;
             _mainMenuConfig = mainMenuConfig;
             _permanentUiController = permanentUiController;
+            _viewsFactory = viewsFactory;
             _roomPanelView = roomPanelView;
         }
 
@@ -41,7 +42,7 @@ namespace Infrastructure
 
         public void Init()
         {
-            _roomPanelView.Init(_mainMenuConfig);
+            _roomPanelView.Init(_viewsFactory, _mainMenuConfig);
             _roomPanelView.OnStartGameClick += StartGame;
             _roomPanelView.OnClosePanelClick += LeaveRoom;
         }

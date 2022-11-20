@@ -25,6 +25,7 @@ namespace Infrastructure.Zenject
             Container.Bind<IPlayfabManager>().To<PlayfabManager>().AsSingle();
             Container.Bind<IPlayerPrefsService>().To<PlayerPrefsService>().AsSingle();
             Container.Bind<IScreenService>().To<ScreenService>().AsSingle();
+            Container.Bind<IAssetProvider>().To<AssetProvider>().AsSingle();
         }
     }
 }

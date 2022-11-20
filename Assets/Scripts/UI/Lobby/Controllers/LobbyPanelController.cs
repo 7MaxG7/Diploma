@@ -16,6 +16,7 @@ namespace Infrastructure
         private readonly LobbyPanelView _lobbyPanelView;
         private readonly MainMenuConfig _mainMenuConfig;
         private readonly ILobbyStatusDisplayer _lobbyStatusDisplayer;
+        private readonly IViewsFactory _viewsFactory;
         private readonly List<RoomInfo> _roomsList = new();
         private bool _uiIsBlocked;
         private IRoomEventsCallbacks _lobbyScreenController;
@@ -23,12 +24,13 @@ namespace Infrastructure
 
 
         public LobbyPanelController(IPhotonManager photonManager, MainMenuConfig mainMenuConfig,
-            LobbyPanelView lobbyPanelView, ILobbyStatusDisplayer lobbyStatusDisplayer)
+            LobbyPanelView lobbyPanelView, ILobbyStatusDisplayer lobbyStatusDisplayer, IViewsFactory viewsFactory)
         {
             _photonManager = photonManager;
             _lobbyPanelView = lobbyPanelView;
             _mainMenuConfig = mainMenuConfig;
             _lobbyStatusDisplayer = lobbyStatusDisplayer;
+            _viewsFactory = viewsFactory;
         }
 
         public void Dispose()
@@ -59,7 +61,7 @@ namespace Infrastructure
         public void Init(IRoomEventsCallbacks lobbyScreenController)
         {
             _lobbyScreenController = lobbyScreenController;
-            _lobbyPanelView.Init(_mainMenuConfig);
+            _lobbyPanelView.Init(_viewsFactory, _mainMenuConfig);
             _lobbyPanelView.OnCreatePrivateRoomClick += CreatePrivateRoom;
             _lobbyPanelView.OnJoinPrivateRoomClick += JoinRoom;
             _lobbyPanelView.OnCreateNewRoomClick += CreateRoom;

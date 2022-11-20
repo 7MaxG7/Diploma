@@ -16,7 +16,37 @@ MonoBehaviour:
   m_Data:
     m_SerializedData: []
   m_GUID: e973ebf758ffe144f8cccd17133f2e56
-  m_SerializeEntries: []
+  m_SerializeEntries:
+  - m_GUID: fed727c716d14a94b9e771ce7833be89
+    m_Address: MainMenuUi
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Prefab
+    - Lobby
+  - m_GUID: e4fc703c6ccdd304f8b911794085b2d5
+    m_Address: LobbyCachedRoomItem
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Prefab
+    - Lobby
+  - m_GUID: 194c68fab07b3ea42aa62810dec01ae5
+    m_Address: LobbyCachedPlayerItem
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Prefab
+    - Lobby
+  - m_GUID: 5e47b395351f0eb40a6a36dc35c5941e
+    m_Address: MissionUi
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Prefab
+    - Mission
+  - m_GUID: b34bc457af516824388803ea60f6a5f1
+    m_Address: SkillChooseItem
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Prefab
+    - Mission
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 8cf540a3ce8167d4698d15c1e6257b19, type: 2}
   m_SchemaSet:

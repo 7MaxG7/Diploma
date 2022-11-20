@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace Infrastructure
 {
     internal interface IMainMenuController : IDisposable
     {
-        void SetupMainMenu();
+        Task SetupMainMenu();
         void OnDispose();
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using DG.Tweening;
+using Services;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -21,10 +22,12 @@ namespace Infrastructure
 
         private MainMenuConfig _mainMenuConfig;
         private readonly Dictionary<string, RoomPlayerItemView> _cachedPlayerItemViews = new();
+        private IViewsFactory _viewsFactory;
 
 
-        public void Init(MainMenuConfig mainMenuConfig)
+        public void Init(IViewsFactory viewsFactory, MainMenuConfig mainMenuConfig)
         {
+            _viewsFactory = viewsFactory;
             _mainMenuConfig = mainMenuConfig;
             _startGameButton.onClick.AddListener(() => OnStartGameClick?.Invoke());
             _closePanelButton.onClick.AddListener(() => OnClosePanelClick?.Invoke());
@@ -78,11 +81,11 @@ namespace Infrastructure
             _startGameButton.gameObject.SetActive(isActive);
         }
 
-        public void AddPlayerItem(string playerName)
+        public async void AddPlayerItem(string playerName)
         {
             if (!_cachedPlayerItemViews.ContainsKey(playerName))
             {
-                var playerItem = Instantiate(_mainMenuConfig.RoomCachedPlayerItemPref, _playersListContent);
+                var playerItem = await _viewsFactory.CreateRoomCachedPlayerItemAsync(_playersListContent);
                 playerItem.PlayerName.text = playerName;
                 _cachedPlayerItemViews.Add(playerName, playerItem);
             }

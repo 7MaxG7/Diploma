@@ -31,6 +31,7 @@ namespace Infrastructure
         private readonly IPlayersInteractionManager _playersInteractionManager;
         private readonly ICompassManager _compassManager;
         private readonly IPhotonManager _photonManager;
+        private readonly IAssetProvider _assetProvider;
         public event Action OnStateChange;
 
 
@@ -40,12 +41,10 @@ namespace Infrastructure
             , ICameraManager cameraManager, IMissionMapManager missionMapManager, IPlayerMoveManager playerMoveManager
             , IMonstersSpawner monstersSpawner, IMonstersMoveManager monstersMoveManager, IWeaponsManager weaponsManager
             , ISkillsManager skillsManager, IMissionUiController missionUiController,
-            IMissionResultManager missionResultManager
-            , IUnitsPool unitsPool, IAmmosPool ammosPool, IPermanentUiController permanentUiController,
-            IMapWrapper mapWrapper
-            , IUnitsFactory unitsFactory, IPlayersInteractionManager playersInteractionManager,
-            ICompassManager compassManager
-            , IPhotonManager photonManager)
+            IMissionResultManager missionResultManager, IUnitsPool unitsPool, IAmmosPool ammosPool
+            , IPermanentUiController permanentUiController, IMapWrapper mapWrapper, IUnitsFactory unitsFactory
+            , IPlayersInteractionManager playersInteractionManager, ICompassManager compassManager
+            , IPhotonManager photonManager, IAssetProvider assetProvider)
         {
             _photonObjectsSynchronizer = photonObjectsSynchronizer;
             _photonDataExchangeController = photonDataExchangeController;
@@ -54,6 +53,7 @@ namespace Infrastructure
             _playersInteractionManager = playersInteractionManager;
             _compassManager = compassManager;
             _photonManager = photonManager;
+            _assetProvider = assetProvider;
             _playerMoveManager = playerMoveManager;
             _monstersSpawner = monstersSpawner;
             _monstersMoveManager = monstersMoveManager;
@@ -88,6 +88,7 @@ namespace Infrastructure
             _ammosPool.Dispose();
             _unitsPool.Dispose();
             _unitsFactory.Dispose();
+            _assetProvider.CleanUp();
             _photonManager.Disconnect();
         }
 

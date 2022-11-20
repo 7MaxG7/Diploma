@@ -1,6 +1,8 @@
 ﻿using System;
+using Services;
 using Sounds;
 using UI;
+using UnityEditor;
 using Utils;
 using Zenject;
 
@@ -15,13 +17,15 @@ namespace Infrastructure
         private IPermanentUiController _permanentUiController;
         private ISceneLoader _sceneLoader;
         private ISoundController _soundController;
+        private IAssetProvider _assetProvider;
 
 
         [Inject]
-        private void InjectDependencies(IControllersHolder controllers, IGameStateMachine gameStateMachine,
-            ISoundController soundController
-            , IPermanentUiController permanentUiController, ISceneLoader sceneLoader)
+        private void InjectDependencies(IControllersHolder controllers, IGameStateMachine gameStateMachine
+            , ISoundController soundController, IPermanentUiController permanentUiController
+            , ISceneLoader sceneLoader, IAssetProvider assetProvider)
         {
+            _assetProvider = assetProvider;
             _soundController = soundController;
             Controllers = controllers;
             _gameStateMachine = gameStateMachine;
@@ -40,6 +44,7 @@ namespace Infrastructure
 
         public void Init(ICoroutineRunner coroutineRunner)
         {
+            _assetProvider.Init();
             _soundController.Init();
             _permanentUiController.Init(coroutineRunner);
             _sceneLoader.Init(coroutineRunner);

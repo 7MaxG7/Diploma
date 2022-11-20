@@ -6526,7 +6526,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fca9474e66f44fa4a2cb412f334eaac2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _gameObject: {fileID: 3729664184148577333}
   _canvasGroup: {fileID: 6331030151629657798}
   _creditsScroll: {fileID: 8478321781319651336}
   _closeCreditsButton: {fileID: 8448704934314255862}
@@ -8708,7 +8707,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd4f019171154ad186a71abefe83a4e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _gameObject: {fileID: 4691463446720288408}
   _canvasGroup: {fileID: 3732947809271115883}
   _contentHorizontalGroup: {fileID: 3218087735781408928}
   _rulesScroll: {fileID: 5908261072231422911}

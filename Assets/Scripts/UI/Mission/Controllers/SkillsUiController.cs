@@ -1,5 +1,6 @@
 ﻿using System;
 using Infrastructure;
+using Services;
 using Units;
 using Weapons;
 
@@ -12,11 +13,13 @@ namespace UI
 
         private readonly UiConfig _uiConfig;
         private readonly SkillsPanelView _skillsPanel;
+        private readonly IViewsFactory _viewsFactory;
 
 
-        public SkillsUiController(SkillsPanelView skillsPanel, UiConfig uiConfig)
+        public SkillsUiController(SkillsPanelView skillsPanel, IViewsFactory viewsFactory, UiConfig uiConfig)
         {
             _skillsPanel = skillsPanel;
+            _viewsFactory = viewsFactory;
             _uiConfig = uiConfig;
         }
 
@@ -28,7 +31,7 @@ namespace UI
 
         public void Init()
         {
-            _skillsPanel.Init(_uiConfig);
+            _skillsPanel.Init(_viewsFactory, _uiConfig);
             _skillsPanel.OnSkillChoosen += UpgradeSkill;
         }
 

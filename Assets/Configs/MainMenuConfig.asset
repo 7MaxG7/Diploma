@@ -32,9 +32,21 @@ MonoBehaviour:
   _loginFailStatusText: Login fail
   _statusLableSuffixUpdateDelay: 250
   _successfulStatusDelay: 500
-  _mainMenuPref: {fileID: 574326454200508935, guid: fed727c716d14a94b9e771ce7833be89, type: 3}
-  _lobbyCachedRoomItemPref: {fileID: 845097435725642758, guid: e4fc703c6ccdd304f8b911794085b2d5, type: 3}
-  _roomCachedPlayerItemPref: {fileID: 7671765002071387023, guid: 194c68fab07b3ea42aa62810dec01ae5, type: 3}
+  _mainMenuPref:
+    m_AssetGUID: fed727c716d14a94b9e771ce7833be89
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  _lobbyCachedRoomItemPref:
+    m_AssetGUID: e4fc703c6ccdd304f8b911794085b2d5
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  _roomCachedPlayerItemPref:
+    m_AssetGUID: 194c68fab07b3ea42aa62810dec01ae5
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
   _mainMenuLableText: Raise it!
   _loginButtonText: Login
   _scoreLableTemplate: 'Score: {0}'

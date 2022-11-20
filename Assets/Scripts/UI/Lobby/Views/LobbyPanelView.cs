@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using DG.Tweening;
 using Photon.Realtime;
+using Services;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -30,10 +31,12 @@ namespace Infrastructure
         private readonly Dictionary<string, LobbyCachedRoomItemView> _cachedRoomItemViews = new();
         private bool _uiIsBlocked;
         private MainMenuConfig _mainMenuConfig;
+        private IViewsFactory _viewsFactory;
 
 
-        public void Init(MainMenuConfig mainMenuConfig)
+        public void Init(IViewsFactory viewsFactory, MainMenuConfig mainMenuConfig)
         {
+            _viewsFactory = viewsFactory;
             _mainMenuConfig = mainMenuConfig;
             _createPrivateRoomButton.onClick.AddListener(InvokePrivateRoomCreation);
             _joinPrivateRoomButton.onClick.AddListener(InvokePrivateRoomJoin);
@@ -104,12 +107,12 @@ namespace Infrastructure
             }
         }
 
-        public void AddRoom(RoomInfo room)
+        public async void AddRoom(RoomInfo room)
         {
             var roomName = room.Name;
             if (!_cachedRoomItemViews.ContainsKey(roomName))
             {
-                var roomItem = Instantiate(_mainMenuConfig.LobbyCachedRoomItemPref, _roomsListContent);
+                var roomItem = await _viewsFactory.CreateLobbyCachedRoomItemAsync(_roomsListContent);
                 roomItem.RoomName.text = roomName;
                 roomItem.RoomButton.onClick.AddListener(() => OnJoinRoomClick?.Invoke(roomName));
                 roomItem.RoomName.color = room.IsOpen

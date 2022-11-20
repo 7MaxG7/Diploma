@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using DG.Tweening;
 
 
 namespace Infrastructure
@@ -8,6 +9,7 @@ namespace Infrastructure
         private readonly List<IUpdater> _updaters = new();
         private readonly List<ILateUpdater> _lateUpdaters = new();
         private readonly List<IFixedUpdater> _fixedUpdaters = new();
+        private readonly List<ICleaner> _cleaners = new();
 
         public void OnUpdate(float deltaTime)
         {
@@ -41,6 +43,8 @@ namespace Infrastructure
                 _lateUpdaters.Add(lateUpdater);
             if (controller is IFixedUpdater fixedUpdater)
                 _fixedUpdaters.Add(fixedUpdater);
+            if (controller is ICleaner cleaner)
+                _cleaners.Add(cleaner);
         }
 
         public void RemoveController(IController controller)
@@ -51,13 +55,20 @@ namespace Infrastructure
                 _lateUpdaters.Remove(lateUpdater);
             if (controller is IFixedUpdater fixedUpdater)
                 _fixedUpdaters.Remove(fixedUpdater);
+            if (controller is ICleaner cleaner)
+                _cleaners.Remove(cleaner);
         }
 
         public void ClearControllers()
         {
+            foreach (var cleaner in _cleaners)
+            {
+                cleaner.CleanUp();
+            }
             _updaters.Clear();
             _lateUpdaters.Clear();
             _fixedUpdaters.Clear();
+            DOTween.KillAll();
         }
     }
 }

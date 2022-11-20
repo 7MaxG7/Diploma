@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Infrastructure;
 using Units;
 using UnityEngine;
@@ -11,7 +12,7 @@ namespace UI
     {
         event Action<WeaponType> OnSkillChoose;
 
-        void Init(IUnit player);
+        Task Init(IUnit player);
         void ShowSkillsChoose(ActualSkillInfo[] skills);
         void ShowCompass(Vector3 closestEnemyPlayerDestination);
         void HideCompass(Vector3 closestEnemyPlayerDestination);

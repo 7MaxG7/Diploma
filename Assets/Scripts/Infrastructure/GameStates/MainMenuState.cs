@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading.Tasks;
+using Services;
 using Sounds;
 using UI;
 using UnityEngine.SceneManagement;
@@ -15,29 +17,47 @@ namespace Infrastructure
         private readonly IMainMenuController _mainMenuController;
         private readonly IPermanentUiController _permanentUiController;
         private readonly ISoundController _soundController;
+        private readonly IAssetProvider _assetProvider;
         private readonly ISceneLoader _sceneLoader;
 
 
         [Inject]
         public MainMenuState(ISceneLoader sceneLoader, IMainMenuController mainMenuController,
-            IPermanentUiController permanentUiController
-            , ISoundController soundController)
+            IPermanentUiController permanentUiController, ISoundController soundController, IAssetProvider assetProvider)
         {
             _sceneLoader = sceneLoader;
             _mainMenuController = mainMenuController;
             _permanentUiController = permanentUiController;
             _soundController = soundController;
+            _assetProvider = assetProvider;
         }
 
         public void Enter()
         {
+            _assetProvider.WarmUpForState(GetType());
             _soundController.PlayRandomMenuMusic();
             _sceneLoader.LoadScene(Constants.MAIN_MENU_SCENE_NAME, SetupMainMenu);
         }
 
-        private void SetupMainMenu()
+        public void Exit()
         {
-            _mainMenuController.SetupMainMenu();
+            _soundController.StopAll();
+            if (!_permanentUiController.IsActivating)
+                OnMainMenuDispose();
+            else
+                _permanentUiController.OnCurtainShown += DisposeMainMenu;
+
+
+            void DisposeMainMenu()
+            {
+                _permanentUiController.OnCurtainShown -= DisposeMainMenu;
+                OnMainMenuDispose();
+            }
+        }
+
+        private async void SetupMainMenu()
+        {
+            await _mainMenuController.SetupMainMenu();
             SceneManager.sceneUnloaded += ShowCurtain;
             SceneManager.sceneLoaded += SwitchState;
 
@@ -57,20 +77,10 @@ namespace Infrastructure
             OnStateChange?.Invoke();
         }
 
-        public void Exit()
+        private void OnMainMenuDispose()
         {
-            _soundController.StopAll();
-            if (!_permanentUiController.IsActivating)
-                _mainMenuController.OnDispose();
-            else
-                _permanentUiController.OnCurtainShown += DisposeMainMenu;
-
-
-            void DisposeMainMenu()
-            {
-                _permanentUiController.OnCurtainShown -= DisposeMainMenu;
-                _mainMenuController.OnDispose();
-            }
+            _mainMenuController.OnDispose();
+            _assetProvider.CleanUp();
         }
     }
 }

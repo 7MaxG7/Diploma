@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Infrastructure;
 using Services;
 using Units;
@@ -56,14 +57,14 @@ namespace UI
             OnUpdateCallback?.Invoke();
         }
 
-        public void Init(IUnit player)
+        public async Task Init(IUnit player)
         {
-            _missionUiView = _viewsFactory.CreateMissionUi();
+            _missionUiView = await _viewsFactory.CreateMissionUi();
             _playerUiController = new PlayerUiController(_missionUiView.PlayerPanel, _uiConfig);
             _playerUiController.Init(player);
             OnUpdateCallback += _playerUiController.UpdateSmoothers;
 
-            _skillsUiController = new SkillsUiController(_missionUiView.SkillsPanel, _uiConfig);
+            _skillsUiController = new SkillsUiController(_missionUiView.SkillsPanel, _viewsFactory, _uiConfig);
             _skillsUiController.Init();
             _skillsUiController.OnSkillChoose += UpgradeSkill;
 

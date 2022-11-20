@@ -87,6 +87,8 @@ MonoBehaviour:
     m_LabelNames:
     - default
     - Prefab
+    - Lobby
+    - Mission
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: 683a467a1e2a6f349b6d761edea218b2, type: 2}

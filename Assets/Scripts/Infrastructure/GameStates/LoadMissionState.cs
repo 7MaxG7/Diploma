@@ -40,20 +40,20 @@ namespace Infrastructure
         private readonly IPhotonManager _photonManager;
         private readonly IViewsFactory _viewsFactory;
         private readonly MissionConfig _missionConfig;
+        private readonly IAssetProvider _assetProvider;
 
 
         [Inject]
         public LoadMissionState(ISceneLoader sceneLoader, IPermanentUiController permanentUiController,
-            IMapWrapper mapWrapper
-            , IUnitsFactory unitsFactory, IPlayerMoveManager playerMoveManager, ICameraManager cameraManager
-            , IMissionMapManager missionMapManager, IMonstersSpawner monstersSpawner,
-            IMonstersMoveManager monstersMoveManager
+            IMapWrapper mapWrapper, IUnitsFactory unitsFactory, IPlayerMoveManager playerMoveManager
+            , ICameraManager cameraManager, IMissionMapManager missionMapManager
+            , IMonstersSpawner monstersSpawner, IMonstersMoveManager monstersMoveManager
             , IMissionUiController missionUiController, IPhotonDataExchangeController photonDataExchangeController
-            , IPhotonObjectsSynchronizer photonObjectsSynchronizer, IWeaponsManager weaponsManager,
-            ISkillsManager skillsManager
-            , IMissionResultManager missionResultManager, IPlayersInteractionManager playersInteractionManager
-            , ICompassManager compassManager, IUnitsPool unitsPool, IPhotonManager photonManager,
-            IViewsFactory viewsFactory, MissionConfig missionConfig)
+            , IPhotonObjectsSynchronizer photonObjectsSynchronizer, IWeaponsManager weaponsManager
+            , ISkillsManager skillsManager, IMissionResultManager missionResultManager
+            , IPlayersInteractionManager playersInteractionManager, ICompassManager compassManager
+            , IUnitsPool unitsPool, IPhotonManager photonManager, IViewsFactory viewsFactory
+            , MissionConfig missionConfig, IAssetProvider assetProvider)
         {
             _sceneLoader = sceneLoader;
             _permanentUiController = permanentUiController;
@@ -76,10 +76,12 @@ namespace Infrastructure
             _skillsManager = skillsManager;
             _missionResultManager = missionResultManager;
             _missionConfig = missionConfig;
+            _assetProvider = assetProvider;
         }
 
         public void Enter(string sceneName)
         {
+            _assetProvider.WarmUpForState(GetType());
             _sceneLoader.LoadMissionScene(sceneName, PrepareSceneAsync);
 
 
@@ -88,7 +90,7 @@ namespace Infrastructure
                 InitMapWrapper(out var groundItemSize);
                 var player = await InitUnits(groundItemSize);
                 await InitPhotonDataControllersAsync(player);
-                InitUi(player);
+                await InitUi(player);
                 OnStateChange?.Invoke();
             }
 
@@ -193,9 +195,9 @@ namespace Infrastructure
                 return photonDataExchangers.Where(view => !view.photonView.IsMine).ToList();
             }
 
-            void InitUi(IUnit player)
+            async Task InitUi(IUnit player)
             {
-                _missionUiController.Init(player);
+                await _missionUiController.Init(player);
             }
         }
 

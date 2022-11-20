@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using DG.Tweening;
 using Infrastructure;
+using Services;
 using Units;
 using UnityEngine;
 
@@ -17,10 +18,12 @@ namespace UI
 
         private UiConfig _uiConfig;
         private readonly List<SkillUiItemView> _skillItems = new();
+        private IViewsFactory _viewsFactory;
 
 
-        public void Init(UiConfig uiConfig)
+        public void Init(IViewsFactory viewsFactory, UiConfig uiConfig)
         {
+            _viewsFactory = viewsFactory;
             _uiConfig = uiConfig;
             _canvasGroup.alpha = 0;
         }
@@ -37,23 +40,20 @@ namespace UI
             _canvasGroup.DOKill();
         }
 
-        public void ShowSkills(ActualSkillInfo[] skills)
+        public async void ShowSkills(ActualSkillInfo[] skills)
         {
             while (_skillItems.Count < skills.Length)
             {
-                var skillItem = Instantiate(_uiConfig.SkillUiItemPrefab, _skillsUpgradeItemsContent);
+                var skillItem = await _viewsFactory.CreateSkillUiItemAsync(_skillsUpgradeItemsContent);
                 skillItem.Init(_uiConfig);
                 skillItem.OnSkillChoosen += InvokeSkillChoosen;
                 _skillItems.Add(skillItem);
             }
-
-            for (var i = 0; i < _skillItems.Count; i++)
-            {
-                _skillItems[i].gameObject.SetActive(i < skills.Length);
-            }
+            _skillItems.ForEach(item => item.gameObject.SetActive(false));
 
             for (var i = 0; i < skills.Length; i++)
             {
+                _skillItems[i].gameObject.SetActive(true);
                 _skillItems[i].Setup(skills[i]);
             }
 

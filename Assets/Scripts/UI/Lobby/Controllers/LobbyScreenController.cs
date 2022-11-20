@@ -6,6 +6,8 @@ using Photon.Pun;
 using Photon.Realtime;
 using Services;
 using UI;
+using UnityEngine;
+using Utils;
 
 
 namespace Infrastructure
@@ -28,17 +30,18 @@ namespace Infrastructure
         private bool _uiIsBlocked;
 
 
-        public LobbyScreenController(IPhotonManager photonManager, LobbyScreenView lobbyScreenView,
-            MainMenuConfig mainMenuConfig
+        public LobbyScreenController(IViewsFactory viewsFactory, IPhotonManager photonManager
+            , LobbyScreenView lobbyScreenView, MainMenuConfig mainMenuConfig
             , IPermanentUiController permanentUiController)
         {
             _photonManager = photonManager;
             _lobbyScreenView = lobbyScreenView;
             _mainMenuConfig = mainMenuConfig;
             _lobbyPanelController =
-                new LobbyPanelController(_photonManager, mainMenuConfig, _lobbyScreenView.LobbyPanelView, this);
+                new LobbyPanelController(_photonManager, mainMenuConfig, _lobbyScreenView.LobbyPanelView
+                    , this, viewsFactory);
             _roomPanelController = new RoomPanelController(_photonManager, mainMenuConfig,
-                _lobbyScreenView.RoomPanelView, permanentUiController);
+                _lobbyScreenView.RoomPanelView, permanentUiController, viewsFactory);
         }
 
         public void Dispose()
@@ -109,7 +112,10 @@ namespace Infrastructure
 
         public void OnLeftRoom()
         {
-            SwitchRoomToLobbyPanel();
+#if UNITY_EDITOR
+            if (!UnityUtils.PlayModeIsStopping)
+#endif
+                SwitchRoomToLobbyPanel();
         }
 
         public void OnCreateRoomFailed(short returnCode, string message)
