@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Infrastructure;
-using UnityEngine;
 using UnityEngine.AddressableAssets;
 
 namespace Services

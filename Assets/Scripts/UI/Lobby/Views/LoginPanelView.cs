@@ -4,6 +4,7 @@ using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Utils;
 
 
 namespace Infrastructure
@@ -42,6 +43,10 @@ namespace Infrastructure
             _closePanelButton.onClick.AddListener(() => OnHideLoginPanelClick?.Invoke());
             _confirmButtonText.text = _mainMenuConfig.ConfirmLoginAccountButtonText;
             _statusLableText.text = string.Empty;
+#if UNITY_EDITOR
+            _usernameInputField.text = Constants.DEFAULT_EDITOR_USERNAME;
+            _passwordInputField.text = Constants.DEFAULT_EDITOR_PASSWORD;
+#endif
             InitEmailToggleSwitcher();
             UpdateConfirmButtonInteractivity();
 

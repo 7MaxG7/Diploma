@@ -8,6 +8,7 @@ using System.Net;
 using System.Threading;
 using PlayFab.SharedModels;
 #if !DISABLE_PLAYFABCLIENT_API
+using PlayFab.ClientModels;
 #endif
 
 namespace PlayFab.Internal

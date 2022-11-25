@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using PlayFab;
 using PlayFab.ClientModels;
+using Utils;
 
 // ReSharper disable InconsistentNaming
 
@@ -83,6 +84,9 @@ namespace Services
         public void LoginUser(string username, string password, Action<LoginResult> successCallback,
             Action<PlayFabError> failuerCallback)
         {
+#if UNITY_EDITOR
+            UnityUtils.OnPlayModeExit += PlayFabClientAPI.ForgetAllCredentials;
+#endif
             PlayFabClientAPI.LoginWithPlayFab(
                 new LoginWithPlayFabRequest { Username = username, Password = password }
                 , successCallback

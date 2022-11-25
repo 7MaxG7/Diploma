@@ -44,5 +44,9 @@
         // Playfab
         public const string WINS_AMOUNT_PLAYFAB_KEY = "wins_amount";
         public const string KILLS_AMOUNT_PLAYFAB_KEY = "kills_amount";
+#if UNITY_EDITOR
+        public const string DEFAULT_EDITOR_USERNAME = "user";
+        public const string DEFAULT_EDITOR_PASSWORD = "11111111";
+#endif
     }
 }

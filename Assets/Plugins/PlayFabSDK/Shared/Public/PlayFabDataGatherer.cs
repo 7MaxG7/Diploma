@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Text;
+using PlayFab.SharedModels;
 using UnityEngine.Rendering;
 #if NETFX_CORE
 using System.Reflection;

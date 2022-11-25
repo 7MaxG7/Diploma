@@ -29,10 +29,21 @@ namespace Infrastructure
         public void Enter()
         {
             DOTween.Init();
+#if UNITY_EDITOR
+            UnityUtils.OnPlayModeExit += StopUtils;
+#endif
             _permanentUiController.ShowLoadingCurtain(false);
             _inputService.Init();
             _sceneLoader.LoadScene(Constants.BOOTSTRAP_SCENE_NAME, () => OnStateChange?.Invoke());
         }
+        
+#if UNITY_EDITOR
+        private void StopUtils()
+        {
+            UnityUtils.OnPlayModeExit -= StopUtils;
+            DOTween.KillAll();
+        }
+#endif
 
         public void Exit()
         {

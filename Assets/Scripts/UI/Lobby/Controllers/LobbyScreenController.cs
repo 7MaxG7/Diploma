@@ -6,7 +6,6 @@ using Photon.Pun;
 using Photon.Realtime;
 using Services;
 using UI;
-using UnityEngine;
 using Utils;
 
 
@@ -58,7 +57,8 @@ namespace Infrastructure
 
         public void OnDisconnected(DisconnectCause cause)
         {
-            _lobbyScreenView.HideScreen(screenHiddenCallback: _lobbyPanelController.DeactivatePanel);
+            if (!UnityUtils.PlayModeIsStopping)
+                _lobbyScreenView.HideScreen(screenHiddenCallback: _lobbyPanelController.DeactivatePanel);
         }
 
         public void OnConnected()

@@ -2,7 +2,6 @@
 using Services;
 using Sounds;
 using UI;
-using UnityEditor;
 using Utils;
 using Zenject;
 
