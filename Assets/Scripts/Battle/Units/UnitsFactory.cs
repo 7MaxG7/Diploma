@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Services;
 using Units;
 using UnityEngine;
@@ -14,6 +15,7 @@ namespace Utils
         private readonly IPunEventRaiser _punEventRaiser;
         private readonly PlayerConfig _playerConfig;
         private readonly MonstersConfig _monstersConfig;
+        private readonly HashSet<PlayerView> _enemyPlayers = new();
         private IUnit _player;
         private Transform _root;
 
@@ -31,8 +33,14 @@ namespace Utils
 
         public void Dispose()
         {
+            _enemyPlayers.Clear();
             _player.OnDispose -= _photonManager.Destroy;
             _player.Dispose();
+        }
+
+        public void Init()
+        {
+            _root = _viewsFactory.CreateGameObject(Constants.UNITS_ROOT_NAME).transform;
         }
 
         public async Task<IUnit> CreateMyPlayerAsync(Vector2 position, Quaternion rotation)
@@ -53,17 +61,30 @@ namespace Utils
 
         public async Task<IUnit> CreatePlayerAsync(Vector2 position, Quaternion rotation, bool isMine = false)
         {
-            _root ??= _viewsFactory.CreateGameObject(Constants.UNITS_ROOT_NAME).transform;
             var playerGo = await _viewsFactory.CreateGameObjectAsync(_playerConfig.PlayerPrefab, position, rotation, _root);
-            return new PlayerUnit(playerGo, _playerConfig, isMine); 
+            var player = new PlayerUnit(playerGo, _playerConfig, isMine);
+            if (!isMine)
+            {
+                _enemyPlayers.Add(player.UnitView as PlayerView);
+            }
+            return player; 
         }
 
         public async Task<IUnit> CreateMonsterAsync(int monsterLevel, Vector2 spawnPosition, Quaternion rotation, bool isMine = false)
         {
             var monsterParams = _monstersConfig.GetMonsterParams(monsterLevel);
-            _root ??= _viewsFactory.CreateGameObject(Constants.UNITS_ROOT_NAME).transform;
             var enemyGo = await _viewsFactory.CreateGameObjectAsync(monsterParams.UnitPrefab, spawnPosition, rotation, _root);
             return new MonsterUnit(enemyGo, monsterParams, monsterLevel, isMine);
+        }
+
+        public async Task<HashSet<PlayerView>> GetOtherPlayers(int enemyPlayersAmount)
+        {
+            while (_enemyPlayers.Count < enemyPlayersAmount)
+            {
+                await Task.Yield();
+            }
+
+            return _enemyPlayers;
         }
     }
 }

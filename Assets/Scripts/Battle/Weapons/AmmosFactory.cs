@@ -23,6 +23,11 @@ namespace Weapons
             _weaponsConfig = weaponsConfig;
         }
 
+        public void Init()
+        {
+            _root = _viewsFactory.CreateGameObject(Constants.AMMOS_ROOT_NAME).transform;
+        }
+
         public async Task<IAmmo> CreateMyAmmoAsync(WeaponType weaponType, Vector2 position, Quaternion rotation)
         {
             var ammo = await CreateAmmoAsync(weaponType, position, rotation, true);
@@ -34,7 +39,6 @@ namespace Weapons
         public async Task<IAmmo> CreateAmmoAsync(WeaponType weaponType, Vector2 position, Quaternion rotation, bool isMine = false)
         {
             var ammoParam = _weaponsConfig.GetWeaponBaseParam(weaponType);
-            _root ??= _viewsFactory.CreateGameObject(Constants.AMMOS_ROOT_NAME).transform;
             var ammoGo = await _viewsFactory.CreateGameObjectAsync(ammoParam.AmmoPrefab, position, rotation, _root);
             var ammo = new Ammo(ammoGo, (int)weaponType, isMine);
             return ammo;

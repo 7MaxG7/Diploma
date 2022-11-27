@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Infrastructure;
 using Units;
 using UnityEngine;
+using Utils;
 using Zenject;
 
 
@@ -17,9 +19,10 @@ namespace Services
 
         private readonly IMonstersSpawner _monstersSpawner;
         private readonly IMissionResultManager _missionResultManager;
+        private readonly IPhotonManager _photonManager;
         private readonly IControllersHolder _controllersHolder;
 
-        private List<PlayerView> EnemyPlayerViews { get; set; } = new();
+        private HashSet<PlayerView> EnemyPlayerViews { get; set; } = new();
         private readonly float _maxPlayersFightSqrMagnitude;
         private IUnit _player;
         private bool _spawnerIsTurnedOffHere;
@@ -27,10 +30,11 @@ namespace Services
 
         [Inject]
         public PlayersInteractionManager(IMonstersSpawner monstersSpawner, IMissionResultManager missionResultManager
-            , MissionConfig missionConfig, IControllersHolder controllersHolder)
+            , IPhotonManager photonManager, MissionConfig missionConfig, IControllersHolder controllersHolder)
         {
             _monstersSpawner = monstersSpawner;
             _missionResultManager = missionResultManager;
+            _photonManager = photonManager;
             _controllersHolder = controllersHolder;
             _maxPlayersFightSqrMagnitude = missionConfig.PlayersFightDistance * missionConfig.PlayersFightDistance;
         }
@@ -77,24 +81,34 @@ namespace Services
             }
         }
 
-        public void Init(IUnit player, List<PlayerView> enemyPlayerViews)
+        public void Init(IUnit player)
         {
-            if (enemyPlayerViews.Count == 0)
+            if (_photonManager.GetRoomPlayersAmount() <= 1)
             {
                 IsMultiplayerGame = false;
                 return;
             }
 
             _player = player;
-            EnemyPlayerViews = enemyPlayerViews;
             _missionResultManager.OnPlayerWithIdLeftRoomEvent += RemoveLeavingPlayer;
             IsMultiplayerGame = true;
             _controllersHolder.AddController(this);
         }
 
+        public async Task PrepareOtherPlayers(IUnitsFactory unitsFactory)
+        {
+            var enemyPlayersAmount = _photonManager.GetRoomPlayersAmount() - 1;
+            if (enemyPlayersAmount == 0)
+            {
+                return;
+            }
+
+            EnemyPlayerViews = await unitsFactory.GetOtherPlayers(enemyPlayersAmount);
+        }
+
         private void RemoveLeavingPlayer(int playerActorId)
         {
-            EnemyPlayerViews.RemoveAll(view => view.PhotonView.Owner.ActorNumber == playerActorId);
+            EnemyPlayerViews.RemoveWhere(view => view.PhotonView.Owner.ActorNumber == playerActorId);
         }
     }
 }

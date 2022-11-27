@@ -35,6 +35,7 @@ namespace Infrastructure
         private readonly IMissionResultManager _missionResultManager;
         private readonly IPlayersInteractionManager _playersInteractionManager;
         private readonly ICompassManager _compassManager;
+        private readonly IAmmosFactory _ammosFactory;
         private readonly IUnitsPool _unitsPool;
         private readonly IPhotonManager _photonManager;
         private readonly MissionConfig _missionConfig;
@@ -48,7 +49,7 @@ namespace Infrastructure
             , IMonstersSpawner monstersSpawner, IMonstersMoveManager monstersMoveManager
             , IMissionUiController missionUiController, IPhotonObjectsSynchronizer photonObjectsSynchronizer
             , IWeaponsManager weaponsManager, ISkillsManager skillsManager, IMissionResultManager missionResultManager
-            , IPlayersInteractionManager playersInteractionManager, ICompassManager compassManager
+            , IPlayersInteractionManager playersInteractionManager, ICompassManager compassManager, IAmmosFactory ammosFactory
             , IUnitsPool unitsPool, IPhotonManager photonManager, MissionConfig missionConfig, IAssetProvider assetProvider)
         {
             _sceneLoader = sceneLoader;
@@ -57,6 +58,7 @@ namespace Infrastructure
             _unitsFactory = unitsFactory;
             _playersInteractionManager = playersInteractionManager;
             _compassManager = compassManager;
+            _ammosFactory = ammosFactory;
             _unitsPool = unitsPool;
             _photonManager = photonManager;
             _playerMoveManager = playerMoveManager;
@@ -84,6 +86,7 @@ namespace Infrastructure
                 InitMapWrapper(out var groundItemSize);
                 var player = await InitUnits(groundItemSize);
                 await InitUi(player);
+                await InitPlayersInterators();
                 OnStateChange?.Invoke();
             }
 
@@ -119,9 +122,9 @@ namespace Infrastructure
                 var yPosition = ((_photonManager.GetPlayerActorNumber() - 1) % 2 + .5f) *
                                 Constants.GROUND_ITEMS_AMOUNT_PER_PLAYER_ZONE_LENGTH * groundSize.y;
 
+                _unitsFactory.Init();
                 var player = await _unitsFactory.CreateMyPlayerAsync(new Vector2(xPosition, yPosition), Quaternion.identity);
-                var enemyPlayers = await FindEnemyPlayersAsync();
-                _playersInteractionManager.Init(player, enemyPlayers);
+                _playersInteractionManager.Init(player);
                 _playerMoveManager.Init(player);
                 _compassManager.Init(player);
                 _cameraManager.Follow(player.Transform, _missionConfig.CameraOffset);
@@ -159,6 +162,12 @@ namespace Infrastructure
             async Task InitUi(IUnit player)
             {
                 await _missionUiController.Init(player);
+            }
+
+            async Task InitPlayersInterators()
+            {
+                _ammosFactory.Init();
+                await _playersInteractionManager.PrepareOtherPlayers(_unitsFactory);
             }
         }
 

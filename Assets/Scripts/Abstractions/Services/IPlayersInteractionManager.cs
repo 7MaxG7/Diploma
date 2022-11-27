@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Infrastructure;
 using Units;
+using Utils;
 
 
 namespace Services
@@ -13,6 +15,7 @@ namespace Services
         float ClosestFightingEnemyPlayerSqrMagnitude { get; }
         bool? IsMultiplayerGame { get; }
 
-        void Init(IUnit player, List<PlayerView> enemyPlayerViews);
+        void Init(IUnit player);
+        Task PrepareOtherPlayers(IUnitsFactory unitsFactory);
     }
 }
