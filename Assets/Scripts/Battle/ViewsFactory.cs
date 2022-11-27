@@ -14,18 +14,17 @@ namespace Services
     internal sealed class ViewsFactory : IViewsFactory
     {
         private readonly IAssetProvider _assetProvider;
-        private readonly IPhotonManager _photonManager;
         private readonly SoundConfig _soundConfig;
         private readonly MainMenuConfig _mainMenuConfig;
         private readonly UiConfig _uiConfig;
+        private IPunEventRaiser _punEventRaiser;
 
 
         [Inject]
-        public ViewsFactory(IAssetProvider assetProvider, IPhotonManager photonManager, SoundConfig soundConfig, MainMenuConfig mainMenuConfig,
-            UiConfig uiConfig)
+        public ViewsFactory(IAssetProvider assetProvider, SoundConfig soundConfig, MainMenuConfig mainMenuConfig
+            , UiConfig uiConfig)
         {
             _assetProvider = assetProvider;
-            _photonManager = photonManager;
             _soundConfig = soundConfig;
             _mainMenuConfig = mainMenuConfig;
             _uiConfig = uiConfig;
@@ -36,9 +35,11 @@ namespace Services
             return new GameObject(name);
         }
 
-        public GameObject CreatePhotonObj(string prefabPath, Vector2 position, Quaternion rotation)
+        public async Task<GameObject> CreateGameObjectAsync(AssetReference assetReference, Vector2 position,
+            Quaternion rotation, Transform parent = null)
         {
-            return _photonManager.Create(prefabPath, position, rotation);
+            var prefab = await _assetProvider.LoadAsync<GameObject>(assetReference);
+            return Instantiate(prefab, position, rotation, parent);
         }
 
         public SoundPlayerView CreateSoundPlayer()

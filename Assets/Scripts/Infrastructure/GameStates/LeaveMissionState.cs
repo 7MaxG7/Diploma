@@ -13,7 +13,6 @@ namespace Infrastructure
     internal sealed class LeaveMissionState : ILeaveMissionState
     {
         private readonly IPhotonObjectsSynchronizer _photonObjectsSynchronizer;
-        private readonly IPhotonDataExchangeController _photonDataExchangeController;
         private readonly ICameraManager _cameraManager;
         private readonly IMissionMapManager _missionMapManager;
         private readonly IPlayerMoveManager _playerMoveManager;
@@ -36,18 +35,15 @@ namespace Infrastructure
 
 
         [Inject]
-        public LeaveMissionState(IPhotonObjectsSynchronizer photonObjectsSynchronizer,
-            IPhotonDataExchangeController photonDataExchangeController
-            , ICameraManager cameraManager, IMissionMapManager missionMapManager, IPlayerMoveManager playerMoveManager
-            , IMonstersSpawner monstersSpawner, IMonstersMoveManager monstersMoveManager, IWeaponsManager weaponsManager
-            , ISkillsManager skillsManager, IMissionUiController missionUiController,
-            IMissionResultManager missionResultManager, IUnitsPool unitsPool, IAmmosPool ammosPool
-            , IPermanentUiController permanentUiController, IMapWrapper mapWrapper, IUnitsFactory unitsFactory
-            , IPlayersInteractionManager playersInteractionManager, ICompassManager compassManager
+        public LeaveMissionState(IPhotonObjectsSynchronizer photonObjectsSynchronizer, ICameraManager cameraManager
+            , IMissionMapManager missionMapManager, IPlayerMoveManager playerMoveManager, IMonstersSpawner monstersSpawner
+            , IMonstersMoveManager monstersMoveManager, IWeaponsManager weaponsManager, ISkillsManager skillsManager
+            , IMissionUiController missionUiController, IMissionResultManager missionResultManager, IUnitsPool unitsPool
+            , IAmmosPool ammosPool, IPermanentUiController permanentUiController, IMapWrapper mapWrapper
+            , IUnitsFactory unitsFactory, IPlayersInteractionManager playersInteractionManager, ICompassManager compassManager
             , IPhotonManager photonManager, IAssetProvider assetProvider)
         {
             _photonObjectsSynchronizer = photonObjectsSynchronizer;
-            _photonDataExchangeController = photonDataExchangeController;
             _cameraManager = cameraManager;
             _missionMapManager = missionMapManager;
             _playersInteractionManager = playersInteractionManager;
@@ -84,7 +80,6 @@ namespace Infrastructure
             _compassManager.Dispose();
             _playerMoveManager.Dispose();
             _photonObjectsSynchronizer.Dispose();
-            _photonDataExchangeController.Dispose();
             _ammosPool.Dispose();
             _unitsPool.Dispose();
             _unitsFactory.Dispose();

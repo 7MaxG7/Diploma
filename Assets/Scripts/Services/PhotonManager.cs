@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using Photon.Pun;
 using Photon.Realtime;
-using UnityEngine;
 
 
 namespace Services
@@ -18,22 +17,29 @@ namespace Services
         public bool IsMasterClient => PhotonNetwork.IsMasterClient;
 
 
-        #region Objects
-
-        public GameObject Create(string prefabPath, Vector2 position, Quaternion rotation)
+        public void SubscribeCallbacks(object obj)
         {
-            return PhotonNetwork.Instantiate(prefabPath, position, rotation);
+            PhotonNetwork.AddCallbackTarget(obj);
         }
 
+        public void UnsubscribeCallbacks(object obj)
+        {
+            PhotonNetwork.RemoveCallbackTarget(obj);
+        }
+
+#region Objects
         public void Destroy(PhotonView obj)
         {
             PhotonNetwork.Destroy(obj);
         }
 
-        #endregion
+        public bool AllocateViewID(PhotonView photonView)
+        {
+            return PhotonNetwork.AllocateViewID(photonView);
+        }
+#endregion
 
-        #region Lobby
-
+#region Lobby
         public void JoinCustonLobby()
         {
             PhotonNetwork.JoinLobby(new TypedLobby("customLobby", LobbyType.Default));
@@ -53,11 +59,9 @@ namespace Services
         {
             PhotonNetwork.Disconnect();
         }
+#endregion
 
-        #endregion
-
-        #region Rooms
-
+#region Rooms
         public void SetRoomParameters(bool? isOpened = null, bool? isVisible = null)
         {
             if (isOpened.HasValue)
@@ -110,7 +114,6 @@ namespace Services
         {
             PhotonNetwork.LoadLevel(sceneName);
         }
-
-        #endregion
+#endregion
     }
 }

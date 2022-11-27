@@ -1,7 +1,9 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using Infrastructure;
 using Services;
 using UnityEngine;
+using Utils;
 using Zenject;
 
 
@@ -15,37 +17,38 @@ namespace Weapons
 
         [Inject]
         public AmmosPool(IAmmosFactory ammosFactory, IHandleDamageManager handleDamageManager,
-            IPhotonManager photonManager)
+            IPhotonManager photonManager, IPunEventRaiser punEventRaiser)
         {
             _ammosFactory = ammosFactory;
             _handleDamageManager = handleDamageManager;
-            _photonManager = photonManager;
+            PunEventRaiser = punEventRaiser;
+            PhotonManager = photonManager;
         }
 
         public override void Dispose()
         {
             base.Dispose();
-            foreach (var ammo in _objects.Values.SelectMany(obj => obj))
+            foreach (var ammo in Objects.Values.SelectMany(obj => obj))
             {
                 ammo.OnLifetimeExpired -= ReturnObject;
                 ammo.OnCollidedWithDamageTaker -= _handleDamageManager.DealDamage;
                 ammo.Dispose();
             }
 
-            foreach (var objList in _objects.Values)
+            foreach (var objList in Objects.Values)
             {
                 objList.Clear();
             }
 
-            _objects.Clear();
-            foreach (var ammo in _spawnedObjects)
+            Objects.Clear();
+            foreach (var ammo in SpawnedObjects)
             {
                 ammo.OnLifetimeExpired -= ReturnObject;
                 ammo.OnCollidedWithDamageTaker -= _handleDamageManager.DealDamage;
                 ammo.Dispose();
             }
 
-            _spawnedObjects.Clear();
+            SpawnedObjects.Clear();
         }
 
         protected override int GetSpecifiedPoolIndex(object[] parameters)
@@ -53,10 +56,11 @@ namespace Weapons
             return (int)parameters[0];
         }
 
-        protected override IAmmo SpawnSpecifiedObject(Vector2 spawnPosition, object[] parameters)
+        protected override async Task<IAmmo> SpawnSpecifiedObjectAsync(Vector2 position, Quaternion rotation,
+            object[] parameters)
         {
             var ammoType = (WeaponType)parameters[0];
-            var ammo = _ammosFactory.CreateAmmo(spawnPosition, ammoType);
+            var ammo = await _ammosFactory.CreateMyAmmoAsync(ammoType, position, rotation);
             ammo.OnLifetimeExpired += ReturnObject;
             ammo.OnCollidedWithDamageTaker += _handleDamageManager.DealDamage;
             return ammo;

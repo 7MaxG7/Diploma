@@ -21,6 +21,7 @@ namespace Infrastructure
         public event Action OnRandomRoomJoinFail;
 
         private readonly IPhotonManager _photonManager;
+        private readonly IPunEventHandler _punEventHandler;
         private readonly LobbyScreenView _lobbyScreenView;
         private readonly MainMenuConfig _mainMenuConfig;
         private readonly LobbyPanelController _lobbyPanelController;
@@ -30,10 +31,11 @@ namespace Infrastructure
 
 
         public LobbyScreenController(IViewsFactory viewsFactory, IPhotonManager photonManager
-            , LobbyScreenView lobbyScreenView, MainMenuConfig mainMenuConfig
+            , IPunEventHandler punEventHandler, LobbyScreenView lobbyScreenView, MainMenuConfig mainMenuConfig
             , IPermanentUiController permanentUiController)
         {
             _photonManager = photonManager;
+            _punEventHandler = punEventHandler;
             _lobbyScreenView = lobbyScreenView;
             _mainMenuConfig = mainMenuConfig;
             _lobbyPanelController =
@@ -57,7 +59,9 @@ namespace Infrastructure
 
         public void OnDisconnected(DisconnectCause cause)
         {
+#if UNITY_EDITOR
             if (!UnityUtils.PlayModeIsStopping)
+#endif
                 _lobbyScreenView.HideScreen(screenHiddenCallback: _lobbyPanelController.DeactivatePanel);
         }
 
@@ -89,6 +93,7 @@ namespace Infrastructure
 
         public void OnLeftLobby()
         {
+            _lobbyPanelController.ClearPanel();
             _photonManager.Disconnect();
         }
 
@@ -107,11 +112,13 @@ namespace Infrastructure
 
         public void OnJoinedRoom()
         {
+            _punEventHandler.Init();
             SwitchLobbyToRoomPanel();
         }
 
         public void OnLeftRoom()
         {
+            _punEventHandler.CleanUp();
 #if UNITY_EDITOR
             if (!UnityUtils.PlayModeIsStopping)
 #endif
@@ -178,7 +185,7 @@ namespace Infrastructure
             _roomPanelController.OnDispose();
             DOTween.Clear();
             DOTween.KillAll();
-            PhotonNetwork.RemoveCallbackTarget(this);
+            _photonManager.UnsubscribeCallbacks(this);
         }
 
         public void Init(string userName)
@@ -198,7 +205,7 @@ namespace Infrastructure
             {
                 _photonManager.PlayerName = _userName;
                 PhotonNetwork.AutomaticallySyncScene = true;
-                PhotonNetwork.AddCallbackTarget(this);
+                _photonManager.SubscribeCallbacks(this);
             }
         }
 

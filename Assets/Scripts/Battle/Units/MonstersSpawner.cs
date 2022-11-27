@@ -1,4 +1,5 @@
-﻿using Enums;
+﻿using System.Threading.Tasks;
+using Enums;
 using Infrastructure;
 using Units;
 using UnityEngine;
@@ -49,7 +50,7 @@ namespace Services
             _mainCamera = null;
         }
 
-        public void OnUpdate(float deltaTime)
+        public async void OnUpdate(float deltaTime)
         {
             if (_spawnWaveTimer > 0)
             {
@@ -60,16 +61,15 @@ namespace Services
             if (!SpawnIsOn || !_cameraManager.CameraIsPositioned)
                 return;
 
+            _spawnWaveTimer = _monstersConfig.GetSpawnCooldown(_spawnerLevel);
             var monstersAmount = _unitsPool.ActiveMonsters.Count > 0
                 ? _random.GetRandomIncludingMax(_monstersConfig.GetMaxMonstersAmount(_spawnerLevel))
                 : _random.GetRandomIncludingMax(_monstersConfig.GetMaxMonstersAmount(_spawnerLevel), 1);
             for (var i = 0; i < monstersAmount; i++)
             {
-                var monster = SpawnMonster();
+                var monster = await SpawnMonster();
                 _monstersMoveManager.RegisterMonster(monster);
             }
-
-            _spawnWaveTimer = _monstersConfig.GetSpawnCooldown(_spawnerLevel);
         }
 
         public void Init(IUnit player)
@@ -101,12 +101,12 @@ namespace Services
             }
         }
 
-        private IUnit SpawnMonster()
+        private async Task<IUnit> SpawnMonster()
         {
             var spawnPosition = GenerateSpawnPosition();
             var currentMonsterLevel =
                 _random.GetRandomIncludingMax(_monstersConfig.GetMaxMonsterLevel(_spawnerLevel), 1);
-            return _unitsPool.SpawnObject(spawnPosition, currentMonsterLevel);
+            return await _unitsPool.SpawnObjectAsync(spawnPosition, Quaternion.identity, currentMonsterLevel);
 
 
             Vector2 GenerateSpawnPosition()

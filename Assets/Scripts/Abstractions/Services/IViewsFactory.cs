@@ -3,6 +3,7 @@ using Infrastructure;
 using Sounds;
 using UI;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 
 namespace Services
@@ -10,7 +11,7 @@ namespace Services
     internal interface IViewsFactory
     {
         GameObject CreateGameObject(string name);
-        GameObject CreatePhotonObj(string playerConfigPlayerPrefabPath, Vector2 position, Quaternion rotation);
+        Task<GameObject> CreateGameObjectAsync(AssetReference prefab, Vector2 position, Quaternion rotation, Transform parent = null);
         SoundPlayerView CreateSoundPlayer();
         Task<MainMenuView> CreateMainMenuAsync();
         Task<LobbyCachedRoomItemView> CreateLobbyCachedRoomItemAsync(Transform parent = null);

@@ -15,6 +15,11 @@ MonoBehaviour:
   _weaponParams:
   - _weaponType: 1
     _ammoPrefabPath: PurpleOrb
+    _ammoPrefab:
+      m_AssetGUID: 26c3ef6bd8b20794ebe70c4f77611d81
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
     _range: 5
     _cooldown: 2
     _ammoSpeed: 1
@@ -25,6 +30,11 @@ MonoBehaviour:
     _description: Pew-pew-pew
   - _weaponType: 2
     _ammoPrefabPath: GreenOrb
+    _ammoPrefab:
+      m_AssetGUID: d4c8669e44b28be4e9922db7ec3d5fb4
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
     _range: 4
     _cooldown: 3
     _ammoSpeed: 1
@@ -35,6 +45,11 @@ MonoBehaviour:
     _description: Deals periodic damage for 3 sec
   - _weaponType: 3
     _ammoPrefabPath: YellowOrb
+    _ammoPrefab:
+      m_AssetGUID: 061146df42aec4642ab5494eb877fd22
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
     _range: 3
     _cooldown: 5
     _ammoSpeed: 0

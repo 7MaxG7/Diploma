@@ -3,6 +3,8 @@ using Services;
 using UI;
 using Units;
 using UnityEngine;
+using Utils;
+using Utils.Photon;
 using Weapons;
 using Zenject;
 
@@ -24,7 +26,6 @@ namespace Infrastructure.Zenject
             Container.Bind<IUnitsPool>().To<UnitsPool>().AsSingle();
             Container.Bind<IMonstersSpawner>().To<MonstersSpawner>().AsSingle();
             Container.Bind<IMonstersMoveManager>().To<MonstersMoveManager>().AsSingle();
-            Container.Bind<IPhotonDataExchangeController>().To<PhotonDataExchangeController>().AsSingle();
             Container.Bind<IPhotonObjectsSynchronizer>().To<PhotonObjectsSynchronizer>().AsSingle();
             Container.Bind<IMissionUiController>().To<MissionUiController>().AsSingle();
             Container.Bind<IAmmosPool>().To<AmmosPool>().AsSingle();
@@ -34,6 +35,8 @@ namespace Infrastructure.Zenject
             Container.Bind<IMissionResultManager>().To<MissionResultManager>().AsSingle();
             Container.Bind<IPlayersInteractionManager>().To<PlayersInteractionManager>().AsSingle();
             Container.Bind<ICompassManager>().To<CompassManager>().AsSingle();
+            Container.Bind<IPunEventRaiser>().To<PunEventRaiser>().AsSingle();
+            Container.Bind<IPunEventHandler>().To<PunEventHandler>().AsSingle();
 
             Container.Bind<IControllersHolder>().To<ControllersHolder>().AsSingle();
         }

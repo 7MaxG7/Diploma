@@ -23,27 +23,5 @@ namespace Utils
                     return baseStat;
             }
         }
-
-        // protected override void HandleSpecificValueArithmetic(ArithmeticType arithmeticType, float deltaValue)
-        // {
-        //     switch (arithmeticType)
-        //     {
-        //         case ArithmeticType.Plus:
-        //             WeaponCharacteristicValue += deltaValue;
-        //             break;
-        //         case ArithmeticType.Minus:
-        //             WeaponCharacteristicValue -= deltaValue;
-        //             break;
-        //         case ArithmeticType.Multiply:
-        //             WeaponCharacteristicValue *= deltaValue;
-        //             break;
-        //         case ArithmeticType.Divide:
-        //             WeaponCharacteristicValue /= deltaValue;
-        //             break;
-        //         case ArithmeticType.Equal:
-        //             WeaponCharacteristicValue = deltaValue;
-        //             break;
-        //     }
-        // }
     }
 }

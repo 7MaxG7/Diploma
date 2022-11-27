@@ -49,6 +49,7 @@ namespace Infrastructure
 
         public void ShowPanel(string roomName, Action onPanelShownCallback = null)
         {
+            _players.Clear();
             _roomPanelView.Show(roomName, onPanelShownCallback);
             UpdateMasterButtons();
         }
@@ -60,12 +61,14 @@ namespace Infrastructure
 
         public void HidePanel(Action onPanelHiddenCallback)
         {
+            _players.Clear();
             _roomPanelView.Hide(onPanelHiddenCallback: onPanelHiddenCallback);
         }
 
         public void DeactivatePanel()
         {
             _roomPanelView.Hide(false);
+            _players.Clear();
         }
 
         public void AddPlayer(Player player)

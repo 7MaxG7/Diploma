@@ -29,7 +29,6 @@ namespace Infrastructure
         private readonly IMonstersSpawner _monstersSpawner;
         private readonly IMonstersMoveManager _monstersMoveManager;
         private readonly IMissionUiController _missionUiController;
-        private readonly IPhotonDataExchangeController _photonDataExchangeController;
         private readonly IPhotonObjectsSynchronizer _photonObjectsSynchronizer;
         private readonly IWeaponsManager _weaponsManager;
         private readonly ISkillsManager _skillsManager;
@@ -38,7 +37,6 @@ namespace Infrastructure
         private readonly ICompassManager _compassManager;
         private readonly IUnitsPool _unitsPool;
         private readonly IPhotonManager _photonManager;
-        private readonly IViewsFactory _viewsFactory;
         private readonly MissionConfig _missionConfig;
         private readonly IAssetProvider _assetProvider;
 
@@ -48,12 +46,10 @@ namespace Infrastructure
             IMapWrapper mapWrapper, IUnitsFactory unitsFactory, IPlayerMoveManager playerMoveManager
             , ICameraManager cameraManager, IMissionMapManager missionMapManager
             , IMonstersSpawner monstersSpawner, IMonstersMoveManager monstersMoveManager
-            , IMissionUiController missionUiController, IPhotonDataExchangeController photonDataExchangeController
-            , IPhotonObjectsSynchronizer photonObjectsSynchronizer, IWeaponsManager weaponsManager
-            , ISkillsManager skillsManager, IMissionResultManager missionResultManager
+            , IMissionUiController missionUiController, IPhotonObjectsSynchronizer photonObjectsSynchronizer
+            , IWeaponsManager weaponsManager, ISkillsManager skillsManager, IMissionResultManager missionResultManager
             , IPlayersInteractionManager playersInteractionManager, ICompassManager compassManager
-            , IUnitsPool unitsPool, IPhotonManager photonManager, IViewsFactory viewsFactory
-            , MissionConfig missionConfig, IAssetProvider assetProvider)
+            , IUnitsPool unitsPool, IPhotonManager photonManager, MissionConfig missionConfig, IAssetProvider assetProvider)
         {
             _sceneLoader = sceneLoader;
             _permanentUiController = permanentUiController;
@@ -63,14 +59,12 @@ namespace Infrastructure
             _compassManager = compassManager;
             _unitsPool = unitsPool;
             _photonManager = photonManager;
-            _viewsFactory = viewsFactory;
             _playerMoveManager = playerMoveManager;
             _cameraManager = cameraManager;
             _missionMapManager = missionMapManager;
             _monstersSpawner = monstersSpawner;
             _monstersMoveManager = monstersMoveManager;
             _missionUiController = missionUiController;
-            _photonDataExchangeController = photonDataExchangeController;
             _photonObjectsSynchronizer = photonObjectsSynchronizer;
             _weaponsManager = weaponsManager;
             _skillsManager = skillsManager;
@@ -89,7 +83,6 @@ namespace Infrastructure
             {
                 InitMapWrapper(out var groundItemSize);
                 var player = await InitUnits(groundItemSize);
-                await InitPhotonDataControllersAsync(player);
                 await InitUi(player);
                 OnStateChange?.Invoke();
             }
@@ -109,6 +102,7 @@ namespace Infrastructure
             async Task<IUnit> InitUnits(Vector2 groundSize)
             {
                 var player = await PreparePlayer(groundSize);
+                _photonObjectsSynchronizer.Init(player.UnitView);
                 _monstersSpawner.Init(player);
                 _monstersMoveManager.Init(player.Transform);
                 _weaponsManager.StopShooting();
@@ -125,7 +119,7 @@ namespace Infrastructure
                 var yPosition = ((_photonManager.GetPlayerActorNumber() - 1) % 2 + .5f) *
                                 Constants.GROUND_ITEMS_AMOUNT_PER_PLAYER_ZONE_LENGTH * groundSize.y;
 
-                var player = _unitsFactory.CreatePlayer(new Vector2(xPosition, yPosition));
+                var player = await _unitsFactory.CreateMyPlayerAsync(new Vector2(xPosition, yPosition), Quaternion.identity);
                 var enemyPlayers = await FindEnemyPlayersAsync();
                 _playersInteractionManager.Init(player, enemyPlayers);
                 _playerMoveManager.Init(player);
@@ -160,39 +154,6 @@ namespace Infrastructure
                 }
 
                 return enemyPlayers.Where(view => !view.PhotonView.IsMine).ToList();
-            }
-
-            async Task InitPhotonDataControllersAsync(IUnit player)
-            {
-                var minePhotonDataExchanger = _viewsFactory.CreatePhotonObj(_missionConfig.PhotonDataSynchronizerPath,
-                        Vector3.zero, Quaternion.identity)
-                    .GetComponent<PhotonDataExchanger>();
-                var othersPhotonDataExchangers = await FindSynchronizers();
-                _photonDataExchangeController.Init(minePhotonDataExchanger, othersPhotonDataExchangers);
-                _photonObjectsSynchronizer.Init(player.UnitView);
-            }
-
-            async Task<List<PhotonDataExchanger>> FindSynchronizers()
-            {
-                var photonDataExchangers = Array.Empty<PhotonDataExchanger>();
-                // This objects are instantiated on other clients and automaticly appear and syncronize on this client
-                // with photon, so we just have to wait when they appear here
-                var isFirstTry = true;
-                while (photonDataExchangers.Length != _photonManager.GetRoomPlayersAmount())
-                {
-                    if (isFirstTry)
-                    {
-                        isFirstTry = false;
-                    }
-                    else
-                    {
-                        await Task.Yield();
-                    }
-
-                    photonDataExchangers = Object.FindObjectsOfType<PhotonDataExchanger>();
-                }
-
-                return photonDataExchangers.Where(view => !view.photonView.IsMine).ToList();
             }
 
             async Task InitUi(IUnit player)

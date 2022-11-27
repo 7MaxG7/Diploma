@@ -1,10 +1,12 @@
-﻿using UnityEngine;
+﻿using System.Threading.Tasks;
+using UnityEngine;
 
 
 namespace Weapons
 {
     internal interface IAmmosFactory
     {
-        IAmmo CreateAmmo(Vector2 spawnPosition, WeaponType weaponType);
+        Task<IAmmo> CreateMyAmmoAsync(WeaponType weaponType, Vector2 position, Quaternion rotation);
+        Task<IAmmo> CreateAmmoAsync(WeaponType weaponType, Vector2 spawnPosition, Quaternion rotation, bool isMine = false);
     }
 }

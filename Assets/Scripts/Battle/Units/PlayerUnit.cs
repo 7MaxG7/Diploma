@@ -13,15 +13,17 @@ namespace Units
         private readonly PlayerView _playerView;
 
 
-        public PlayerUnit(GameObject playerGo, PlayerConfig playerConfig)
-            : base(playerConfig.BaseMoveSpeed, playerConfig.LevelHpParameters[0].Health, -1)
+        public PlayerUnit(GameObject playerGo, PlayerConfig playerConfig, bool isMine)
+            : base(playerConfig.BaseMoveSpeed, playerConfig.LevelHpParameters[0].Health, -1, isMine)
         {
+            _playerView = playerGo.GetComponent<PlayerView>();
             Experience = new Experience(playerConfig.LevelHpParameters[0].Level, playerConfig.LevelExpParameters);
             Health.SetLevelUpHpParams(playerConfig.LevelHpParameters);
-            Experience.OnLevelUp += Health.AddLevelUpHealth;
-            var playerView = playerGo.GetComponent<PlayerView>();
-            playerView.OnDamageTake += TakeDamage;
-            _playerView = playerView;
+            if (isMine)
+            {
+                Experience.OnLevelUp += Health.AddLevelUpHealth;
+                _playerView.OnDamageTake += TakeDamage;
+            }
         }
 
         public override void Dispose()

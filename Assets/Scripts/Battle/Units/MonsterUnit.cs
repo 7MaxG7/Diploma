@@ -15,16 +15,18 @@ namespace Units
         private readonly int _killExperience;
 
 
-        public MonsterUnit(GameObject monsterGo, MonstersParams monstersParam, int poolIndex)
-            : base(monstersParam.MoveSpeed, monstersParam.Hp, poolIndex)
+        public MonsterUnit(GameObject monsterGo, MonstersParams monstersParam, int poolIndex, bool isMine)
+            : base(monstersParam.MoveSpeed, monstersParam.Hp, poolIndex, isMine)
         {
+            _monsterView = monsterGo.GetComponent<MonsterView>();
             Experience = new Experience(monstersParam.MonsterLevel, null);
             _collisionDamage = monstersParam.Damage;
             _killExperience = monstersParam.ExperienceOnKill;
-            var monsterView = monsterGo.GetComponent<MonsterView>();
-            monsterView.OnTriggerEnter += DamageTriggerUnit;
-            monsterView.OnDamageTake += TakeDamage;
-            _monsterView = monsterView;
+            if (isMine)
+            {
+                _monsterView.OnTriggerEnter += DamageTriggerUnit;
+                _monsterView.OnDamageTake += TakeDamage;
+            }
         }
 
         public override void Dispose()

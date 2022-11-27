@@ -12,5 +12,11 @@ namespace Infrastructure
 
         public TMP_Text RoomName => _roomName;
         public Button RoomButton => _roomButton;
+
+
+        private void OnDestroy()
+        {
+            RoomButton.onClick.RemoveAllListeners();
+        }
     }
 }

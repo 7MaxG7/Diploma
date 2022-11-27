@@ -96,36 +96,66 @@ MonoBehaviour:
   _monstersParams:
   - MonsterLevel: 1
     PrefabPath: Monster01
+    UnitPrefab:
+      m_AssetGUID: 5b453b096a15ca048b4b818b925b1c0d
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
     MoveSpeed: 3
     Hp: 100
     Damage: 50
     ExperienceOnKill: 50
   - MonsterLevel: 2
     PrefabPath: Monster02
+    UnitPrefab:
+      m_AssetGUID: 9cc4dbf221a5fb344882db0f2d9dc9d9
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
     MoveSpeed: 1
     Hp: 250
     Damage: 150
     ExperienceOnKill: 100
   - MonsterLevel: 3
     PrefabPath: Monster03
+    UnitPrefab:
+      m_AssetGUID: ec2a10c49380deb4daabbc96b9efc795
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
     MoveSpeed: 3
     Hp: 230
     Damage: 80
     ExperienceOnKill: 75
   - MonsterLevel: 4
     PrefabPath: Monster04
+    UnitPrefab:
+      m_AssetGUID: 01f5c0f4283e4ef4fb2106528cb6d644
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
     MoveSpeed: 4
     Hp: 250
     Damage: 100
     ExperienceOnKill: 150
   - MonsterLevel: 5
     PrefabPath: Monster05
+    UnitPrefab:
+      m_AssetGUID: 61997885bd8d62340875fa7d7ed73337
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
     MoveSpeed: 2
     Hp: 500
     Damage: 250
     ExperienceOnKill: 250
   - MonsterLevel: 6
     PrefabPath: Monster06
+    UnitPrefab:
+      m_AssetGUID: d30ef3b106e970245b6a7f61a806a689
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
     MoveSpeed: 5
     Hp: 200
     Damage: 120

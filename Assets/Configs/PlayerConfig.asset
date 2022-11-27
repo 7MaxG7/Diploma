@@ -13,6 +13,11 @@ MonoBehaviour:
   m_Name: PlayerConfig
   m_EditorClassIdentifier: 
   _playerPrefabPath: Player
+  _playerPrefab:
+    m_AssetGUID: d88a557b9f5647341a3e1a46b114e203
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
   _baseMoveSpeed: 6
   _levelExpParameters:
   - _level: 0
@@ -96,4 +101,3 @@ MonoBehaviour:
     _health: 5800
   - _level: 20
     _health: 6500
-  _explosionGo: {fileID: 1000013462590818, guid: ecdd96beb7f93494880c052dfccf9dc1, type: 3}

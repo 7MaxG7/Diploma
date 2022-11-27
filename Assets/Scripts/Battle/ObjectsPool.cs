@@ -1,54 +1,47 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
+using Utils;
 
 
 namespace Services
 {
     internal abstract class ObjectsPool<T> : IDisposable where T : IPoolObject
     {
-        public event Action<int> OnObjectInstantiated;
-        public event Action<int, bool> OnObjectActivationToggle;
+        protected IPhotonManager PhotonManager;
+        protected IPunEventRaiser PunEventRaiser;
 
-        private readonly IPhotonDataExchangeController _photonDataExchangeController;
-
-        // ReSharper disable once InconsistentNaming
-        protected IPhotonManager _photonManager;
-
-        // ReSharper disable once InconsistentNaming
-        protected readonly Dictionary<int, Stack<T>> _objects = new();
-
-        // ReSharper disable once InconsistentNaming
-        protected readonly List<T> _spawnedObjects = new();
+        protected readonly Dictionary<int, Stack<T>> Objects = new();
+        protected readonly List<T> SpawnedObjects = new();
 
 
         public virtual void Dispose()
         {
-            foreach (var obj in _objects.Values.SelectMany(obj => obj))
+            foreach (var obj in Objects.Values.SelectMany(obj => obj))
             {
-                obj.OnDispose -= _photonManager.Destroy;
+                obj.OnDispose -= PhotonManager.Destroy;
             }
 
-            foreach (var obj in _spawnedObjects)
+            foreach (var obj in SpawnedObjects)
             {
-                obj.OnDispose -= _photonManager.Destroy;
+                obj.OnDispose -= PhotonManager.Destroy;
             }
         }
 
-        public T SpawnObject(Vector2 spawnPosition, params object[] parameters)
+        public async Task<T> SpawnObjectAsync(Vector2 spawnPosition, Quaternion rotation, params object[] parameters)
         {
             T obj;
             var poolIndex = GetSpecifiedPoolIndex(parameters);
-            if (!_objects.ContainsKey(poolIndex))
-                _objects.Add(poolIndex, new Stack<T>());
+            if (!Objects.ContainsKey(poolIndex))
+                Objects.Add(poolIndex, new Stack<T>());
 
-            var objects = _objects[poolIndex];
+            var objects = Objects[poolIndex];
             if (objects.Count == 0)
             {
-                obj = SpawnSpecifiedObject(spawnPosition, parameters);
-                obj.OnDispose += _photonManager.Destroy;
-                OnObjectInstantiated?.Invoke(obj.PhotonView.ViewID);
+                obj = await SpawnSpecifiedObjectAsync(spawnPosition, rotation, parameters);
+                obj.OnDispose += PhotonManager.Destroy;
             }
             else
             {
@@ -56,28 +49,28 @@ namespace Services
                 obj.Respawn(spawnPosition);
             }
 
-            _spawnedObjects.Add(obj);
+            SpawnedObjects.Add(obj);
             TogglePoolObjectActivation(obj, true);
             return obj;
         }
 
         protected void ReturnObject(T obj)
         {
-            _spawnedObjects.Remove(obj);
+            SpawnedObjects.Remove(obj);
             TogglePoolObjectActivation(obj, false);
             obj.StopObj();
             obj.Transform.position = Vector3.zero;
-            _objects[obj.PoolIndex].Push(obj);
+            Objects[obj.PoolIndex].Push(obj);
         }
 
         private void TogglePoolObjectActivation(T obj, bool isActive)
         {
             obj.ToggleActivation(isActive);
-            OnObjectActivationToggle?.Invoke(obj.PhotonView.ViewID, isActive);
+            PunEventRaiser.RaiseObjectActivation(obj.PhotonView.ViewID, isActive);
         }
 
         protected abstract int GetSpecifiedPoolIndex(object[] parameters);
 
-        protected abstract T SpawnSpecifiedObject(Vector2 spawnPosition, object[] parameters);
+        protected abstract Task<T> SpawnSpecifiedObjectAsync(Vector2 position, Quaternion rotation, object[] parameters);
     }
 }

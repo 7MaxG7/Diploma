@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Infrastructure;
 using Units;
 using UnityEngine;
@@ -11,27 +12,27 @@ namespace Services
 {
     internal sealed class UnitsPool : ObjectsPool<IUnit>, IUnitsPool
     {
-        public List<IUnit> ActiveMonsters => _spawnedObjects;
+        public List<IUnit> ActiveMonsters => SpawnedObjects;
         private readonly IUnitsFactory _unitsFactory;
         private readonly IHandleDamageManager _handleDamageManager;
         private readonly IMissionResultManager _missionResultManager;
 
 
         [Inject]
-        public UnitsPool(IUnitsFactory unitsFactory, IHandleDamageManager handleDamageManager,
-            IMissionResultManager missionResultManager
-            , IPhotonManager photonManager)
+        public UnitsPool(IUnitsFactory unitsFactory, IHandleDamageManager handleDamageManager, IPhotonManager photonManager
+            , IPunEventRaiser punEventRaiser, IMissionResultManager missionResultManager)
         {
             _unitsFactory = unitsFactory;
             _handleDamageManager = handleDamageManager;
+            PunEventRaiser = punEventRaiser;
             _missionResultManager = missionResultManager;
-            _photonManager = photonManager;
+            PhotonManager = photonManager;
         }
 
         public override void Dispose()
         {
             base.Dispose();
-            foreach (var unit in _objects.Values.SelectMany(obj => obj))
+            foreach (var unit in Objects.Values.SelectMany(obj => obj))
             {
                 unit.OnDied -= ReturnUnit;
                 unit.OnDied -= StopUnitPeriodicalDamage;
@@ -39,12 +40,12 @@ namespace Services
                 unit.Dispose();
             }
 
-            foreach (var objList in _objects.Values)
+            foreach (var objList in Objects.Values)
             {
                 objList.Clear();
             }
 
-            _objects.Clear();
+            Objects.Clear();
             foreach (var unit in ActiveMonsters)
             {
                 unit.OnDied -= ReturnUnit;
@@ -61,10 +62,10 @@ namespace Services
             return (int)parameters[0];
         }
 
-        protected override IUnit SpawnSpecifiedObject(Vector2 spawnPosition, object[] parameters)
+        protected override async Task<IUnit> SpawnSpecifiedObjectAsync(Vector2 position, Quaternion rotation, object[] parameters)
         {
             var currentMonsterLevel = (int)parameters[0];
-            var unit = _unitsFactory.CreateMonster(currentMonsterLevel, spawnPosition);
+            var unit = await _unitsFactory.CreateMyMonsterAsync(currentMonsterLevel, position, rotation);
             unit.OnDied += ReturnUnit;
             unit.OnDied += StopUnitPeriodicalDamage;
             unit.OnDied += _missionResultManager.CountKill;

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using ExitGames.Client.Photon;
-using Photon.Pun;
 using Photon.Realtime;
 using PlayFab;
 using Services;
@@ -48,7 +47,7 @@ namespace Infrastructure
             _unitsKills.Clear();
             _player.OnDied -= LooseGame;
             _player = null;
-            PhotonNetwork.RemoveCallbackTarget(this);
+            _photonManager.UnsubscribeCallbacks(this);
         }
 
         #region IInRoomCallbacksMethods
@@ -85,7 +84,7 @@ namespace Infrastructure
             _player = player;
             _player.OnDied += LooseGame;
             _permanentUiController.OnLeaveGameClicked += LeaveGame;
-            PhotonNetwork.AddCallbackTarget(this);
+            _photonManager.SubscribeCallbacks(this);
         }
 
         public void CountKill(DamageInfo damageInfo)
@@ -152,7 +151,7 @@ namespace Infrastructure
             EndGame(missionEndInfo);
         }
 
-        private async Task ShowVictoryResultAsync()
+        private async void ShowVictoryResultAsync()
         {
             await Task.Delay(500);
             var unitKills = _unitsKills.ContainsKey(_player) ? _unitsKills[_player] : 0;

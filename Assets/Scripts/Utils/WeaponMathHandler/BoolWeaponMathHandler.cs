@@ -24,27 +24,5 @@ namespace Utils
                     return baseStat;
             }
         }
-
-        // protected override void HandleSpecificValueArithmetic(ArithmeticType arithmeticType, float deltaValue)
-        // {
-        //     switch (arithmeticType)
-        //     {
-        //         case ArithmeticType.Plus:
-        //             WeaponCharacteristicValue = Convert.ToBoolean(Convert.ToSingle(WeaponCharacteristicValue) + deltaValue);
-        //             break;
-        //         case ArithmeticType.Minus:
-        //             WeaponCharacteristicValue = Convert.ToBoolean(Convert.ToSingle(WeaponCharacteristicValue) - deltaValue);
-        //             break;
-        //         case ArithmeticType.Multiply:
-        //             WeaponCharacteristicValue = Convert.ToBoolean(Convert.ToSingle(WeaponCharacteristicValue) * deltaValue);
-        //             break;
-        //         case ArithmeticType.Divide:
-        //             WeaponCharacteristicValue = Convert.ToBoolean(Convert.ToSingle(WeaponCharacteristicValue) / deltaValue);
-        //             break;
-        //         case ArithmeticType.Equal:
-        //             WeaponCharacteristicValue = Convert.ToBoolean(deltaValue);
-        //             break;
-        //     }
-        // }
     }
 }

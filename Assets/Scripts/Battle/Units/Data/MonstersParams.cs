@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine.AddressableAssets;
 
 
 namespace Units
@@ -7,7 +8,7 @@ namespace Units
     internal sealed class MonstersParams
     {
         public int MonsterLevel;
-        public string PrefabPath;
+        public AssetReference UnitPrefab;
         public float MoveSpeed;
         public int Hp;
         public int Damage;

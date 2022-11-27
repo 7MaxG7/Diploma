@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 
 namespace Weapons
@@ -8,24 +9,22 @@ namespace Weapons
     internal class WeaponBaseParam : IWeaponDescription
     {
         [SerializeField] private WeaponType _weaponType;
-        [SerializeField] private string _ammoPrefabPath;
+        [SerializeField] private AssetReference _ammoPrefab;
         [SerializeField] private float _range;
         [SerializeField] private float _cooldown;
         [SerializeField] private float _ammoSpeed;
 
-        [Tooltip("Damage of each tick in case of periodical damage")] [SerializeField]
-        private int[] _baseTicksDamage;
-
+        [Tooltip("Damage of each tick in case of periodical damage")]
+        [SerializeField] private int[] _baseTicksDamage;
         [SerializeField] private float _damageTicksCooldown;
         [SerializeField] private bool _isPiercing;
 
-        [Tooltip("Ui params")] [SerializeField]
-        private string _name;
-
+        [Tooltip("Ui params")]
+        [SerializeField] private string _name;
         [SerializeField] private string _description;
 
         public WeaponType WeaponType => _weaponType;
-        public string AmmoPrefabPath => _ammoPrefabPath;
+        public AssetReference AmmoPrefab => _ammoPrefab;
         public float Range => _range;
         public float Cooldown => _cooldown;
         public float AmmoSpeed => _ammoSpeed;

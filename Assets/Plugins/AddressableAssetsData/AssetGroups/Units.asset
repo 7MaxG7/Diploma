@@ -16,7 +16,43 @@ MonoBehaviour:
   m_Data:
     m_SerializedData: []
   m_GUID: 030b7af348634354dbb642398a642f15
-  m_SerializeEntries: []
+  m_SerializeEntries:
+  - m_GUID: 01f5c0f4283e4ef4fb2106528cb6d644
+    m_Address: Monster04
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Prefab
+    - Mission
+  - m_GUID: d30ef3b106e970245b6a7f61a806a689
+    m_Address: Monster06
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Prefab
+    - Mission
+  - m_GUID: 61997885bd8d62340875fa7d7ed73337
+    m_Address: Monster05
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Prefab
+    - Mission
+  - m_GUID: 9cc4dbf221a5fb344882db0f2d9dc9d9
+    m_Address: Monster02
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Prefab
+    - Mission
+  - m_GUID: ec2a10c49380deb4daabbc96b9efc795
+    m_Address: Monster03
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Prefab
+    - Mission
+  - m_GUID: 5b453b096a15ca048b4b818b925b1c0d
+    m_Address: Monster01
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Prefab
+    - Mission
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 8cf540a3ce8167d4698d15c1e6257b19, type: 2}
   m_SchemaSet:

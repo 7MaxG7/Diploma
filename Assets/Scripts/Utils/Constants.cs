@@ -31,6 +31,8 @@
         // Mission
         public const string GROUND_ITEMS_PARENT_NAME = "[GROUND]";
         public const string UI_ROOT_NAME = "[UI]";
+        public const string AMMOS_ROOT_NAME = "[AMMOS]";
+        public const string UNITS_ROOT_NAME = "[UNITS]";
         public const float CHARACTER_SPEED_STOP_TRESHOLD = .001f;
 
         // Settings
@@ -42,11 +44,21 @@
         public const string SAVED_FRAMERATE_PREFS_KEY = "resolution_framerate";
 
         // Playfab
-        public const string WINS_AMOUNT_PLAYFAB_KEY = "wins_amount";
-        public const string KILLS_AMOUNT_PLAYFAB_KEY = "kills_amount";
 #if UNITY_EDITOR
         public const string DEFAULT_EDITOR_USERNAME = "user";
         public const string DEFAULT_EDITOR_PASSWORD = "11111111";
 #endif
+        public const string WINS_AMOUNT_PLAYFAB_KEY = "wins_amount";
+        public const string KILLS_AMOUNT_PLAYFAB_KEY = "kills_amount";
+        
+        // Photon data
+        public const int CREATION_DATA_POSITION_INDEX = 0;
+        public const int CREATION_DATA_ROTATION_INDEX = 1;
+        public const int CREATION_DATA_VIEW_ID_INDEX = 2;
+        public const int CREATION_DATA_TYPE_INDEX = 3;
+        public const int ACTIVATION_DATA_VIEW_ID_INDEX = 0;
+        public const int ACTIVATION_DATA_TOGGLE_INDEX = 1;
+        public const int DAMAGING_DATA_VIEW_ID_INDEX = 0;
+        public const int DAMAGING_DATA_VALUE_INDEX = 1;
     }
 }

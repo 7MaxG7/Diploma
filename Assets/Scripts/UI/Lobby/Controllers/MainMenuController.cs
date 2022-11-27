@@ -12,8 +12,6 @@ namespace Infrastructure
 {
     internal sealed class MainMenuController : IMainMenuController
     {
-        // public event Action<string> OnPlayfabLogin;
-
         private string _userName;
         private string _playfabId;
         private MainMenuView _mainMenuView;
@@ -23,6 +21,7 @@ namespace Infrastructure
         private readonly IAssetProvider _assetProvider;
         private readonly IPermanentUiController _permanentUiController;
         private readonly IViewsFactory _viewsFactory;
+        private readonly IPunEventHandler _punEventHandler;
         private readonly IPhotonManager _photonManager;
         private readonly IPlayfabManager _playfabManager;
         private readonly MainMenuConfig _mainMenuConfig;
@@ -32,12 +31,13 @@ namespace Infrastructure
 
         [Inject]
         public MainMenuController(IMissionResultManager missionResultManager, IAssetProvider assetProvider
-            , IPermanentUiController permanentUiController, IViewsFactory viewsFactory
+            , IPermanentUiController permanentUiController, IViewsFactory viewsFactory, IPunEventHandler punEventHandler
             , IPhotonManager photonManager, IPlayfabManager playfabManager, MainMenuConfig mainMenuConfig)
         {
             _missionResultManager = missionResultManager;
             _assetProvider = assetProvider;
             _viewsFactory = viewsFactory;
+            _punEventHandler = punEventHandler;
             _photonManager = photonManager;
             _playfabManager = playfabManager;
             _permanentUiController = permanentUiController;
@@ -115,7 +115,7 @@ namespace Infrastructure
 
             void InitLobbyPanel()
             {
-                _lobbyScreenController = new LobbyScreenController(_viewsFactory, _photonManager
+                _lobbyScreenController = new LobbyScreenController(_viewsFactory, _photonManager, _punEventHandler
                     , _mainMenuView.LobbyScreenView, _mainMenuConfig, _permanentUiController);
                 if (_playfabManager.CheckClientAutorization())
                 {
@@ -149,7 +149,6 @@ namespace Infrastructure
 
         private void SetUser(string userName, string playfabId)
         {
-            // OnPlayfabLogin?.Invoke(playfabId);
             _userName = userName;
             _playfabId = playfabId;
             SetupScoresLable();

@@ -112,6 +112,11 @@ namespace Infrastructure
             }
         }
 
+        public void ClearPanel()
+        {
+            _lobbyPanelView.ClearPanel();
+        }
+
         private void CreatePrivateRoom(string roomName)
         {
             _lobbyStatusDisplayer.ShowLoadingStatusAsync();

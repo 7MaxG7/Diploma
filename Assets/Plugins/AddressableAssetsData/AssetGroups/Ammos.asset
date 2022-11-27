@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Ammos
+  m_EditorClassIdentifier: 
+  m_GroupName: Ammos
+  m_Data:
+    m_SerializedData: []
+  m_GUID: 512115529efc9954c88fe21d594af7dc
+  m_SerializeEntries:
+  - m_GUID: 061146df42aec4642ab5494eb877fd22
+    m_Address: YellowOrb
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Prefab
+    - Mission
+  - m_GUID: d4c8669e44b28be4e9922db7ec3d5fb4
+    m_Address: GreenOrb
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Prefab
+    - Mission
+  - m_GUID: 26c3ef6bd8b20794ebe70c4f77611d81
+    m_Address: PurpleOrb
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Prefab
+    - Mission
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 8cf540a3ce8167d4698d15c1e6257b19, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 4f11e62eb9b6bb94ba749ec62449d571, type: 2}
+    - {fileID: 11400000, guid: 01c2f4b7d07187a40b914cdd3fbcebf3, type: 2}

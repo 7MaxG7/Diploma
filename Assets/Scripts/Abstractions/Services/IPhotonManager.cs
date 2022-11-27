@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using Photon.Pun;
 using Photon.Realtime;
-using UnityEngine;
 
 
 namespace Services
@@ -12,7 +11,6 @@ namespace Services
         string RoomName { get; }
         bool IsMasterClient { get; }
 
-        GameObject Create(string prefabPath, Vector2 position, Quaternion rotation);
         void Destroy(PhotonView obj);
         void CreateRoom(string roomName, RoomOptions roomOptions);
         void JoinRoom(string roomName);
@@ -28,5 +26,8 @@ namespace Services
         int GetPlayerActorNumber();
         float GetLevelLoadingProgress();
         Dictionary<int, Player> GetRoomPlayers();
+        bool AllocateViewID(PhotonView photonView);
+        void SubscribeCallbacks(object obj);
+        void UnsubscribeCallbacks(object obj);
     }
 }

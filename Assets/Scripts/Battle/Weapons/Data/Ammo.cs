@@ -24,12 +24,15 @@ namespace Weapons
         private bool _isPiercing;
 
 
-        public Ammo(GameObject ammoGo, int poolIndex)
+        public Ammo(GameObject ammoGo, int poolIndex, bool isMine)
         {
             PoolIndex = poolIndex;
             _ammoView = ammoGo.GetComponent<AmmoView>();
-            _ammoView.OnTriggerEntered += HandleCollision;
-            _ammoView.OnBecomeInvisible += DeactivateObj;
+            if (isMine)
+            {
+                _ammoView.OnTriggerEntered += HandleCollision;
+                _ammoView.OnBecomeInvisible += DeactivateObj;
+            }
         }
 
         public void Dispose()

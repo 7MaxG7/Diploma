@@ -97,7 +97,7 @@ namespace Weapons
             readyWeapons = readyWeapons.Where(item => item.SqrRange >= minSqrMagnitude).ToList();
             foreach (var weapon in readyWeapons)
             {
-                weapon.Shoot(targetPosition.Value);
+                weapon.ShootAsync(targetPosition.Value);
             }
         }
 

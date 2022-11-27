@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using Services;
 using Units;
+using Utils;
 using Zenject;
 
 
@@ -10,14 +9,15 @@ namespace Infrastructure
 {
     internal sealed class HandleDamageManager : IHandleDamageManager
     {
-        public event Action<PhotonDamageInfo> OnDamageEnemyPlayer;
+        private readonly IPunEventRaiser _punEventRaiser;
 
         private List<ComingDamage> _comingDamages = new();
 
 
         [Inject]
-        public HandleDamageManager(IControllersHolder controllersHolder)
+        public HandleDamageManager(IPunEventRaiser punEventRaiser, IControllersHolder controllersHolder)
         {
+            _punEventRaiser = punEventRaiser;
             controllersHolder.AddController(this);
         }
 
@@ -40,8 +40,7 @@ namespace Infrastructure
                     if (comingDamage.DamageTaker is PlayerView enemyPlayer &&
                         comingDamage.DamageTaker != comingDamage.Damager.UnitView)
                     {
-                        OnDamageEnemyPlayer?.Invoke(new PhotonDamageInfo(enemyPlayer.PhotonView.ViewID,
-                            comingDamage.Damage));
+                        _punEventRaiser.RaiseDamageReceiving(enemyPlayer.PhotonView.ViewID, comingDamage.Damage);
                     }
 
                     damagesToRemove.Add(comingDamage);
@@ -69,7 +68,7 @@ namespace Infrastructure
             damageTaker.TakeDamage(damage, damager);
             if (damageTaker is PlayerView enemyPlayer && damageTaker != damager.UnitView)
             {
-                OnDamageEnemyPlayer?.Invoke(new PhotonDamageInfo(enemyPlayer.PhotonView.ViewID, damage));
+                _punEventRaiser.RaiseDamageReceiving(enemyPlayer.PhotonView.ViewID, damage);
             }
         }
 

@@ -15,7 +15,7 @@ namespace Weapons
 
         void OnDispose();
         void ReduceCooldown(float deltaTime);
-        void Shoot(Vector3 targetPosition);
+        void ShootAsync(Vector3 targetPosition);
         void Upgrade(WeaponLevelUpgradeParam upgradeParam);
     }
 }

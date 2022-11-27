@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using DG.Tweening;
 using Photon.Realtime;
 using Services;
@@ -78,7 +79,6 @@ namespace Infrastructure
 
         public void Show(Action onPanelShownCallback)
         {
-            ClearPanel();
             ToggleBlockingUi(true);
             gameObject.SetActive(true);
             _canvasGroup.alpha = 0;
@@ -102,7 +102,6 @@ namespace Infrastructure
             void FinishHiding()
             {
                 gameObject.SetActive(false);
-                ClearPanel();
                 onPanelHiddenCallback?.Invoke();
             }
         }
@@ -149,11 +148,10 @@ namespace Infrastructure
             _privateRoomNameInputText.onValueChanged.RemoveAllListeners();
         }
 
-        private void ClearPanel()
+        public void ClearPanel()
         {
-            foreach (var roomItemView in _cachedRoomItemViews.Values)
+            foreach (var roomItemView in _cachedRoomItemViews.Values.Where(roomItemView => roomItemView != null && roomItemView.gameObject != null))
             {
-                roomItemView.RoomButton.onClick.RemoveAllListeners();
                 Destroy(roomItemView.gameObject);
             }
 

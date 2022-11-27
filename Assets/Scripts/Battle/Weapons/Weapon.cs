@@ -43,11 +43,11 @@ namespace Weapons
             _cooldownTimer -= Math.Min(deltaTime, _cooldownTimer);
         }
 
-        public void Shoot(Vector3 targetPosition)
+        public async void ShootAsync(Vector3 targetPosition)
         {
             _cooldownTimer += _weaponStats.Cooldown;
             var ownerPosition = _owner.Transform.position;
-            var ammo = _ammosPool.SpawnObject(ownerPosition, Type);
+            var ammo = await _ammosPool.SpawnObjectAsync(ownerPosition, Quaternion.identity, Type);
             ammo.Init(_owner, _weaponStats.Damage, _weaponStats.DamageTicksCooldown, _weaponStats.IsPiercing);
             ammo.Push((targetPosition - ownerPosition) * _weaponStats.AmmoSpeed);
             OnShooted?.Invoke(Type);
