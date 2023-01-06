@@ -10,17 +10,17 @@ namespace Infrastructure
 {
     internal sealed class Game : IGame, IDisposable
     {
-        public IControllersHolder Controllers { get; private set; }
+        public IControllersHolder Controllers { get; }
 
-        private IGameStateMachine _gameStateMachine;
-        private IPermanentUiController _permanentUiController;
-        private ISceneLoader _sceneLoader;
-        private ISoundController _soundController;
-        private IAssetProvider _assetProvider;
+        private readonly IGameStateMachine _gameStateMachine;
+        private readonly IPermanentUiController _permanentUiController;
+        private readonly ISceneLoader _sceneLoader;
+        private readonly ISoundController _soundController;
+        private readonly IAssetProvider _assetProvider;
 
 
         [Inject]
-        private void InjectDependencies(IControllersHolder controllers, IGameStateMachine gameStateMachine
+        public Game(IControllersHolder controllers, IGameStateMachine gameStateMachine
             , ISoundController soundController, IPermanentUiController permanentUiController
             , ISceneLoader sceneLoader, IAssetProvider assetProvider)
         {

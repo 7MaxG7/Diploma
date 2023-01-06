@@ -59,8 +59,11 @@ namespace Services
                 return loadedHandle.Result as T;
             
             var handle = Addressables.LoadAssetAsync<T>(assetReference);
-            handle.Completed += resultHandle => _loadedAssets[assetReference.AssetGUID] = resultHandle;
-            _handles.Add(handle);
+            handle.Completed += resultHandle =>
+            {
+                _loadedAssets[assetReference.AssetGUID] = resultHandle;
+                _handles.Add(handle);
+            };
             return await handle.Task;
         }
     }
